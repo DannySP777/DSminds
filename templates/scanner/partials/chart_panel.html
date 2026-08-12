@@ -1,0 +1,26 @@
+{% comment %}
+Panel de gráfica reutilizable: se usa tanto en la página completa de la
+acción (ticker_detail.html) como inyectado por AJAX en el dashboard del
+scanner (home.html) cuando el usuario selecciona un ticker.
+Contexto esperado: symbol, chart, interval, intervals.
+{% endcomment %}
+<div class="chart-panel-header">
+    <h3 class="dashboard-chart-symbol">{{ symbol }}</h3>
+    <nav class="interval-filter">
+        {% for key, cfg in intervals.items %}
+            <a href="?interval={{ key }}" data-interval="{{ key }}" class="interval-link{% if key == interval %} interval-link--active{% endif %}">{{ cfg.label }}</a>
+        {% endfor %}
+    </nav>
+</div>
+
+{% if chart.error %}
+    <p class="empty-state">{{ chart.error }}</p>
+{% else %}
+    <div class="chart-wrap">{{ chart.html|safe }}</div>
+    <p class="scan-date">
+        Precio: ${{ chart.last_price }} &middot;
+        RSI (14): {{ chart.last_rsi }} &middot;
+        Vol. relativo: {{ chart.last_relative_volume }}x &middot;
+        Ruptura: {% if chart.breakout %}Sí{% else %}No{% endif %}
+    </p>
+{% endif %}

@@ -1,0 +1,27 @@
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Django
+db.sqlite3
+*.log
+media/
+
+# Variables de entorno / secretos
+.env
+
+# VS Code
+.vscode/
+
+# Config local de Claude Code (permisos de esta máquina, no del proyecto)
+.claude/settings.local.json
+
+# Sistema
+.DS_Store
+Thumbs.db

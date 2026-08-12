@@ -1,0 +1,12 @@
+{% comment %}Uso: {% include "partials/gauge.html" with gauge=fundamentals.gauges.trailing_pe %}{% endcomment %}
+<div class="gauge">
+    <span class="gauge-dot gauge-dot--{{ gauge.level }}"></span>
+    <div class="gauge-track">
+        {% for color, width in gauge.zones %}
+            <span class="gauge-zone gauge-zone--{{ color }}" style="width: {{ width }}%;"></span>
+        {% endfor %}
+        {% if gauge.position != None %}
+            <span class="gauge-marker" style="left: {{ gauge.position }}%;"></span>
+        {% endif %}
+    </div>
+</div>

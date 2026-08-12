@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Scanner diario de acciones, noticias de mercado y análisis técnico. Contenido informativo, no asesoría financiera.{% endblock %}">
+    <title>{% block title %}DSMarketScan{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header class="site-header">
+        <div class="container">
+            <div class="header-brand">
+                <a href="/" class="logo">DSMarketScan</a>
+                {% block header_subtitle %}{% endblock %}
+            </div>
+            <nav class="main-nav">
+                <a href="/" class="main-nav__link{% if request.path == '/' or '/accion/' in request.path or '/buscar/' in request.path %} main-nav__link--active{% endif %}">Scanner</a>
+                <a href="/noticias/" class="main-nav__link{% if '/noticias' in request.path %} main-nav__link--active{% endif %}">Noticias</a>
+                <a href="/blog/" class="main-nav__link{% if '/blog' in request.path %} main-nav__link--active{% endif %}">Blog</a>
+                <a href="/acerca-de/" class="main-nav__link{% if '/acerca-de' in request.path %} main-nav__link--active{% endif %}">Acerca de</a>
+                <a href="/contacto/" class="main-nav__link{% if '/contacto' in request.path %} main-nav__link--active{% endif %}">Sugerencias</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% if messages %}
+            <ul class="site-messages">
+                {% for message in messages %}
+                    <li class="site-message site-message--{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <nav class="footer-nav">
+                <a href="/acerca-de/">Acerca de</a>
+                <a href="/contacto/">Contacto</a>
+                <a href="/privacidad/">Política de privacidad</a>
+                <a href="/disclaimer/">Aviso legal</a>
+                <a href="/terminos/">Términos de uso</a>
+            </nav>
+            <p>&copy; {% now "Y" %} DSMarketScan. Contenido informativo con fines educativos &mdash; no constituye asesoría financiera. Ver <a href="/disclaimer/">aviso legal</a>.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}?v={% now 'U' %}"></script>
+</body>
+</html>

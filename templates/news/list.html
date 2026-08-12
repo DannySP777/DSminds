@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Noticias de mercado &mdash; DSMarketScan{% endblock %}
+{% block meta_description %}Resumen diario de noticias de Yahoo Finance para las acciones que seguimos en el scanner.{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <h1>Noticias de mercado</h1>
+        <p>Noticias de Yahoo Finance para los mismos tickers que cubre el <a href="/">scanner diario</a>, así puedes ver qué se dice de una acción justo cuando aparece en los resultados.</p>
+        {% if ticker_filter %}
+            <p class="scan-date">Mostrando noticias de <strong>{{ ticker_filter }}</strong> &middot; <a href="/noticias/">ver todas</a></p>
+        {% endif %}
+    </section>
+
+    <section class="econ-calendar">
+        <h2>Calendario económico de EE. UU. &mdash; esta semana</h2>
+        <p class="disclaimer-note">Solo eventos de impacto medio (★★) y alto (★★★): los que más suelen mover el mercado. No se incluyen los de impacto bajo.</p>
+        {% if calendar_events %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Evento</th>
+                            <th>Impacto</th>
+                            <th>Pronóstico</th>
+                            <th>Anterior</th>
+                            <th>Actual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in calendar_events %}
+                        <tr class="impact-{{ event.impact }}">
+                            <td>{{ event.event_time|date:"D d M" }}</td>
+                            <td>{{ event.event_time|date:"H:i" }}</td>
+                            <td>{{ event.title }}</td>
+                            <td class="impact-stars">{{ event.stars_display }}</td>
+                            <td>{{ event.forecast|default:"—" }}</td>
+                            <td>{{ event.previous|default:"—" }}</td>
+                            <td>{{ event.actual|default:"—" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-state">Todavía no hay calendario cargado. Corre <code>python manage.py fetch_calendar</code>.</p>
+        {% endif %}
+    </section>
+
+    {% include "partials/ad_slot.html" %}
+
+    <section class="news-list">
+        {% if items %}
+            {% for item in items %}
+            <article class="news-item">
+                <h2><a href="{{ item.url }}" rel="noopener nofollow" target="_blank">{{ item.title }}</a></h2>
+                <p class="news-meta">
+                    {{ item.source }} &middot; {{ item.published_at|date:"d M Y, H:i" }}
+                    {% if item.tickers.all %}
+                        &middot;
+                        {% for t in item.tickers.all %}
+                            <a class="ticker-badge" href="/noticias/?ticker={{ t.symbol }}">{{ t.symbol }}</a>
+                        {% endfor %}
+                    {% endif %}
+                </p>
+                <p>{{ item.summary|truncatewords:40 }}</p>
+            </article>
+            {% endfor %}
+        {% else %}
+            <p class="empty-state">
+                {% if ticker_filter %}
+                    No hay noticias guardadas para {{ ticker_filter }} todavía.
+                {% else %}
+                    Todavía no hay noticias cargadas. Corre <code>python manage.py fetch_news</code> para traer las últimas de Yahoo Finance.
+                {% endif %}
+            </p>
+        {% endif %}
+    </section>
+{% endblock %}

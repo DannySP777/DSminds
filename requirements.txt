@@ -1,0 +1,9 @@
+Django>=5.0,<6.0
+yfinance>=0.2.40
+pandas>=2.2
+ta>=0.11.0
+plotly>=5.22
+APScheduler>=3.10
+requests>=2.32
+python-dotenv>=1.0
+psycopg2-binary>=2.9  # opcional, solo si usas PostgreSQL en vez de SQLite

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} &mdash; DSMarketScan{% endblock %}
+{% block meta_description %}{{ post.excerpt }}{% endblock %}
+
+{% block content %}
+    <article class="post-detail">
+        <h1>{{ post.title }}</h1>
+        <p class="news-meta">{{ post.published_at|date:"d M Y" }}</p>
+
+        {% include "partials/ad_slot.html" %}
+
+        <div class="post-body">
+            {{ post.body|safe }}
+        </div>
+    </article>
+{% endblock %}

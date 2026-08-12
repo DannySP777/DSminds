@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Blog &mdash; DSMarketScan{% endblock %}
+{% block meta_description %}Guías y análisis sobre indicadores técnicos, lectura de mercado y cómo usar el scanner de DSMarketScan.{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <h1>Blog</h1>
+        <p>Guías y análisis sobre indicadores técnicos y cómo interpretar los resultados del scanner.</p>
+    </section>
+
+    {% include "partials/ad_slot.html" %}
+
+    <section class="post-list">
+        {% if posts %}
+            {% for post in posts %}
+            <article class="post-item">
+                <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+                <p class="news-meta">{{ post.published_at|date:"d M Y" }}</p>
+                <p>{{ post.excerpt }}</p>
+            </article>
+            {% endfor %}
+        {% else %}
+            <p class="empty-state">Todavía no hay artículos publicados.</p>
+        {% endif %}
+    </section>
+{% endblock %}

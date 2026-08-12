@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ symbol }} &mdash; gráfica y señales técnicas &mdash; DSMarketScan{% endblock %}
+{% block meta_description %}Gráfica de velas de {{ symbol }} con RSI, volumen y ruptura de rango, con periodos desde 1 minuto hasta mensual.{% endblock %}
+
+{% block extra_head %}
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <h1>{{ symbol }}</h1>
+        {% if latest_result %}
+            <p>Último scan ({{ latest_result.date }}): precio ${{ latest_result.price }}, RSI {{ latest_result.rsi }}, volumen relativo {{ latest_result.relative_volume }}x, score {{ latest_result.score }}.</p>
+        {% else %}
+            <p>Este ticker todavía no tiene resultados guardados del scanner diario.</p>
+        {% endif %}
+        <p><a href="/noticias/?ticker={{ symbol }}">Ver noticias de {{ symbol }}</a> &middot; <a href="/">volver al scanner</a></p>
+    </section>
+
+    <form action="/buscar/" method="get" class="ticker-search">
+        <input
+            type="text"
+            name="q"
+            class="ticker-search__input"
+            placeholder="Buscar otra acción por símbolo o nombre (ej: MSFT, Tesla)&hellip;"
+            autocomplete="off"
+        >
+        <button type="submit" class="ticker-search__btn">Buscar</button>
+    </form>
+
+    <section class="chart-section">
+        <h2>Gráfica de precio</h2>
+        {% include "scanner/partials/chart_panel.html" %}
+    </section>
+
+    <section class="analyst-section">
+        <h2>Qué dicen los analistas</h2>
+        {% include "scanner/partials/indicators_panel.html" %}
+    </section>
+
+    {% include "partials/ad_slot.html" %}
+
+    <section class="methodology">
+        <h2>Qué muestra esta gráfica</h2>
+        <ul>
+            <li><strong>Velas japonesas:</strong> verde cuando el cierre del periodo es mayor al de apertura, roja cuando es menor.</li>
+            <li><strong>Volumen:</strong> barras coloreadas igual que la vela del mismo periodo.</li>
+            <li><strong>RSI (14):</strong> línea inferior con referencias en 70 (sobrecompra) y 30 (sobreventa) &mdash; el mismo indicador que usa el scanner diario.</li>
+            <li><strong>Línea punteada superior:</strong> máximo de los últimos 20 periodos, la misma referencia que usa el scanner para detectar rupturas.</li>
+        </ul>
+        <p class="disclaimer-note">Datos de mercado vía Yahoo Finance, con fines informativos. No es asesoría de inversión &mdash; lee el <a href="/disclaimer/">aviso legal</a>.</p>
+    </section>
+{% endblock %}

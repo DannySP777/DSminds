@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Contacto &mdash; DSMarketScan{% endblock %}
+{% block meta_description %}Envía tus sugerencias, comentarios o reporta errores del sitio DSMarketScan.{% endblock %}
+
+{% block content %}
+    <article class="page-content">
+        <h1>Contacto</h1>
+        <p>¿Tienes dudas sobre el scanner, encontraste un error o quieres sugerir un ticker? Escríbenos por correo o deja tu comentario aquí abajo &mdash; lo revisamos nosotros, no se publica en el sitio.</p>
+        <p><a href="mailto:contacto@dsmarketscan.com">contacto@dsmarketscan.com</a></p>
+        <p class="disclaimer-note">Nota: esta dirección es un ejemplo &mdash; reemplázala por tu correo real antes de publicar el sitio.</p>
+
+        <h2>Sugerencias y comentarios</h2>
+        <form method="post" class="contact-form" novalidate>
+            {% csrf_token %}
+            <div class="hp-field">{{ form.website }}</div>
+
+            <label for="{{ form.name.id_for_label }}">Nombre</label>
+            {{ form.name }}
+
+            <label for="{{ form.email.id_for_label }}">Correo</label>
+            {{ form.email }}
+            {% if form.email.errors %}<p class="form-error">{{ form.email.errors|striptags }}</p>{% endif %}
+
+            <label for="{{ form.message.id_for_label }}">Mensaje</label>
+            {{ form.message }}
+            {% if form.message.errors %}<p class="form-error">{{ form.message.errors|striptags }}</p>{% endif %}
+
+            <button type="submit" class="ticker-search__btn">Enviar</button>
+        </form>
+        <p class="disclaimer-note">Tu mensaje se guarda de forma privada para que el equipo lo revise &mdash; no se publica ni se muestra a otros visitantes del sitio.</p>
+    </article>
+{% endblock %}
