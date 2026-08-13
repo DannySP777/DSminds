@@ -1,3 +1,4 @@
+{% load dsms_extras %}
 {% comment %}
 Panel de gráfica reutilizable: se usa tanto en la página completa de la
 acción (ticker_detail.html) como inyectado por AJAX en el dashboard del
@@ -8,7 +9,7 @@ Contexto esperado: symbol, chart, interval, intervals.
     <h3 class="dashboard-chart-symbol">{{ symbol }}</h3>
     <nav class="interval-filter">
         {% for key, cfg in intervals.items %}
-            <a href="?interval={{ key }}" data-interval="{{ key }}" class="interval-link{% if key == interval %} interval-link--active{% endif %}">{{ cfg.label }}</a>
+            <a href="?interval={{ key }}" data-interval="{{ key }}" class="interval-link{% if key == interval %} interval-link--active{% endif %}">{{ T|dict_get:key }}</a>
         {% endfor %}
     </nav>
 </div>
@@ -18,9 +19,15 @@ Contexto esperado: symbol, chart, interval, intervals.
 {% else %}
     <div class="chart-wrap">{{ chart.html|safe }}</div>
     <p class="scan-date">
-        Precio: ${{ chart.last_price }} &middot;
+        {{ T.th_price }}: ${{ chart.last_price }} &middot;
         RSI (14): {{ chart.last_rsi }} &middot;
-        Vol. relativo: {{ chart.last_relative_volume }}x &middot;
-        Ruptura: {% if chart.breakout %}Sí{% else %}No{% endif %}
+        {{ T.chart_rel_vol }}: {{ chart.last_relative_volume }}x &middot;
+        {{ T.chart_breakout }}: {% if chart.breakout %}{{ T.yes }}{% else %}{{ T.no }}{% endif %}
     </p>
+    <ul class="chart-ref-legend">
+        <li><span class="chart-ref-legend__swatch chart-ref-legend__swatch--current"></span> <strong>{{ T.chart_ref_current_label }}</strong> ({% if chart.last_price %}${{ chart.last_price }}{% else %}N/D{% endif %}) — {{ T.chart_ref_current_text }}</li>
+        <li><span class="chart-ref-legend__swatch chart-ref-legend__swatch--target"></span> <strong>{{ T.chart_ref_target_label }}</strong> ({% if chart.target_price %}${{ chart.target_price }}{% else %}N/D{% endif %}) — {{ T.chart_ref_target_text }}</li>
+        <li><span class="chart-ref-legend__swatch chart-ref-legend__swatch--low"></span> <strong>{{ T.chart_ref_low_label }}</strong> ({% if chart.quarter_low %}${{ chart.quarter_low }}{% else %}N/D{% endif %}) — {{ T.chart_ref_low_text }}</li>
+    </ul>
+    <p class="chart-zoom-hint">{{ T.chart_zoom_hint }}</p>
 {% endif %}

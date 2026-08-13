@@ -9,6 +9,11 @@ class Post(models.Model):
     body = models.TextField(
         help_text="Se renderiza como HTML sin sanitizar (safe) — solo para contenido de confianza."
     )
+    # Traducción al inglés, opcional: si está vacía, el sitio en inglés
+    # muestra el contenido en español como respaldo (ver get_title/etc.).
+    title_en = models.CharField(max_length=200, blank=True)
+    excerpt_en = models.CharField(max_length=300, blank=True)
+    body_en = models.TextField(blank=True)
     published_at = models.DateTimeField()
     is_published = models.BooleanField(default=True)
 
@@ -20,6 +25,15 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse("blog-detail", kwargs={"slug": self.slug})
+
+    def get_title(self, lang):
+        return self.title_en if lang == "en" and self.title_en else self.title
+
+    def get_excerpt(self, lang):
+        return self.excerpt_en if lang == "en" and self.excerpt_en else self.excerpt
+
+    def get_body(self, lang):
+        return self.body_en if lang == "en" and self.body_en else self.body
 
 
 class Page(models.Model):

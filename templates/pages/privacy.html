@@ -1,35 +1,38 @@
 {% extends "base.html" %}
 
-{% block title %}Política de privacidad &mdash; DSMarketScan{% endblock %}
-{% block meta_description %}Cómo DSMarketScan recopila y usa datos, incluyendo cookies de publicidad de Google y terceros.{% endblock %}
+{% block title %}{{ T.privacy_title }} &mdash; DSMarketScan{% endblock %}
+{% block meta_description %}{{ T.privacy_meta_description }}{% endblock %}
 
 {% block content %}
     <article class="page-content">
-        <h1>Política de privacidad</h1>
-        <p><em>Última actualización: {% now "d \d\e F \d\e Y" %}</em></p>
+        <h1>{{ T.privacy_title }}</h1>
+        <p><em>{{ T.last_updated }}: {{ today }}</em></p>
 
-        <h2>Qué datos recopilamos</h2>
-        <p>DSMarketScan no requiere registro para navegar el sitio. Como cualquier sitio web, nuestro servidor y las herramientas de analítica que usemos pueden registrar automáticamente datos técnicos básicos: dirección IP, tipo de navegador, páginas visitadas y fecha/hora de la visita.</p>
-        <p>Si usas el formulario de <a href="/contacto/">sugerencias y comentarios</a>, guardamos el nombre y correo que ingreses (ambos opcionales) junto con tu mensaje, únicamente para que el equipo lo revise y pueda responderte si lo pediste. Estos mensajes son privados: no se publican ni se muestran a otros visitantes del sitio, y no se comparten con terceros.</p>
+        <h2>{{ T.privacy_h2_data }}</h2>
+        <p>{{ T.privacy_data_p1 }}</p>
+        <p>{{ T.privacy_data_p2_prefix }} <a href="/contacto/">{{ T.privacy_data_p2_link }}</a>{{ T.privacy_data_p2_suffix }}</p>
 
-        <h2>Cookies y publicidad</h2>
-        <p>Este sitio puede mostrar anuncios a través de Google AdSense. Google, como proveedor externo, usa cookies (incluida la cookie DoubleClick) para mostrar anuncios basados en tus visitas anteriores a este y otros sitios en internet.</p>
+        <h2>{{ T.privacy_h2_cookies }}</h2>
+        <p>{{ T.privacy_cookies_p1 }}</p>
         <ul>
-            <li>Puedes inhabilitar la publicidad personalizada visitando la <a href="https://www.google.com/settings/ads" rel="noopener" target="_blank">Configuración de anuncios de Google</a>.</li>
-            <li>También puedes inhabilitar el uso de cookies de terceros con fines publicitarios visitando <a href="https://www.aboutads.info/choices/" rel="noopener" target="_blank">www.aboutads.info</a>.</li>
-            <li>Terceros, incluido Google, pueden usar cookies para publicar anuncios según tus visitas anteriores a este sitio o a otros sitios web.</li>
+            <li>{{ T.privacy_cookies_li1_prefix }} <a href="https://www.google.com/settings/ads" rel="noopener" target="_blank">{{ T.privacy_cookies_li1_link }}</a>.</li>
+            <li>{{ T.privacy_cookies_li2_prefix }} <a href="https://www.aboutads.info/choices/" rel="noopener" target="_blank">www.aboutads.info</a>.</li>
+            <li>{{ T.privacy_cookies_li3 }}</li>
         </ul>
 
-        <h2>Analítica</h2>
-        <p>Podemos usar herramientas de analítica web (como Google Analytics) para entender cómo se usa el sitio de forma agregada y anónima. Estas herramientas también pueden usar cookies propias o de terceros.</p>
+        <h2>{{ T.privacy_h2_functional }}</h2>
+        <p>{{ T.privacy_functional_text }}</p>
 
-        <h2>Con quién compartimos datos</h2>
-        <p>No vendemos datos personales. Compartimos datos únicamente con proveedores necesarios para operar el sitio (por ejemplo, Google AdSense/Analytics), sujetos a sus propias políticas de privacidad.</p>
+        <h2>{{ T.privacy_h2_analytics }}</h2>
+        <p>{{ T.privacy_analytics_text }}</p>
 
-        <h2>Tus opciones</h2>
-        <p>Puedes configurar tu navegador para rechazar cookies; ten en cuenta que algunas funciones del sitio podrían no funcionar correctamente sin ellas.</p>
+        <h2>{{ T.privacy_h2_sharing }}</h2>
+        <p>{{ T.privacy_sharing_text }}</p>
 
-        <h2>Contacto</h2>
-        <p>Si tienes preguntas sobre esta política, escríbenos desde la página de <a href="/contacto/">contacto</a>.</p>
+        <h2>{{ T.privacy_h2_choices }}</h2>
+        <p>{{ T.privacy_choices_text }}</p>
+
+        <h2>{{ T.footer_contact }}</h2>
+        <p>{{ T.privacy_contact_prefix }} <a href="/contacto/">{{ T.footer_contact|lower }}</a>.</p>
     </article>
 {% endblock %}

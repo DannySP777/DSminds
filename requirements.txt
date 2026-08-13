@@ -6,4 +6,5 @@ plotly>=5.22
 APScheduler>=3.10
 requests>=2.32
 python-dotenv>=1.0
+deep-translator>=1.11  # traduce al español la descripción de la empresa (yfinance solo la da en inglés)
 psycopg2-binary>=2.9  # opcional, solo si usas PostgreSQL en vez de SQLite

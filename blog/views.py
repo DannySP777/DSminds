@@ -1,8 +1,37 @@
+from datetime import date
+
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 
+from config.translations import DEFAULT_LANG, SUPPORTED_LANGS
+
 from .forms import FeedbackForm
 from .models import Post
+
+SUCCESS_MESSAGE = {
+    "es": "¡Gracias! Recibimos tu mensaje.",
+    "en": "Thanks! We received your message.",
+}
+
+MONTH_NAMES = {
+    "es": ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+           "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+    "en": ["January", "February", "March", "April", "May", "June", "July",
+           "August", "September", "October", "November", "December"],
+}
+
+
+def _get_lang(request):
+    lang = request.COOKIES.get("site_lang", DEFAULT_LANG)
+    return lang if lang in SUPPORTED_LANGS else DEFAULT_LANG
+
+
+def _format_long_date(lang):
+    today = date.today()
+    month = MONTH_NAMES.get(lang, MONTH_NAMES["es"])[today.month - 1]
+    if lang == "en":
+        return f"{month} {today.day}, {today.year}"
+    return f"{today.day} de {month} de {today.year}"
 
 
 def post_list(request):
@@ -20,7 +49,7 @@ def about(request):
 
 
 def privacy(request):
-    return render(request, "pages/privacy.html")
+    return render(request, "pages/privacy.html", {"today": _format_long_date(_get_lang(request))})
 
 
 def disclaimer(request):
@@ -28,17 +57,18 @@ def disclaimer(request):
 
 
 def terms(request):
-    return render(request, "pages/terms.html")
+    return render(request, "pages/terms.html", {"today": _format_long_date(_get_lang(request))})
 
 
 def contact(request):
+    lang = _get_lang(request)
     if request.method == "POST":
-        form = FeedbackForm(request.POST)
+        form = FeedbackForm(request.POST, lang=lang)
         if form.is_valid():
             form.save()
-            messages.success(request, "¡Gracias! Recibimos tu mensaje.")
+            messages.success(request, SUCCESS_MESSAGE.get(lang, SUCCESS_MESSAGE["es"]))
             return redirect("page-contact")
     else:
-        form = FeedbackForm()
+        form = FeedbackForm(lang=lang)
 
     return render(request, "pages/contact.html", {"form": form})

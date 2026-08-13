@@ -156,8 +156,8 @@ function initScannerDashboard() {
     });
 
     table.addEventListener("click", function (e) {
-        if (e.target.closest("a") || e.target.closest(".ticker-select")) {
-            return; // los links navegan normal; el radio ya se maneja con "change"
+        if (e.target.closest("a") || e.target.closest(".ticker-select") || e.target.closest(".remove-ticker-form")) {
+            return; // los links navegan normal; el radio ya se maneja con "change"; quitar tiene su propio submit
         }
         var row = e.target.closest(".scan-row");
         if (row) {
@@ -178,7 +178,167 @@ function initScannerDashboard() {
     });
 }
 
+function initCookieBanner() {
+    var banner = document.getElementById("cookie-banner");
+    if (!banner) {
+        return;
+    }
+
+    var STORAGE_KEY = "dsms_cookie_consent";
+
+    // NOTA: cuando se agreguen scripts de AdSense/Analytics reales, deben
+    // consultar localStorage.getItem("dsms_cookie_consent") === "accepted"
+    // antes de cargarse, para respetar la elección del usuario.
+    if (!localStorage.getItem(STORAGE_KEY)) {
+        banner.hidden = false;
+    }
+
+    function respond(value) {
+        localStorage.setItem(STORAGE_KEY, value);
+        banner.hidden = true;
+    }
+
+    document.getElementById("cookie-accept").addEventListener("click", function () {
+        respond("accepted");
+    });
+    document.getElementById("cookie-decline").addEventListener("click", function () {
+        respond("declined");
+    });
+}
+
+function initAddTickerSearch() {
+    var input = document.getElementById("add-ticker-input");
+    var list = document.getElementById("add-ticker-suggestions");
+    var symbolField = document.getElementById("add-ticker-symbol");
+    var form = document.getElementById("add-ticker-form");
+    var submitBtn = document.getElementById("add-ticker-submit");
+    if (!input || !list || !symbolField || !form) {
+        return;
+    }
+
+    var url = list.dataset.autocompleteUrl;
+    var searchingText = list.dataset.searchingText;
+    var noResultsText = list.dataset.noResultsText;
+    var debounceTimer = null;
+    var currentRequestId = 0;
+
+    function hide() {
+        list.hidden = true;
+        list.innerHTML = "";
+    }
+
+    function renderEmpty(text) {
+        list.innerHTML = "";
+        var li = document.createElement("li");
+        li.className = "add-ticker-suggestion add-ticker-suggestion--empty";
+        li.textContent = text;
+        list.appendChild(li);
+        list.hidden = false;
+    }
+
+    function renderResults(results) {
+        list.innerHTML = "";
+        if (!results.length) {
+            renderEmpty(noResultsText);
+            return;
+        }
+        results.forEach(function (item) {
+            var li = document.createElement("li");
+            li.className = "add-ticker-suggestion";
+            li.dataset.symbol = item.symbol;
+
+            var symbolSpan = document.createElement("span");
+            symbolSpan.className = "add-ticker-suggestion__symbol";
+            symbolSpan.textContent = item.symbol;
+
+            var nameSpan = document.createElement("span");
+            nameSpan.className = "add-ticker-suggestion__name";
+            nameSpan.textContent = item.name || "";
+
+            var exchangeSpan = document.createElement("span");
+            exchangeSpan.className = "add-ticker-suggestion__exchange";
+            exchangeSpan.textContent = item.exchange || "";
+
+            li.appendChild(symbolSpan);
+            li.appendChild(nameSpan);
+            li.appendChild(exchangeSpan);
+            list.appendChild(li);
+        });
+        list.hidden = false;
+    }
+
+    function search(query) {
+        var requestId = ++currentRequestId;
+        renderEmpty(searchingText);
+        fetch(url + "?q=" + encodeURIComponent(query))
+            .then(function (res) {
+                return res.json();
+            })
+            .then(function (data) {
+                if (requestId !== currentRequestId) {
+                    return; // respuesta obsoleta (el usuario ya siguió escribiendo)
+                }
+                renderResults(data.results || []);
+            })
+            .catch(function () {
+                if (requestId === currentRequestId) {
+                    hide();
+                }
+            });
+    }
+
+    input.addEventListener("input", function () {
+        var query = input.value.trim();
+        clearTimeout(debounceTimer);
+        if (query.length < 2) {
+            hide();
+            return;
+        }
+        debounceTimer = setTimeout(function () {
+            search(query);
+        }, 350);
+    });
+
+    list.addEventListener("click", function (e) {
+        var item = e.target.closest(".add-ticker-suggestion");
+        if (!item || !item.dataset.symbol) {
+            return;
+        }
+        symbolField.value = item.dataset.symbol;
+        form.submit();
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!e.target.closest(".add-ticker-combo")) {
+            hide();
+        }
+    });
+
+    if (submitBtn) {
+        submitBtn.addEventListener("click", function () {
+            var value = input.value.trim();
+            if (!value) {
+                input.focus();
+                return;
+            }
+            symbolField.value = value.toUpperCase();
+            form.submit();
+        });
+    }
+
+    input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (submitBtn) {
+                submitBtn.click();
+            }
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     initHoverPreview();
     initScannerDashboard();
+    initCookieBanner();
+    initAddTickerSearch();
 });

@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Aviso legal &mdash; DSMarketScan{% endblock %}
-{% block meta_description %}DSMarketScan no ofrece asesoría financiera; el contenido es informativo y educativo.{% endblock %}
+{% block title %}{{ T.footer_disclaimer }} &mdash; DSMarketScan{% endblock %}
+{% block meta_description %}{{ T.disclaimer_meta_description }}{% endblock %}
 
 {% block content %}
     <article class="page-content">
-        <h1>Aviso legal / Disclaimer</h1>
+        <h1>{{ T.disclaimer_h1 }}</h1>
 
-        <h2>No es asesoría de inversión</h2>
-        <p>El contenido publicado en DSMarketScan &mdash; incluyendo los resultados del scanner, indicadores técnicos, noticias y artículos del blog &mdash; tiene fines exclusivamente informativos y educativos. Nada de lo publicado aquí constituye una recomendación de compra o venta, ni asesoría financiera, legal o fiscal personalizada.</p>
+        <h2>{{ T.disclaimer_h2_not_advice }}</h2>
+        <p>{{ T.disclaimer_not_advice_text }}</p>
 
-        <h2>Riesgo de pérdida</h2>
-        <p>Invertir en acciones y otros instrumentos financieros implica riesgo, incluida la posible pérdida total del capital invertido. El rendimiento pasado de un instrumento, indicador o estrategia no garantiza resultados futuros.</p>
+        <h2>{{ T.disclaimer_h2_risk }}</h2>
+        <p>{{ T.disclaimer_risk_text }}</p>
 
-        <h2>Sobre los datos e indicadores</h2>
-        <p>Los precios, volúmenes e indicadores (RSI, volumen relativo, rupturas de rango) provienen de fuentes de terceros (como Yahoo Finance vía la librería <code>yfinance</code>) y pueden tener retrasos, errores o interrupciones. No garantizamos su exactitud, integridad o disponibilidad en todo momento.</p>
+        <h2>{{ T.disclaimer_h2_data }}</h2>
+        <p>{{ T.disclaimer_data_text_prefix }} <code>yfinance</code>{{ T.disclaimer_data_text_suffix }}</p>
 
-        <h2>Consulta a un profesional</h2>
-        <p>Antes de tomar cualquier decisión financiera, consulta a un asesor de inversión registrado y autorizado en tu jurisdicción, que pueda evaluar tu situación particular.</p>
+        <h2>{{ T.disclaimer_h2_consult }}</h2>
+        <p>{{ T.disclaimer_consult_text }}</p>
 
-        <h2>Limitación de responsabilidad</h2>
-        <p>DSMarketScan y sus autores no se hacen responsables de pérdidas o daños derivados del uso de la información publicada en este sitio.</p>
+        <h2>{{ T.disclaimer_h2_liability }}</h2>
+        <p>{{ T.disclaimer_liability_text }}</p>
     </article>
 {% endblock %}

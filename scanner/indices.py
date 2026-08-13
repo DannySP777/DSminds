@@ -14,11 +14,11 @@ from django.core.cache import cache
 INDICES_TTL = 300
 
 INDEX_TICKERS = [
-    {"symbol": "^IXIC", "label": "Nasdaq"},
-    {"symbol": "^GSPC", "label": "S&P 500"},
-    {"symbol": "^DJI", "label": "Dow Jones"},
-    {"symbol": "GC=F", "label": "Oro"},
-    {"symbol": "CL=F", "label": "Petróleo"},
+    {"symbol": "^IXIC", "key": "nasdaq"},
+    {"symbol": "^GSPC", "key": "sp500"},
+    {"symbol": "^DJI", "key": "dow"},
+    {"symbol": "GC=F", "key": "gold"},
+    {"symbol": "CL=F", "key": "oil"},
 ]
 
 # Semáforo del cambio diario: escala -3% a +3%, con zona neutral entre
@@ -44,14 +44,14 @@ def _fetch_one(item: dict) -> dict:
         previous_close = fast_info["previousClose"]
         change_pct = round((price / previous_close - 1) * 100, 2) if previous_close else None
         return {
-            "label": item["label"],
+            "key": item["key"],
             "price": round(price, 2),
             "change_pct": change_pct,
             "gauge": _gauge(change_pct),
         }
     except Exception:
         return {
-            "label": item["label"],
+            "key": item["key"],
             "price": None,
             "change_pct": None,
             "gauge": _gauge(None),

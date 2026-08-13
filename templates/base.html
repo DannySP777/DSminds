@@ -1,11 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ LANG }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{% block meta_description %}Scanner diario de acciones, noticias de mercado y análisis técnico. Contenido informativo, no asesoría financiera.{% endblock %}">
     <title>{% block title %}DSMarketScan{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/logo.svg' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
     {% block extra_head %}{% endblock %}
 </head>
@@ -13,16 +14,23 @@
     <header class="site-header">
         <div class="container">
             <div class="header-brand">
-                <a href="/" class="logo">DSMarketScan</a>
+                <a href="/" class="logo">
+                    <img src="{% static 'img/logo.svg' %}" alt="DSMarketScan" class="logo__mark">
+                    <span class="logo__text">DSMarketScan</span>
+                </a>
                 {% block header_subtitle %}{% endblock %}
             </div>
             <nav class="main-nav">
-                <a href="/" class="main-nav__link{% if request.path == '/' or '/accion/' in request.path or '/buscar/' in request.path %} main-nav__link--active{% endif %}">Scanner</a>
-                <a href="/noticias/" class="main-nav__link{% if '/noticias' in request.path %} main-nav__link--active{% endif %}">Noticias</a>
-                <a href="/blog/" class="main-nav__link{% if '/blog' in request.path %} main-nav__link--active{% endif %}">Blog</a>
-                <a href="/acerca-de/" class="main-nav__link{% if '/acerca-de' in request.path %} main-nav__link--active{% endif %}">Acerca de</a>
-                <a href="/contacto/" class="main-nav__link{% if '/contacto' in request.path %} main-nav__link--active{% endif %}">Sugerencias</a>
+                <a href="/" class="main-nav__link{% if request.path == '/' or '/accion/' in request.path or '/buscar/' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_scanner }}</a>
+                <a href="/noticias/" class="main-nav__link{% if '/noticias' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_news }}</a>
+                <a href="/blog/" class="main-nav__link{% if '/blog' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_blog }}</a>
+                <a href="/acerca-de/" class="main-nav__link{% if '/acerca-de' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_about }}</a>
+                <a href="/contacto/" class="main-nav__link{% if '/contacto' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_suggestions }}</a>
             </nav>
+            <div class="lang-switch" aria-label="{{ T.lang_switch_label }}">
+                <a href="{% url 'set-language' 'es' %}" class="lang-switch__link{% if LANG == 'es' %} lang-switch__link--active{% endif %}">ES</a>
+                <a href="{% url 'set-language' 'en' %}" class="lang-switch__link{% if LANG == 'en' %} lang-switch__link--active{% endif %}">EN</a>
+            </div>
         </div>
     </header>
 
@@ -40,15 +48,25 @@
     <footer class="site-footer">
         <div class="container">
             <nav class="footer-nav">
-                <a href="/acerca-de/">Acerca de</a>
-                <a href="/contacto/">Contacto</a>
-                <a href="/privacidad/">Política de privacidad</a>
-                <a href="/disclaimer/">Aviso legal</a>
-                <a href="/terminos/">Términos de uso</a>
+                <a href="/acerca-de/">{{ T.footer_about }}</a>
+                <a href="/contacto/">{{ T.footer_contact }}</a>
+                <a href="/privacidad/">{{ T.footer_privacy }}</a>
+                <a href="/disclaimer/">{{ T.footer_disclaimer }}</a>
+                <a href="/terminos/">{{ T.footer_terms }}</a>
             </nav>
-            <p>&copy; {% now "Y" %} DSMarketScan. Contenido informativo con fines educativos &mdash; no constituye asesoría financiera. Ver <a href="/disclaimer/">aviso legal</a>.</p>
+            <p>&copy; {% now "Y" %} {{ T.footer_copyright_text }} <a href="/disclaimer/">{{ T.footer_disclaimer_link }}</a>.</p>
         </div>
     </footer>
+
+    <div id="cookie-banner" class="cookie-banner" hidden>
+        <div class="cookie-banner__text">
+            {{ T.cookie_text }} <a href="/privacidad/">{{ T.cookie_privacy_link }}</a>.
+        </div>
+        <div class="cookie-banner__actions">
+            <button type="button" id="cookie-decline" class="cookie-banner__btn cookie-banner__btn--ghost">{{ T.cookie_decline }}</button>
+            <button type="button" id="cookie-accept" class="cookie-banner__btn cookie-banner__btn--accent">{{ T.cookie_accept }}</button>
+        </div>
+    </div>
 
     <script src="{% static 'js/main.js' %}?v={% now 'U' %}"></script>
 </body>

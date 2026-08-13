@@ -10,6 +10,8 @@ calcula, para cada ticker:
 - Fuerza relativa (RS) vs. S&P 500: ¿le está ganando al mercado o solo
   sube porque el mercado entero sube?
 """
+from datetime import date
+
 import pandas as pd
 import yfinance as yf
 from ta.momentum import RSIIndicator
@@ -141,3 +143,48 @@ def _score(rsi, relative_volume, breakout, above_ma200, relative_strength) -> fl
         score += max(0, min(relative_strength, 10)) * 2
 
     return round(max(min(score, 100), 0), 2)
+
+
+def save_scan_results(symbols: list[str]) -> int:
+    """
+    Corre el scan sobre `symbols` y guarda un ScanResult por cada uno
+    para la fecha de hoy. Compartida entre el comando run_scan (universo
+    completo, programado) y la vista que agrega un ticker individual al
+    scanner (scanner/views.py:add_ticker) — misma lógica, un solo lugar.
+    """
+    from .fundamentals import get_fundamentals
+    from .models import ScanResult, Ticker
+
+    results = run_daily_scan(symbols)
+    today = date.today()
+
+    saved = 0
+    for r in results:
+        ticker, _ = Ticker.objects.get_or_create(symbol=r["symbol"])
+        fundamentals = get_fundamentals(r["symbol"], include_summary=False)
+        ScanResult.objects.update_or_create(
+            ticker=ticker,
+            date=today,
+            defaults={
+                "price": r["price"],
+                "rsi": r["rsi"],
+                "relative_volume": r["relative_volume"],
+                "breakout": r["breakout"],
+                "ma200": r["ma200"],
+                "above_ma200": r["above_ma200"],
+                "atr": r["atr"],
+                "stop_loss": r["stop_loss"],
+                "relative_strength": r["relative_strength"],
+                "target_price": fundamentals.get("target_mean_price"),
+                "market_cap": fundamentals.get("market_cap"),
+                "market_cap_display": fundamentals.get("market_cap_display") or "",
+                "trailing_pe": fundamentals.get("trailing_pe"),
+                "peg_ratio": fundamentals.get("peg_ratio"),
+                "debt_to_equity": fundamentals.get("debt_to_equity"),
+                "exchange": fundamentals.get("exchange") or "",
+                "score": r["score"],
+            },
+        )
+        saved += 1
+
+    return saved

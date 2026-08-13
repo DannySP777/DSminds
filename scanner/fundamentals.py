@@ -17,13 +17,24 @@ from django.core.cache import cache
 FUNDAMENTALS_TTL = 3600
 
 RECOMMENDATION_LABELS = {
-    "strong_buy": "Compra fuerte",
-    "strongbuy": "Compra fuerte",
-    "buy": "Compra",
-    "hold": "Mantener",
-    "underperform": "Bajo rendimiento",
-    "sell": "Venta",
-    "none": "Sin datos",
+    "es": {
+        "strong_buy": "Compra fuerte",
+        "strongbuy": "Compra fuerte",
+        "buy": "Compra",
+        "hold": "Mantener",
+        "underperform": "Bajo rendimiento",
+        "sell": "Venta",
+        "none": "Sin datos",
+    },
+    "en": {
+        "strong_buy": "Strong buy",
+        "strongbuy": "Strong buy",
+        "buy": "Buy",
+        "hold": "Hold",
+        "underperform": "Underperform",
+        "sell": "Sell",
+        "none": "No data",
+    },
 }
 RECOMMENDATION_TONE = {
     "strong_buy": "positive",
@@ -34,9 +45,39 @@ RECOMMENDATION_TONE = {
     "sell": "negative",
 }
 
+# yfinance siempre devuelve sector/industria y el resumen del negocio en
+# inglés (vienen tal cual de Yahoo Finance, no hay versión en español).
+# Traducimos los ~11 sectores GICS, que son un conjunto acotado y fijo;
+# la industria (cientos de valores posibles) se deja en inglés.
+SECTOR_LABELS = {
+    "es": {
+        "Technology": "Tecnología",
+        "Healthcare": "Salud",
+        "Financial Services": "Servicios financieros",
+        "Consumer Cyclical": "Consumo cíclico",
+        "Consumer Defensive": "Consumo defensivo",
+        "Industrials": "Industrial",
+        "Energy": "Energía",
+        "Utilities": "Servicios públicos",
+        "Real Estate": "Bienes raíces",
+        "Basic Materials": "Materiales básicos",
+        "Communication Services": "Servicios de comunicación",
+    },
+    "en": {},
+}
+BUSINESS_SUMMARY_MAX_LEN = 320
 
-def get_fundamentals(symbol: str) -> dict:
-    cache_key = f"scanner:fundamentals:{symbol}"
+
+def get_fundamentals(symbol: str, lang: str = "es", include_summary: bool = True) -> dict:
+    """
+    include_summary=False evita traducir la descripción del negocio
+    (llamada a Google Translate) cuando no hace falta — por ejemplo en
+    save_scan_results(), que solo necesita los números fundamentales
+    para cada uno de los ~60 tickers del scan diario y no debería
+    quedar a merced de la latencia/límites de un traductor externo.
+    """
+    lang = lang if lang in RECOMMENDATION_LABELS else "es"
+    cache_key = f"scanner:fundamentals:{symbol}:{lang}:{'full' if include_summary else 'nosummary'}"
     cached = cache.get(cache_key)
     if cached is not None:
         return cached
@@ -51,12 +92,21 @@ def get_fundamentals(symbol: str) -> dict:
     current_price = info.get("currentPrice") or info.get("regularMarketPrice")
     target_mean = info.get("targetMeanPrice")
 
+    sector_raw = info.get("sector") or ""
+
     result = {
         "has_data": bool(info),
         "current_price": current_price,
         "exchange": info.get("fullExchangeName") or info.get("exchange") or "",
+        "company_name": info.get("longName") or info.get("shortName") or symbol,
+        "sector": SECTOR_LABELS.get(lang, {}).get(sector_raw, sector_raw),
+        "industry": info.get("industry") or "",
+        "business_summary": (
+            _truncate_summary(_localize_summary(info.get("longBusinessSummary") or "", lang))
+            if include_summary else ""
+        ),
         "recommendation_key": recommendation_key or None,
-        "recommendation_label": RECOMMENDATION_LABELS.get(recommendation_key, "Sin datos"),
+        "recommendation_label": RECOMMENDATION_LABELS[lang].get(recommendation_key, RECOMMENDATION_LABELS[lang]["none"]),
         "recommendation_tone": RECOMMENDATION_TONE.get(recommendation_key, "unknown"),
         "recommendation_mean": _round(info.get("recommendationMean")),
         "num_analysts": info.get("numberOfAnalystOpinions"),
@@ -78,7 +128,7 @@ def get_fundamentals(symbol: str) -> dict:
         "dividend_yield_pct": _round(info.get("dividendYield")),
         "beta": _round(info.get("beta")),
     }
-    result["interpretations"] = _interpret(result)
+    result["interpretations"] = _interpret(result, lang)
     result["gauges"] = _build_gauges(result)
     result["analyst_breakdown"] = _get_recommendation_breakdown(ticker_obj)
 
@@ -173,9 +223,15 @@ def _build_gauge(spec: dict, value) -> dict:
     return {"level": level, "position": position, "zones": zones}
 
 
-def _interpret(data: dict) -> dict:
+def _interpret(data: dict, lang: str = "es") -> dict:
     """Lectura en lenguaje simple de cada indicador clave y cómo podría
     influir en el valor futuro de la acción."""
+    if lang == "en":
+        return _interpret_en(data)
+    return _interpret_es(data)
+
+
+def _interpret_es(data: dict) -> dict:
     texts = {}
 
     pe = data.get("trailing_pe")
@@ -235,6 +291,104 @@ def _interpret(data: dict) -> dict:
         texts["beta"] = "Más volátil que el mercado: mayor potencial de ganancia, pero también de pérdida."
 
     return texts
+
+
+def _interpret_en(data: dict) -> dict:
+    texts = {}
+
+    pe = data.get("trailing_pe")
+    if pe is None:
+        texts["trailing_pe"] = "Not enough data to calculate it (no recent earnings or data unavailable)."
+    elif pe < 15:
+        texts["trailing_pe"] = "Low: the market pays little for each dollar of earnings. Could be a value opportunity, or a sign the market expects little growth."
+    elif pe <= 25:
+        texts["trailing_pe"] = "In a reasonable range compared to the market's historical average (~20)."
+    else:
+        texts["trailing_pe"] = "High: the market is paying a premium, usually because it expects strong growth. If the company doesn't deliver, the price could correct sharply."
+
+    peg = data.get("peg_ratio")
+    if peg is None:
+        texts["peg_ratio"] = "Not enough data (requires future growth estimates)."
+    elif peg < 1:
+        texts["peg_ratio"] = "Below 1: the price could be cheap relative to how much its earnings are expected to grow."
+    elif peg <= 2:
+        texts["peg_ratio"] = "Between 1 and 2: the price is roughly aligned with expected growth."
+    else:
+        texts["peg_ratio"] = "Above 2: even accounting for expected growth, the price looks expensive."
+
+    dte = data.get("debt_to_equity")
+    if dte is None:
+        texts["debt_to_equity"] = "Not enough data."
+    elif dte < 50:
+        texts["debt_to_equity"] = "Low leverage: conservative balance sheet, less risk if interest rates rise."
+    elif dte <= 150:
+        texts["debt_to_equity"] = "Moderate leverage, normal in many industries."
+    else:
+        texts["debt_to_equity"] = "High leverage: more risk if the cost of debt rises or cash flow drops."
+
+    margin = data.get("profit_margin_pct")
+    if margin is None:
+        texts["profit_margin_pct"] = "Not enough data."
+    elif margin < 5:
+        texts["profit_margin_pct"] = "Low margin: the business has little cushion if costs rise."
+    elif margin <= 20:
+        texts["profit_margin_pct"] = "Healthy margin for most industries."
+    else:
+        texts["profit_margin_pct"] = "High margin: usually indicates a strong competitive advantage (brand, scale, technology)."
+
+    dividend = data.get("dividend_yield_pct")
+    if not dividend:
+        texts["dividend_yield_pct"] = "Doesn't pay dividends: reinvests earnings into growth instead of distributing them."
+    else:
+        texts["dividend_yield_pct"] = "Pays out a portion of its earnings as cash to shareholders on a recurring basis."
+
+    beta = data.get("beta")
+    if beta is None:
+        texts["beta"] = "Not enough data."
+    elif beta < 0.9:
+        texts["beta"] = "Less volatile than the overall market (S&P 500 = 1.0)."
+    elif beta <= 1.2:
+        texts["beta"] = "Moves similarly to the overall market."
+    else:
+        texts["beta"] = "More volatile than the market: higher potential gain, but also higher potential loss."
+
+    return texts
+
+
+def _localize_summary(text: str, lang: str) -> str:
+    """
+    yfinance solo trae el resumen del negocio (longBusinessSummary) en
+    inglés — no hay versión en español desde la fuente. Para lang="es"
+    lo traducimos con Google Translate (vía deep-translator, sin API
+    key). Si la traducción falla por cualquier motivo (sin internet,
+    servicio caído, texto vacío), se devuelve el original en inglés en
+    vez de romper la página — mejor mostrar la versión en inglés que
+    nada.
+    """
+    text = (text or "").strip()
+    if not text or lang != "es":
+        return text
+
+    try:
+        from deep_translator import GoogleTranslator
+
+        # GoogleTranslator (gratuito) tiene un límite de ~5000
+        # caracteres por llamada; longBusinessSummary nunca se acerca
+        # a eso, pero se recorta por seguridad antes de traducir.
+        translated = GoogleTranslator(source="en", target="es").translate(text[:4500])
+        return translated or text
+    except Exception as exc:
+        import logging
+        logging.getLogger("scanner").exception("Fallo al traducir business_summary: %s", exc)
+        return text
+
+
+def _truncate_summary(text: str, max_len: int = BUSINESS_SUMMARY_MAX_LEN) -> str:
+    text = (text or "").strip()
+    if len(text) <= max_len:
+        return text
+    truncated = text[:max_len].rsplit(" ", 1)[0]
+    return truncated + "…"
 
 
 def _round(value, digits: int = 2):

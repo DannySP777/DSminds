@@ -5,12 +5,22 @@ Contexto esperado: symbol, fundamentals.
 {% endcomment %}
 <h3 class="dashboard-chart-symbol">{{ symbol }}</h3>
 {% if fundamentals.has_data %}
+    <div class="company-blurb">
+        <p class="company-blurb__name">
+            {{ fundamentals.company_name }}
+            {% if fundamentals.sector or fundamentals.industry %}
+                <span class="company-blurb__tags">{{ fundamentals.sector }}{% if fundamentals.sector and fundamentals.industry %} &middot; {% endif %}{{ fundamentals.industry }}</span>
+            {% endif %}
+        </p>
+        <p class="company-blurb__summary">{{ fundamentals.business_summary|default:T.company_no_summary }}</p>
+    </div>
+
     <div class="analyst-summary">
         <span class="recommendation-badge recommendation-badge--{{ fundamentals.recommendation_tone }}">
             {{ fundamentals.recommendation_label }}
         </span>
         {% if fundamentals.recommendation_mean %}
-            <span class="news-meta">puntaje {{ fundamentals.recommendation_mean }}/5 (1 = compra fuerte, 5 = venta)</span>
+            <span class="news-meta">{{ T.fund_score }} {{ fundamentals.recommendation_mean }}/5 ({{ T.fund_score_scale }})</span>
         {% endif %}
     </div>
 
@@ -20,84 +30,84 @@ Contexto esperado: symbol, fundamentals.
                 <div class="analyst-donut" style="background: conic-gradient(var(--accent) 0% {{ fundamentals.analyst_breakdown.buy_stop }}%, #f5a623 {{ fundamentals.analyst_breakdown.buy_stop }}% {{ fundamentals.analyst_breakdown.hold_stop }}%, #e5484d {{ fundamentals.analyst_breakdown.hold_stop }}% 100%);"></div>
                 <div class="analyst-donut__center">
                     <span class="analyst-donut__total">{{ fundamentals.analyst_breakdown.total }}</span>
-                    <span class="analyst-donut__total-label">analistas</span>
+                    <span class="analyst-donut__total-label">{{ T.fund_analysts }}</span>
                 </div>
             </div>
             <ul class="analyst-legend">
-                <li><span class="legend-dot legend-dot--buy"></span>Compra <strong>{{ fundamentals.analyst_breakdown.buy }}</strong> <span class="news-meta">({{ fundamentals.analyst_breakdown.buy_pct }}%)</span></li>
-                <li><span class="legend-dot legend-dot--hold"></span>Mantener <strong>{{ fundamentals.analyst_breakdown.hold }}</strong> <span class="news-meta">({{ fundamentals.analyst_breakdown.hold_pct }}%)</span></li>
-                <li><span class="legend-dot legend-dot--sell"></span>Venta <strong>{{ fundamentals.analyst_breakdown.sell }}</strong> <span class="news-meta">({{ fundamentals.analyst_breakdown.sell_pct }}%)</span></li>
+                <li><span class="legend-dot legend-dot--buy"></span>{{ T.fund_buy }} <strong>{{ fundamentals.analyst_breakdown.buy }}</strong> <span class="news-meta">({{ fundamentals.analyst_breakdown.buy_pct }}%)</span></li>
+                <li><span class="legend-dot legend-dot--hold"></span>{{ T.fund_hold }} <strong>{{ fundamentals.analyst_breakdown.hold }}</strong> <span class="news-meta">({{ fundamentals.analyst_breakdown.hold_pct }}%)</span></li>
+                <li><span class="legend-dot legend-dot--sell"></span>{{ T.fund_sell }} <strong>{{ fundamentals.analyst_breakdown.sell }}</strong> <span class="news-meta">({{ fundamentals.analyst_breakdown.sell_pct }}%)</span></li>
             </ul>
         </div>
     {% else %}
-        <p class="empty-state">No hay desglose de analistas disponible para {{ symbol }}.</p>
+        <p class="empty-state">{{ T.fund_no_breakdown }} {{ symbol }}.</p>
     {% endif %}
 
     {% if fundamentals.target_mean_price %}
         <p class="scan-date">
-            Precio objetivo promedio: <strong>${{ fundamentals.target_mean_price }}</strong>
+            {{ T.fund_avg_target }} <strong>${{ fundamentals.target_mean_price }}</strong>
             {% if fundamentals.target_upside_pct != None %}
-                ({% if fundamentals.target_upside_pct >= 0 %}+{% endif %}{{ fundamentals.target_upside_pct }}% vs. precio actual)
+                ({% if fundamentals.target_upside_pct >= 0 %}+{% endif %}{{ fundamentals.target_upside_pct }}% {{ T.fund_vs_current_price }})
             {% endif %}
-            &middot; rango ${{ fundamentals.target_low_price }} &ndash; ${{ fundamentals.target_high_price }}
+            &middot; {{ T.fund_range }} ${{ fundamentals.target_low_price }} &ndash; ${{ fundamentals.target_high_price }}
         </p>
     {% endif %}
 
     <p class="gauge-legend">
-        <span><span class="gauge-dot gauge-dot--good"></span>Saludable</span>
-        <span><span class="gauge-dot gauge-dot--warning"></span>Moderado</span>
-        <span><span class="gauge-dot gauge-dot--bad"></span>Atención</span>
-        <span><span class="gauge-dot gauge-dot--unknown"></span>Sin dato</span>
+        <span><span class="gauge-dot gauge-dot--good"></span>{{ T.fund_healthy }}</span>
+        <span><span class="gauge-dot gauge-dot--warning"></span>{{ T.fund_moderate }}</span>
+        <span><span class="gauge-dot gauge-dot--bad"></span>{{ T.fund_attention }}</span>
+        <span><span class="gauge-dot gauge-dot--unknown"></span>{{ T.fund_no_data }}</span>
     </p>
     <div class="fundamentals-grid">
         <div class="fundamentals-item">
-            <span class="fundamentals-label">Market cap</span>
+            <span class="fundamentals-label">{{ T.fund_market_cap }}</span>
             <span class="fundamentals-value">{{ fundamentals.market_cap_display }}</span>
-            <p class="fundamentals-desc">Valor total de la empresa en bolsa (precio &times; acciones en circulación).</p>
+            <p class="fundamentals-desc">{{ T.fund_market_cap_desc }}</p>
         </div>
         <div class="fundamentals-item">
-            <span class="fundamentals-label">P/E (trailing)</span>
-            <span class="fundamentals-value">{{ fundamentals.trailing_pe|default:"N/D" }}</span>
+            <span class="fundamentals-label">{{ T.fund_pe_trailing }}</span>
+            <span class="fundamentals-value">{{ fundamentals.trailing_pe|default:T.fund_na }}</span>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.trailing_pe }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.trailing_pe %}
         </div>
         <div class="fundamentals-item">
-            <span class="fundamentals-label">P/E (forward)</span>
-            <span class="fundamentals-value">{{ fundamentals.forward_pe|default:"N/D" }}</span>
-            <p class="fundamentals-desc">Igual que el P/E, con utilidades estimadas a futuro.</p>
+            <span class="fundamentals-label">{{ T.fund_pe_forward }}</span>
+            <span class="fundamentals-value">{{ fundamentals.forward_pe|default:T.fund_na }}</span>
+            <p class="fundamentals-desc">{{ T.fund_pe_forward_desc }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.forward_pe %}
         </div>
         <div class="fundamentals-item">
             <span class="fundamentals-label">PEG</span>
-            <span class="fundamentals-value">{{ fundamentals.peg_ratio|default:"N/D" }}</span>
+            <span class="fundamentals-value">{{ fundamentals.peg_ratio|default:T.fund_na }}</span>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.peg_ratio }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.peg_ratio %}
         </div>
         <div class="fundamentals-item">
-            <span class="fundamentals-label">Deuda/Patrimonio</span>
-            <span class="fundamentals-value">{% if fundamentals.debt_to_equity != None %}{{ fundamentals.debt_to_equity }}%{% else %}N/D{% endif %}</span>
+            <span class="fundamentals-label">{{ T.fund_debt_equity }}</span>
+            <span class="fundamentals-value">{% if fundamentals.debt_to_equity != None %}{{ fundamentals.debt_to_equity }}%{% else %}{{ T.fund_na }}{% endif %}</span>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.debt_to_equity }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.debt_to_equity %}
         </div>
         <div class="fundamentals-item">
-            <span class="fundamentals-label">Margen neto</span>
-            <span class="fundamentals-value">{% if fundamentals.profit_margin_pct != None %}{{ fundamentals.profit_margin_pct }}%{% else %}N/D{% endif %}</span>
+            <span class="fundamentals-label">{{ T.fund_net_margin }}</span>
+            <span class="fundamentals-value">{% if fundamentals.profit_margin_pct != None %}{{ fundamentals.profit_margin_pct }}%{% else %}{{ T.fund_na }}{% endif %}</span>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.profit_margin_pct }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.profit_margin_pct %}
         </div>
         <div class="fundamentals-item">
-            <span class="fundamentals-label">Dividendo</span>
-            <span class="fundamentals-value">{% if fundamentals.dividend_yield_pct != None %}{{ fundamentals.dividend_yield_pct }}%{% else %}N/D{% endif %}</span>
+            <span class="fundamentals-label">{{ T.fund_dividend }}</span>
+            <span class="fundamentals-value">{% if fundamentals.dividend_yield_pct != None %}{{ fundamentals.dividend_yield_pct }}%{% else %}{{ T.fund_na }}{% endif %}</span>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.dividend_yield_pct }}</p>
         </div>
         <div class="fundamentals-item">
-            <span class="fundamentals-label">Beta (riesgo)</span>
-            <span class="fundamentals-value">{{ fundamentals.beta|default:"N/D" }}</span>
+            <span class="fundamentals-label">{{ T.fund_beta }}</span>
+            <span class="fundamentals-value">{{ fundamentals.beta|default:T.fund_na }}</span>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.beta }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.beta %}
         </div>
     </div>
-    <p class="disclaimer-note">Rangos generales de referencia, no varían por sector. Datos vía Yahoo Finance; pueden estar incompletos. No es asesoría de inversión.</p>
+    <p class="disclaimer-note">{{ T.fund_disclaimer }}</p>
 {% else %}
-    <p class="empty-state">No hay datos fundamentales disponibles para {{ symbol }} en este momento.</p>
+    <p class="empty-state">{{ T.fund_no_data_available }} {{ symbol }}.</p>
 {% endif %}

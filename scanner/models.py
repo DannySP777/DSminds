@@ -6,6 +6,12 @@ class Ticker(models.Model):
     name = models.CharField(max_length=120, blank=True)
     sector = models.CharField(max_length=80, blank=True)
     is_active = models.BooleanField(default=True)
+    # True para tickers agregados por un visitante desde el buscador del
+    # scanner (ver scanner/views.py:add_ticker) — se muestran siempre
+    # fijados arriba de la tabla, sin importar la fecha del scan diario
+    # por lotes ni los filtros activos.
+    added_manually = models.BooleanField(default=False)
+    added_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["symbol"]
@@ -42,3 +48,9 @@ class ScanResult(models.Model):
 
     def __str__(self):
         return f"{self.ticker.symbol} — {self.date}"
+
+    @property
+    def target_upside_pct(self):
+        if self.target_price and self.price:
+            return round(float(self.target_price) / float(self.price) * 100 - 100, 1)
+        return None

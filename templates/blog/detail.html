@@ -1,17 +1,18 @@
 {% extends "base.html" %}
+{% load dsms_extras %}
 
-{% block title %}{{ post.title }} &mdash; DSMarketScan{% endblock %}
-{% block meta_description %}{{ post.excerpt }}{% endblock %}
+{% block title %}{{ post|get_title:LANG }} &mdash; DSMarketScan{% endblock %}
+{% block meta_description %}{{ post|get_excerpt:LANG }}{% endblock %}
 
 {% block content %}
     <article class="post-detail">
-        <h1>{{ post.title }}</h1>
+        <h1>{{ post|get_title:LANG }}</h1>
         <p class="news-meta">{{ post.published_at|date:"d M Y" }}</p>
 
         {% include "partials/ad_slot.html" %}
 
         <div class="post-body">
-            {{ post.body|safe }}
+            {{ post|get_body:LANG|safe }}
         </div>
     </article>
 {% endblock %}

@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% load dsms_extras %}
 
-{% block title %}DSMarketScan &mdash; Scanner diario de acciones{% endblock %}
-{% block meta_description %}Scanner diario que identifica acciones con RSI en zona de impulso, volumen relativo alto y rupturas de rango. Contenido informativo, no asesoría financiera.{% endblock %}
+{% block title %}{{ T.home_title }}{% endblock %}
+{% block meta_description %}{{ T.home_meta_description }}{% endblock %}
 {% block body_class %}page-scanner{% endblock %}
 
 {% block header_subtitle %}
-    <span class="header-subtitle" title="Cada día revisamos un grupo de acciones y calculamos señales técnicas de corto plazo (RSI, volumen relativo, rupturas de rango) y de fondo (tendencia vs. su media de 200 días, fuerza relativa vs. el S&amp;P 500). Selecciona una acción en la tabla para ver su gráfica e indicadores.">Scanner diario de acciones</span>
+    <span class="header-subtitle" title="{{ T.header_subtitle_title }}">{{ T.header_subtitle_text }}</span>
 {% endblock %}
 
 {% block extra_head %}
@@ -13,74 +14,81 @@
 {% endblock %}
 
 {% block content %}
+    <p class="tool-disclaimer">
+        {{ T.tool_disclaimer_prefix }} <a href="/disclaimer/">{{ T.disclaimer_link_text }}</a>.
+    </p>
+
     {% include "partials/ad_slot.html" %}
 
-    <details class="advanced-filters"{% if filters_active %} open{% endif %}>
-        <summary>Filtros avanzados{% if filters_active %} <span class="filter-badge">activos</span>{% endif %}</summary>
+    <div class="add-ticker-widget">
+        <label for="add-ticker-input" class="add-ticker-label">{{ T.add_ticker_title }}</label>
+        <div class="add-ticker-row">
+            <div class="add-ticker-combo">
+                <input
+                    type="text"
+                    id="add-ticker-input"
+                    class="add-ticker-input"
+                    placeholder="{{ T.add_ticker_placeholder }}"
+                    autocomplete="off"
+                    aria-label="{{ T.add_ticker_label }}"
+                >
+                <ul
+                    id="add-ticker-suggestions"
+                    class="add-ticker-suggestions"
+                    hidden
+                    data-autocomplete-url="{% url 'ticker-autocomplete' %}"
+                    data-searching-text="{{ T.add_ticker_searching }}"
+                    data-no-results-text="{{ T.add_ticker_no_results }}"
+                ></ul>
+            </div>
+            <button type="button" id="add-ticker-submit" class="add-ticker-submit-btn">{{ T.add_ticker_button }}</button>
+        </div>
+        <form method="post" action="{% url 'add-ticker' %}" id="add-ticker-form">
+            {% csrf_token %}
+            <input type="hidden" name="symbol" id="add-ticker-symbol">
+        </form>
+    </div>
+
+    <details class="advanced-filters" id="filtros-avanzados"{% if filters_active %} open{% endif %}>
+        <summary>{{ T.filters_toggle }}{% if filters_active %} <span class="filter-badge">{{ T.filters_active_badge }}</span>{% endif %}</summary>
         <form method="get" class="filter-form">
             <fieldset>
-                <legend>Precio y bolsa</legend>
-                <label>Precio menor a
+                <legend>{{ T.filter_legend_price_market }}</legend>
+                <label>{{ T.filter_price_lt }}
                     <select name="price_lt">
-                        <option value="">Cualquiera</option>
+                        <option value="">{{ T.filter_any }}</option>
                         {% for amount in price_lt_options %}
                             <option value="{{ amount }}" {% if filters.price_lt == amount|stringformat:"i" %}selected{% endif %}>${{ amount }} USD</option>
                         {% endfor %}
                     </select>
                 </label>
-                <label>Bolsa
+                <label>{{ T.filter_exchange }}
                     <select name="exchange">
-                        <option value="">Cualquiera</option>
+                        <option value="">{{ T.filter_any }}</option>
                         {% for value, label in exchange_options %}
                             <option value="{{ value }}" {% if filters.exchange == value %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}
                     </select>
                 </label>
+                <label>{{ T.filter_rel_vol_min }} <input type="number" step="0.1" name="rel_vol_min" value="{{ filters.rel_vol_min }}" placeholder="ej: 1.5"></label>
             </fieldset>
 
             <fieldset>
-                <legend>Técnicos</legend>
-                <label>RSI mín. <input type="number" step="0.1" name="rsi_min" value="{{ filters.rsi_min }}" placeholder="0"></label>
-                <label>RSI máx. <input type="number" step="0.1" name="rsi_max" value="{{ filters.rsi_max }}" placeholder="100"></label>
-                <label>Vol. relativo mín. <input type="number" step="0.1" name="rel_vol_min" value="{{ filters.rel_vol_min }}" placeholder="ej: 1.5"></label>
-                <label>Ruptura de rango
-                    <select name="breakout">
-                        <option value="">Cualquiera</option>
-                        <option value="si" {% if filters.breakout == 'si' %}selected{% endif %}>Sí</option>
-                        <option value="no" {% if filters.breakout == 'no' %}selected{% endif %}>No</option>
-                    </select>
-                </label>
-                <label>Tendencia (MA200)
-                    <select name="tendencia">
-                        <option value="">Cualquiera</option>
-                        <option value="alcista" {% if filters.tendencia == 'alcista' %}selected{% endif %}>Alcista</option>
-                        <option value="bajista" {% if filters.tendencia == 'bajista' %}selected{% endif %}>Bajista</option>
-                    </select>
-                </label>
-                <label>RS vs S&amp;P 500 mín. (pp) <input type="number" step="0.1" name="rs_min" value="{{ filters.rs_min }}" placeholder="ej: 0"></label>
-            </fieldset>
-
-            <fieldset>
-                <legend>Objetivo y score</legend>
-                <label>Precio objetivo mín. (USD) <input type="number" step="0.01" name="target_min" value="{{ filters.target_min }}" placeholder="ej: 100"></label>
-                <label>Precio objetivo máx. (USD) <input type="number" step="0.01" name="target_max" value="{{ filters.target_max }}"></label>
-                <label>Score mín. <input type="number" step="1" name="score_min" value="{{ filters.score_min }}" placeholder="ej: 50"></label>
-            </fieldset>
-
-            <fieldset>
-                <legend>Fundamentales</legend>
-                <label>Market cap mín. (millones USD) <input type="number" step="1" name="cap_min" value="{{ filters.cap_min }}"></label>
-                <label>Market cap máx. (millones USD) <input type="number" step="1" name="cap_max" value="{{ filters.cap_max }}" placeholder="ej: 10"></label>
-                <label>P/E mín. <input type="number" step="0.1" name="pe_min" value="{{ filters.pe_min }}" placeholder="ej: 1"></label>
-                <label>P/E máx. <input type="number" step="0.1" name="pe_max" value="{{ filters.pe_max }}"></label>
-                <label>PEG mín. <input type="number" step="0.1" name="peg_min" value="{{ filters.peg_min }}"></label>
-                <label>PEG máx. <input type="number" step="0.1" name="peg_max" value="{{ filters.peg_max }}"></label>
-                <label>Deuda/Patrimonio máx. (%) <input type="number" step="1" name="debt_max" value="{{ filters.debt_max }}"></label>
+                <legend>{{ T.filter_legend_key_indicators }}</legend>
+                <label>{{ T.filter_score_min }} <input type="number" step="1" name="score_min" value="{{ filters.score_min }}" placeholder="ej: 50"></label>
+                <label>{{ T.filter_pe_min }} <input type="number" step="0.1" name="pe_min" value="{{ filters.pe_min }}" placeholder="ej: 1"></label>
+                <label>{{ T.filter_pe_max }} <input type="number" step="0.1" name="pe_max" value="{{ filters.pe_max }}"></label>
+                <label>{{ T.filter_peg_min }} <input type="number" step="0.1" name="peg_min" value="{{ filters.peg_min }}"></label>
+                <label>{{ T.filter_peg_max }} <input type="number" step="0.1" name="peg_max" value="{{ filters.peg_max }}"></label>
+                <label>{{ T.filter_cap_min }} <input type="number" step="1" name="cap_min" value="{{ filters.cap_min }}"></label>
+                <label>{{ T.filter_cap_max }} <input type="number" step="1" name="cap_max" value="{{ filters.cap_max }}" placeholder="ej: 10"></label>
+                <label>{{ T.filter_target_min }} <input type="number" step="0.01" name="target_min" value="{{ filters.target_min }}" placeholder="ej: 100"></label>
+                <label>{{ T.filter_target_max }} <input type="number" step="0.01" name="target_max" value="{{ filters.target_max }}"></label>
             </fieldset>
 
             <div class="filter-actions">
-                <button type="submit" class="price-filter__btn price-filter__btn--high">Aplicar filtros</button>
-                <a href="?" class="filter-clear">Limpiar filtros</a>
+                <button type="submit" class="price-filter__btn price-filter__btn--high">{{ T.filter_apply }}</button>
+                <a href="?" class="filter-clear">{{ T.filter_clear }}</a>
             </div>
         </form>
     </details>
@@ -88,72 +96,83 @@
     <div class="dashboard">
         <div class="dashboard-col dashboard-col--main">
             <section class="dashboard-panel dashboard-panel--table">
-                <header class="dashboard-panel__header"><h2>&#128202; Screening</h2></header>
+                <header class="dashboard-panel__header"><h2>&#128202; {{ T.panel_screening }}</h2></header>
                 <div class="dashboard-panel__body">
                     {% if resultados %}
-                        <p class="scan-date">{{ resultados|length }} acciones &middot; scan del {{ resultados.0.date }}</p>
+                        <p class="scan-date">
+                            {% if truncated %}
+                                {{ T.scan_top }} {{ resultados|length }} {{ T.scan_best_score_of }} {{ matched_count }} {% if filters_active %}{{ T.scan_matching_filters }}{% else %}{{ T.scan_analyzed }}{% endif %} &middot; {{ T.scan_from }} {{ resultados.0.date }}
+                            {% else %}
+                                {{ resultados|length }} {{ T.scan_stocks_word }} &middot; {{ T.scan_from }} {{ resultados.0.date }}
+                            {% endif %}
+                        </p>
+                        {% if truncated %}
+                            <p class="scan-note">{{ T.scan_note_prefix }} {{ default_result_limit }} {{ T.scan_note_mid_short }} <a href="?{{ show_all_qs }}">{{ T.scan_note_show_all_link }} ({{ matched_count }})</a></p>
+                        {% elif show_all and matched_count > default_result_limit %}
+                            <p class="scan-note"><a href="?{{ show_less_qs }}">{{ T.scan_note_show_less_link }}</a></p>
+                        {% endif %}
                         <div class="table-wrap table-wrap--hero">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th><span class="th-tip" data-tooltip="Selecciona una acción para ver su gráfica e indicadores.">Ver</span></th>
-                                        <th><span class="th-tip" data-tooltip="Símbolo de la acción en bolsa.">Ticker</span></th>
-                                        <th><span class="th-tip" data-tooltip="Puntaje 0-100 que combina RSI, volumen relativo, ruptura de rango, tendencia MA200 y fuerza relativa vs. el mercado.">Score</span></th>
-                                        <th><span class="th-tip" data-tooltip="Último precio de cierre.">Precio</span></th>
-                                        <th><span class="th-tip" data-tooltip="Índice de fuerza relativa (14 periodos). 50-70 = impulso; sobre 70 = sobrecompra; bajo 30 = sobreventa.">RSI</span></th>
-                                        <th><span class="th-tip" data-tooltip="Volumen de hoy vs. el promedio de los últimos 20 días. Más de 1x indica más interés del mercado.">Vol. relativo</span></th>
-                                        <th><span class="th-tip" data-tooltip="Si el precio de cierre superó el máximo de los últimos 20 periodos.">Ruptura</span></th>
-                                        <th><span class="th-tip" data-tooltip="Si el precio está por encima (alcista) o por debajo (bajista) de su media móvil de 200 días.">Tendencia (MA200)</span></th>
-                                        <th><span class="th-tip" data-tooltip="Rendimiento de ~3 meses de la acción menos el del S&P 500. Positivo = le está ganando al mercado.">RS vs S&amp;P 500</span></th>
-                                        <th><span class="th-tip" data-tooltip="Valor total de la empresa en bolsa (precio × acciones en circulación).">Market cap</span></th>
-                                        <th><span class="th-tip" data-tooltip="Precio sobre utilidad (PER). Cuánto paga el mercado por cada dólar de utilidad.">P/E</span></th>
-                                        <th><span class="th-tip" data-tooltip="P/E ajustado por crecimiento esperado. Por debajo de 1 puede indicar que está barata para su crecimiento.">PEG</span></th>
-                                        <th><span class="th-tip" data-tooltip="Deuda total sobre patrimonio. Más alto = más apalancamiento y riesgo.">Deuda/Patrim.</span></th>
-                                        <th><span class="th-tip" data-tooltip="Precio actual menos 1.5× el ATR(14): una referencia técnica de dónde limitar la pérdida, no una recomendación.">Stop sugerido</span></th>
-                                        <th><span class="th-tip" data-tooltip="Promedio de los precios objetivo publicados por los analistas que cubren la acción.">Precio objetivo</span></th>
-                                        <th><span class="th-tip" data-tooltip="Ver la gráfica de velas con RSI, volumen e indicadores.">Gráfica</span></th>
-                                        <th><span class="th-tip" data-tooltip="Ver noticias relacionadas con este ticker.">Noticias</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_ver }}">{{ T.th_ver }}</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_ticker }}">{{ T.th_ticker }}</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_score }}">{{ T.th_score }}</span></th>
+                                        <th class="th-price-current"><span class="th-tip" data-tooltip="{{ T.tip_price }}">{{ T.th_price }}</span></th>
+                                        <th class="th-price-target"><span class="th-tip" data-tooltip="{{ T.tip_target }}">{{ T.th_target }}</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_pe }}">{{ T.th_pe }}</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_peg }}">{{ T.th_peg }}</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_market_cap }}">{{ T.th_market_cap }}</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_volume }}">{{ T.th_volume }}</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_market }}">{{ T.th_market }}</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_chart }}">{{ T.th_chart }}</span></th>
+                                        <th><span class="th-tip" data-tooltip="{{ T.tip_news }}">{{ T.th_news }}</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for r in resultados %}
-                                    <tr class="scan-row{% if r.ticker.symbol == selected_symbol %} is-selected{% endif %}" data-symbol="{{ r.ticker.symbol }}">
+                                    <tr class="scan-row{% if r.ticker.symbol == selected_symbol %} is-selected{% endif %}{% if r.is_added_row %} scan-row--added{% endif %}" data-symbol="{{ r.ticker.symbol }}">
                                         <td class="scan-row__select-cell">
                                             <input
                                                 type="radio"
                                                 name="ticker-select"
                                                 class="ticker-select"
                                                 data-symbol="{{ r.ticker.symbol }}"
-                                                aria-label="Seleccionar {{ r.ticker.symbol }}"
+                                                aria-label="{{ T.th_ver }} {{ r.ticker.symbol }}"
                                                 {% if r.ticker.symbol == selected_symbol %}checked{% endif %}
                                             >
                                         </td>
-                                        <td><a href="/accion/{{ r.ticker.symbol }}/" class="ticker-link ticker-link--table" data-symbol="{{ r.ticker.symbol }}">{{ r.ticker.symbol }}</a></td>
+                                        <td>
+                                            <a href="/accion/{{ r.ticker.symbol }}/" class="ticker-link ticker-link--table" data-symbol="{{ r.ticker.symbol }}">{{ r.ticker.symbol }}</a>
+                                            {% if r.is_added_row %}
+                                                <span class="added-badge" title="{{ T.row_added_badge_title }}">{{ T.row_added_badge }}</span>
+                                                <form method="post" action="{% url 'remove-ticker' r.ticker.symbol %}" class="remove-ticker-form">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="remove-ticker-btn" title="{{ T.remove_ticker_title }}" aria-label="{{ T.remove_ticker_button }} {{ r.ticker.symbol }}">&times;</button>
+                                                </form>
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <span class="score-badge score-badge--lg {% if r.score >= 70 %}score-badge--strong{% elif r.score >= 40 %}score-badge--moderate{% else %}score-badge--weak{% endif %}">{{ r.score }}</span>
                                         </td>
-                                        <td>${{ r.price }}</td>
-                                        <td class="{% if r.rsi >= 70 %}rsi-overbought{% elif r.rsi <= 30 %}rsi-oversold{% endif %}">{{ r.rsi }}</td>
-                                        <td>{{ r.relative_volume }}x</td>
-                                        <td>{% if r.breakout %}Sí{% else %}No{% endif %}</td>
-                                        <td>
-                                            {% if r.ma200 %}
-                                                <span class="trend-badge{% if r.above_ma200 %} trend-badge--up{% else %} trend-badge--down{% endif %}">
-                                                    {% if r.above_ma200 %}&uarr; Alcista{% else %}&darr; Bajista{% endif %}
-                                                </span>
+                                        <td class="td-price-current">${{ r.price }}</td>
+                                        <td class="td-price-target">
+                                            {% if r.target_price %}
+                                                <span class="target-price-value">${{ r.target_price }}</span>
+                                                {% if r.target_upside_pct != None %}
+                                                    <span class="target-upside {% if r.target_upside_pct >= 0 %}target-upside--up{% else %}target-upside--down{% endif %}">{% if r.target_upside_pct >= 0 %}+{% endif %}{{ r.target_upside_pct }}%</span>
+                                                {% endif %}
                                             {% else %}
                                                 N/D
                                             {% endif %}
                                         </td>
-                                        <td>{% if r.relative_strength != None %}{{ r.relative_strength }}pp{% else %}N/D{% endif %}</td>
-                                        <td>{{ r.market_cap_display|default:"N/D" }}</td>
                                         <td>{{ r.trailing_pe|default:"N/D" }}</td>
                                         <td>{{ r.peg_ratio|default:"N/D" }}</td>
-                                        <td>{% if r.debt_to_equity != None %}{{ r.debt_to_equity }}%{% else %}N/D{% endif %}</td>
-                                        <td>{% if r.stop_loss %}${{ r.stop_loss }}{% else %}N/D{% endif %}</td>
-                                        <td>{% if r.target_price %}${{ r.target_price }}{% else %}N/D{% endif %}</td>
-                                        <td><a href="/accion/{{ r.ticker.symbol }}/">ver</a></td>
-                                        <td><a href="/noticias/?ticker={{ r.ticker.symbol }}">ver</a></td>
+                                        <td>{{ r.market_cap_display|default:"N/D" }}</td>
+                                        <td>{{ r.relative_volume }}x</td>
+                                        <td>{{ r.exchange|default:"N/D" }}</td>
+                                        <td><a href="/accion/{{ r.ticker.symbol }}/">{{ T.link_ver }}</a></td>
+                                        <td><a href="/noticias/?ticker={{ r.ticker.symbol }}">{{ T.link_ver }}</a></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -162,9 +181,9 @@
                     {% else %}
                         <p class="empty-state">
                             {% if filters_active %}
-                                Ningún resultado coincide con los filtros aplicados. Prueba ajustarlos o <a href="?">límpialos</a>.
+                                {{ T.empty_no_filter_match }} <a href="?">{{ T.empty_clear_link }}</a>.
                             {% else %}
-                                No hay resultados guardados todavía. Corre <code>python manage.py run_scan</code>.
+                                {{ T.empty_no_scan }} <code>python manage.py run_scan</code>.
                             {% endif %}
                         </p>
                     {% endif %}
@@ -172,12 +191,12 @@
             </section>
 
             <section class="dashboard-panel dashboard-panel--chart">
-                <header class="dashboard-panel__header"><h2>&#128200; Gráfica</h2></header>
+                <header class="dashboard-panel__header"><h2>&#128200; {{ T.panel_chart }}</h2></header>
                 <div class="dashboard-panel__body" id="chart-panel-body">
                     {% if selected_symbol %}
                         {% include "scanner/partials/chart_panel.html" with symbol=selected_symbol chart=selected_chart interval=selected_interval intervals=intervals %}
                     {% else %}
-                        <p class="empty-state">Selecciona una acción en la tabla para ver su gráfica.</p>
+                        <p class="empty-state">{{ T.select_stock_for_chart }}</p>
                     {% endif %}
                 </div>
             </section>
@@ -185,24 +204,24 @@
 
         <div class="dashboard-col dashboard-col--side">
             <section class="dashboard-panel dashboard-panel--indicators">
-                <header class="dashboard-panel__header"><h2>&#128269; Indicadores</h2></header>
+                <header class="dashboard-panel__header"><h2>&#128269; {{ T.panel_indicators }}</h2></header>
                 <div class="dashboard-panel__body" id="indicators-panel-body">
                     {% if selected_symbol %}
                         {% include "scanner/partials/indicators_panel.html" with symbol=selected_symbol fundamentals=selected_fundamentals %}
                     {% else %}
-                        <p class="empty-state">Selecciona una acción en la tabla para ver sus indicadores.</p>
+                        <p class="empty-state">{{ T.select_stock_for_indicators }}</p>
                     {% endif %}
                 </div>
             </section>
 
             <section class="dashboard-panel dashboard-panel--indices">
-                <header class="dashboard-panel__header"><h2>&#127760; Índices &amp; alertas</h2></header>
+                <header class="dashboard-panel__header"><h2>&#127760; {{ T.panel_indices }}</h2></header>
                 <div class="dashboard-panel__body">
                     <div class="index-gauge-list">
                         {% for idx in indices %}
                         <div class="index-gauge-item">
                             <div class="index-gauge-item__top">
-                                <span class="index-gauge-item__label">{{ idx.label }}</span>
+                                <span class="index-gauge-item__label">{{ T|dict_get:idx.key }}</span>
                                 <span class="gauge-dot gauge-dot--{{ idx.gauge.level }}"></span>
                             </div>
                             {% if idx.price %}
@@ -225,16 +244,15 @@
     </div>
 
     <section class="methodology">
-        <h2>Cómo funciona el score</h2>
+        <h2>{{ T.methodology_title }}</h2>
+        <p>{{ T.methodology_p1 }}</p>
         <ul>
-            <li><strong>RSI (14):</strong> se premia cuando está entre 50 y 70, la zona típica de impulso alcista sin estar todavía sobrecomprado.</li>
-            <li><strong>Volumen relativo:</strong> compara el volumen del día contra el promedio de los últimos 20 días; más volumen sugiere mayor interés del mercado.</li>
-            <li><strong>Ruptura de rango:</strong> si el precio de cierre supera el máximo de los últimos 20 días, se suma como señal de fuerza.</li>
-            <li><strong>Tendencia (MA200):</strong> si el precio está por encima de su media móvil de 200 días, filtra rebotes de corto plazo dentro de una tendencia bajista de fondo.</li>
-            <li><strong>RS vs. S&amp;P 500:</strong> compara el rendimiento de los últimos ~3 meses de la acción contra el S&amp;P 500. Positivo significa que le está ganando al mercado, no solo subiendo porque todo sube.</li>
-            <li><strong>Stop sugerido:</strong> precio actual menos 1.5&times; el ATR(14), una referencia de dónde limitar la pérdida según la volatilidad reciente &mdash; no es una recomendación, solo una referencia técnica.</li>
-            <li><strong>Precio objetivo:</strong> promedio de los precios objetivo que publican los analistas que cubren la acción (vía Yahoo Finance) &mdash; entra en más detalle, junto con la recomendación de consenso, en la página de cada acción.</li>
+            <li><strong>{{ T.methodology_pe_peg_label }}</strong> {{ T.methodology_pe_peg_text }} <a href="/blog/pe-peg-precio-accion-no-dice-nada/">{{ T.methodology_pe_peg_link }}</a>.</li>
+            <li><strong>{{ T.methodology_market_cap_label }}</strong> {{ T.methodology_market_cap_text }}</li>
+            <li><strong>{{ T.methodology_volume_label }}</strong> {{ T.methodology_volume_text }}</li>
+            <li><strong>{{ T.methodology_market_label }}</strong> {{ T.methodology_market_text }}</li>
+            <li><strong>{{ T.methodology_target_label }}</strong> {{ T.methodology_target_text }}</li>
         </ul>
-        <p class="disclaimer-note">Esta información es únicamente educativa. DSMarketScan no ofrece asesoría de inversión personalizada; lee nuestro <a href="/disclaimer/">aviso legal completo</a> antes de tomar decisiones.</p>
+        <p class="disclaimer-note">{{ T.methodology_disclaimer }} <a href="/disclaimer/">{{ T.disclaimer_link_text }}</a>.</p>
     </section>
 {% endblock %}
