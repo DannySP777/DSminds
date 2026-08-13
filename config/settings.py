@@ -12,22 +12,47 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+# Carga variables de .env (no versionado, ver .env.example) si existe.
+# En el servidor de producción, en vez de un .env, normalmente se
+# configuran estas mismas variables directamente en el panel del
+# hosting — load_dotenv() no falla si el archivo no existe.
+load_dotenv(BASE_DIR / '.env')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2n_8y@=)00zx9&kfz%f_56nmd!ej&z2%-f1_36)c-^rxn#xa5)'
+# El valor de abajo es solo un respaldo para que el sitio arranque en
+# un checkout nuevo sin .env configurado — en producción SIEMPRE debe
+# venir de la variable de entorno SECRET_KEY (ver .env.example).
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-2n_8y@=)00zx9&kfz%f_56nmd!ej&z2%-f1_36)c-^rxn#xa5)',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+# dsminds.com es el dominio real del sitio (DSMarketLearning). Se
+# mantienen también localhost/127.0.0.1 para seguir probando en local,
+# y ALLOWED_HOSTS se puede ampliar sin tocar código con la variable de
+# entorno del mismo nombre (lista separada por comas).
+ALLOWED_HOSTS = [
+    'dsminds.com',
+    'www.dsminds.com',
+    'localhost',
+    '127.0.0.1',
+] + [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://dsminds.com',
+    'https://www.dsminds.com',
+]
 
 
 # Application definition

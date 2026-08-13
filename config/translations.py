@@ -333,7 +333,6 @@ T = {
         # Contacto
         "contact_meta_description": "Envía tus sugerencias, comentarios o reporta errores del sitio DSMarketLearning.",
         "contact_intro": "¿Tienes dudas sobre el scanner, encontraste un error o quieres sugerir un ticker? Escríbenos por correo o deja tu comentario aquí abajo — lo revisamos nosotros, no se publica en el sitio.",
-        "contact_email_note": "Nota: esta dirección es un ejemplo — reemplázala por tu correo real antes de publicar el sitio.",
         "contact_h2_suggestions": "Sugerencias y comentarios",
         "contact_submit": "Enviar",
         "contact_privacy_note": "Tu mensaje se guarda de forma privada para que el equipo lo revise — no se publica ni se muestra a otros visitantes del sitio.",
@@ -679,7 +678,6 @@ T = {
         # Contact
         "contact_meta_description": "Send your suggestions, feedback, or report issues with the DSMarketLearning site.",
         "contact_intro": "Have questions about the scanner, found a bug, or want to suggest a ticker? Email us or leave your comment below — our team reviews it, it's not published on the site.",
-        "contact_email_note": "Note: this address is a placeholder — replace it with your real email before publishing the site.",
         "contact_h2_suggestions": "Suggestions and feedback",
         "contact_submit": "Submit",
         "contact_privacy_note": "Your message is stored privately for the team to review — it is not published or shown to other site visitors.",
