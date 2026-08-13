@@ -16,7 +16,7 @@ solo existe en español por ahora.
 T = {
     "es": {
         # Page title / meta
-        "home_title": "DSMarketScan — Scanner diario de acciones",
+        "home_title": "DSMarketLearning — Scanner diario de acciones",
         "home_meta_description": "Scanner diario que identifica acciones con RSI en zona de impulso, volumen relativo alto y rupturas de rango. Contenido informativo, no asesoría financiera.",
 
         # Nav / chrome
@@ -30,7 +30,7 @@ T = {
         "footer_privacy": "Política de privacidad",
         "footer_disclaimer": "Aviso legal",
         "footer_terms": "Términos de uso",
-        "footer_copyright_text": "DSMarketScan. Contenido informativo con fines educativos — no constituye asesoría financiera. Ver",
+        "footer_copyright_text": "DSMarketLearning. Contenido informativo con fines educativos — no constituye asesoría financiera. Ver",
         "footer_disclaimer_link": "aviso legal",
         "cookie_text": "Usamos cookies propias y de terceros (incluida publicidad de Google) para analizar el uso del sitio y mostrar anuncios personalizados. Puedes leer más en nuestra",
         "cookie_privacy_link": "política de privacidad",
@@ -125,7 +125,7 @@ T = {
         # Methodology
         "methodology_title": "Cómo funciona el score",
         "methodology_p1": (
-            "DSMarketScan diseñó una categorización de acciones definida por un "
+            "DSMarketLearning diseñó una categorización de acciones definida por un "
             "score que agrupa una decena de indicadores técnicos, lo que permite "
             "tener una idea rápida de qué acciones están en una posición "
             "potencialmente favorable. El score resume todas esas señales en un "
@@ -147,12 +147,12 @@ T = {
         "methodology_market_text": "la bolsa donde cotiza la acción (NASDAQ, NYSE, etc.).",
         "methodology_target_label": "Precio objetivo:",
         "methodology_target_text": "promedio de los precios objetivo que publican los analistas que cubren la acción — entra en más detalle, junto con la recomendación de consenso, en la página de cada acción.",
-        "methodology_disclaimer": "Esta información es únicamente educativa. DSMarketScan no ofrece asesoría de inversión personalizada; lee nuestro",
+        "methodology_disclaimer": "Esta información es únicamente educativa. DSMarketLearning no ofrece asesoría de inversión personalizada; lee nuestro",
 
         # About page
-        "about_title": "Acerca de DSMarketScan",
-        "about_intro": "Soy un ingeniero informático amante de las finanzas, con más de 5 años de experiencia siguiendo mercados financieros e invirtiendo por cuenta propia. DSMarketScan nace de juntar esas dos cosas: uso mis conocimientos de programación para construir herramientas de análisis técnico que yo mismo uso para investigar acciones, y decidí compartirlas abiertamente con fines educativos.",
-        "about_h2_what": "Qué es DSMarketScan",
+        "about_title": "Acerca de DSMarketLearning",
+        "about_intro": "Soy un ingeniero informático amante de las finanzas, con más de 5 años de experiencia siguiendo mercados financieros e invirtiendo por cuenta propia. DSMarketLearning nace de juntar esas dos cosas: uso mis conocimientos de programación para construir herramientas de análisis técnico que yo mismo uso para investigar acciones, y decidí compartirlas abiertamente con fines educativos.",
+        "about_h2_what": "Qué es DSMarketLearning",
         "about_what_text": "Es un scanner diario de acciones que calcula señales técnicas (RSI, volumen relativo, ruptura de rango, tendencia respecto a la media móvil de 200 días, fuerza relativa frente al S&P 500) y datos fundamentales (P/E, PEG, deuda/patrimonio, recomendaciones de analistas) para un grupo amplio de acciones de NYSE y NASDAQ. Todo se actualiza automáticamente cada día hábil. El sitio también incluye noticias de mercado, un calendario económico semanal y artículos educativos que explican cómo interpretar cada indicador.",
         "about_h2_methodology": "Metodología, de forma transparente",
         "about_methodology_text": "No hay caja negra: cada indicador que usa el scanner está documentado en la propia página de resultados y en el detalle de cada acción, incluyendo cómo se calcula el puntaje (score) y qué significa cada semáforo. Los datos de mercado provienen de Yahoo Finance a través de la librería pública yfinance; pueden tener errores, retrasos o estar incompletos, y lo dejo explícito donde corresponde.",
@@ -266,7 +266,7 @@ T = {
         "news_empty_suffix": "para traer las últimas de Yahoo Finance.",
 
         # Blog
-        "blog_meta_description": "Guías y análisis sobre indicadores técnicos, lectura de mercado y cómo usar el scanner de DSMarketScan.",
+        "blog_meta_description": "Guías y análisis sobre indicadores técnicos, lectura de mercado y cómo usar el scanner de DSMarketLearning.",
         "blog_intro": "Guías y análisis sobre indicadores técnicos y cómo interpretar los resultados del scanner.",
         "blog_empty": "Todavía no hay artículos publicados.",
 
@@ -278,9 +278,9 @@ T = {
 
         # Privacidad
         "privacy_title": "Política de privacidad",
-        "privacy_meta_description": "Cómo DSMarketScan recopila y usa datos, incluyendo cookies de publicidad de Google y terceros.",
+        "privacy_meta_description": "Cómo DSMarketLearning recopila y usa datos, incluyendo cookies de publicidad de Google y terceros.",
         "privacy_h2_data": "Qué datos recopilamos",
-        "privacy_data_p1": "DSMarketScan no requiere registro para navegar el sitio. Como cualquier sitio web, nuestro servidor y las herramientas de analítica que usemos pueden registrar automáticamente datos técnicos básicos: dirección IP, tipo de navegador, páginas visitadas y fecha/hora de la visita.",
+        "privacy_data_p1": "DSMarketLearning no requiere registro para navegar el sitio. Como cualquier sitio web, nuestro servidor y las herramientas de analítica que usemos pueden registrar automáticamente datos técnicos básicos: dirección IP, tipo de navegador, páginas visitadas y fecha/hora de la visita.",
         "privacy_data_p2_prefix": "Si usas el formulario de",
         "privacy_data_p2_link": "sugerencias y comentarios",
         "privacy_data_p2_suffix": ", guardamos el nombre y correo que ingreses (ambos opcionales) junto con tu mensaje, únicamente para que el equipo lo revise y pueda responderte si lo pediste. Estos mensajes son privados: no se publican ni se muestran a otros visitantes del sitio, y no se comparten con terceros.",
@@ -301,10 +301,10 @@ T = {
         "privacy_contact_prefix": "Si tienes preguntas sobre esta política, escríbenos desde la página de",
 
         # Disclaimer
-        "disclaimer_meta_description": "DSMarketScan no ofrece asesoría financiera; el contenido es informativo y educativo.",
+        "disclaimer_meta_description": "DSMarketLearning no ofrece asesoría financiera; el contenido es informativo y educativo.",
         "disclaimer_h1": "Aviso legal / Disclaimer",
         "disclaimer_h2_not_advice": "No es asesoría de inversión",
-        "disclaimer_not_advice_text": "El contenido publicado en DSMarketScan — incluyendo los resultados del scanner, indicadores técnicos, noticias y artículos del blog — tiene fines exclusivamente informativos y educativos. Nada de lo publicado aquí constituye una recomendación de compra o venta, ni asesoría financiera, legal o fiscal personalizada.",
+        "disclaimer_not_advice_text": "El contenido publicado en DSMarketLearning — incluyendo los resultados del scanner, indicadores técnicos, noticias y artículos del blog — tiene fines exclusivamente informativos y educativos. Nada de lo publicado aquí constituye una recomendación de compra o venta, ni asesoría financiera, legal o fiscal personalizada.",
         "disclaimer_h2_risk": "Riesgo de pérdida",
         "disclaimer_risk_text": "Invertir en acciones y otros instrumentos financieros implica riesgo, incluida la posible pérdida total del capital invertido. El rendimiento pasado de un instrumento, indicador o estrategia no garantiza resultados futuros.",
         "disclaimer_h2_data": "Sobre los datos e indicadores",
@@ -313,17 +313,17 @@ T = {
         "disclaimer_h2_consult": "Consulta a un profesional",
         "disclaimer_consult_text": "Antes de tomar cualquier decisión financiera, consulta a un asesor de inversión registrado y autorizado en tu jurisdicción, que pueda evaluar tu situación particular.",
         "disclaimer_h2_liability": "Limitación de responsabilidad",
-        "disclaimer_liability_text": "DSMarketScan y sus autores no se hacen responsables de pérdidas o daños derivados del uso de la información publicada en este sitio.",
+        "disclaimer_liability_text": "DSMarketLearning y sus autores no se hacen responsables de pérdidas o daños derivados del uso de la información publicada en este sitio.",
 
         # Términos
-        "terms_meta_description": "Condiciones de uso del sitio DSMarketScan.",
+        "terms_meta_description": "Condiciones de uso del sitio DSMarketLearning.",
         "terms_h2_acceptance": "Aceptación de los términos",
-        "terms_acceptance_prefix": "Al usar DSMarketScan aceptas estos términos de uso y nuestra",
+        "terms_acceptance_prefix": "Al usar DSMarketLearning aceptas estos términos de uso y nuestra",
         "terms_acceptance_suffix": ". Si no estás de acuerdo, por favor no uses el sitio.",
         "terms_h2_use": "Uso permitido",
         "terms_use_text": "Puedes navegar y consultar el contenido del sitio para uso personal y no comercial. No está permitido copiar, redistribuir o reutilizar el contenido con fines comerciales sin autorización previa.",
         "terms_h2_ip": "Propiedad intelectual",
-        "terms_ip_text": "El diseño, textos y código de DSMarketScan son propiedad de sus autores, salvo el contenido de terceros (datos de mercado, noticias) que pertenece a sus respectivos titulares.",
+        "terms_ip_text": "El diseño, textos y código de DSMarketLearning son propiedad de sus autores, salvo el contenido de terceros (datos de mercado, noticias) que pertenece a sus respectivos titulares.",
         "terms_h2_no_warranty": "Sin garantías",
         "terms_no_warranty_prefix": 'El sitio se ofrece "tal cual", sin garantías de disponibilidad continua, exactitud o ausencia de errores. Ver también nuestro',
         "terms_no_warranty_suffix": "sobre el contenido financiero.",
@@ -331,7 +331,7 @@ T = {
         "terms_changes_text": 'Podemos actualizar estos términos en cualquier momento; la fecha de "última actualización" reflejará el cambio más reciente.',
 
         # Contacto
-        "contact_meta_description": "Envía tus sugerencias, comentarios o reporta errores del sitio DSMarketScan.",
+        "contact_meta_description": "Envía tus sugerencias, comentarios o reporta errores del sitio DSMarketLearning.",
         "contact_intro": "¿Tienes dudas sobre el scanner, encontraste un error o quieres sugerir un ticker? Escríbenos por correo o deja tu comentario aquí abajo — lo revisamos nosotros, no se publica en el sitio.",
         "contact_email_note": "Nota: esta dirección es un ejemplo — reemplázala por tu correo real antes de publicar el sitio.",
         "contact_h2_suggestions": "Sugerencias y comentarios",
@@ -362,7 +362,7 @@ T = {
     },
     "en": {
         # Page title / meta
-        "home_title": "DSMarketScan — Daily stock scanner",
+        "home_title": "DSMarketLearning — Daily stock scanner",
         "home_meta_description": "Daily scanner that identifies stocks with RSI in momentum zone, high relative volume, and range breakouts. Informational content, not financial advice.",
 
         # Nav / chrome
@@ -376,7 +376,7 @@ T = {
         "footer_privacy": "Privacy policy",
         "footer_disclaimer": "Disclaimer",
         "footer_terms": "Terms of use",
-        "footer_copyright_text": "DSMarketScan. Informational content for educational purposes — not financial advice. See",
+        "footer_copyright_text": "DSMarketLearning. Informational content for educational purposes — not financial advice. See",
         "footer_disclaimer_link": "disclaimer",
         "cookie_text": "We use our own and third-party cookies (including Google advertising) to analyze site usage and show personalized ads. Read more in our",
         "cookie_privacy_link": "privacy policy",
@@ -471,7 +471,7 @@ T = {
         # Methodology
         "methodology_title": "How the score works",
         "methodology_p1": (
-            "DSMarketScan designed a stock categorization defined by a score "
+            "DSMarketLearning designed a stock categorization defined by a score "
             "that groups together about a dozen technical indicators, giving "
             "you a quick read on which stocks are in a potentially favorable "
             "position. The score summarizes all of those signals into a single "
@@ -493,12 +493,12 @@ T = {
         "methodology_market_text": "the exchange where the stock trades (NASDAQ, NYSE, etc.).",
         "methodology_target_label": "Target price:",
         "methodology_target_text": "average target price published by analysts covering the stock — see more detail, along with the consensus recommendation, on each stock's page.",
-        "methodology_disclaimer": "This information is for educational purposes only. DSMarketScan does not offer personalized investment advice; read our",
+        "methodology_disclaimer": "This information is for educational purposes only. DSMarketLearning does not offer personalized investment advice; read our",
 
         # About page
-        "about_title": "About DSMarketScan",
-        "about_intro": "I'm a software engineer who loves finance, with more than 5 years of experience following financial markets and investing on my own. DSMarketScan comes from combining those two things: I use my programming background to build technical analysis tools that I use myself to research stocks, and I decided to share them openly for educational purposes.",
-        "about_h2_what": "What DSMarketScan is",
+        "about_title": "About DSMarketLearning",
+        "about_intro": "I'm a software engineer who loves finance, with more than 5 years of experience following financial markets and investing on my own. DSMarketLearning comes from combining those two things: I use my programming background to build technical analysis tools that I use myself to research stocks, and I decided to share them openly for educational purposes.",
+        "about_h2_what": "What DSMarketLearning is",
         "about_what_text": "It's a daily stock scanner that calculates technical signals (RSI, relative volume, range breakout, trend vs. the 200-day moving average, relative strength vs. the S&P 500) and fundamental data (P/E, PEG, debt/equity, analyst recommendations) for a broad group of NYSE and NASDAQ stocks. Everything updates automatically every business day. The site also includes market news, a weekly economic calendar, and educational articles explaining how to read each indicator.",
         "about_h2_methodology": "Methodology, made transparent",
         "about_methodology_text": "There's no black box: every indicator the scanner uses is documented right on the results page and on each stock's detail page, including how the score is calculated and what each traffic-light color means. Market data comes from Yahoo Finance via the public yfinance library; it can have errors, delays, or be incomplete, and I say so explicitly where relevant.",
@@ -612,7 +612,7 @@ T = {
         "news_empty_suffix": "to fetch the latest from Yahoo Finance.",
 
         # Blog
-        "blog_meta_description": "Guides and analysis on technical indicators, reading the market, and how to use the DSMarketScan scanner.",
+        "blog_meta_description": "Guides and analysis on technical indicators, reading the market, and how to use the DSMarketLearning scanner.",
         "blog_intro": "Guides and analysis on technical indicators and how to interpret the scanner's results.",
         "blog_empty": "No articles published yet.",
 
@@ -624,9 +624,9 @@ T = {
 
         # Privacy
         "privacy_title": "Privacy policy",
-        "privacy_meta_description": "How DSMarketScan collects and uses data, including Google and third-party advertising cookies.",
+        "privacy_meta_description": "How DSMarketLearning collects and uses data, including Google and third-party advertising cookies.",
         "privacy_h2_data": "What data we collect",
-        "privacy_data_p1": "DSMarketScan doesn't require registration to browse the site. Like any website, our server and any analytics tools we use may automatically log basic technical data: IP address, browser type, pages visited, and date/time of the visit.",
+        "privacy_data_p1": "DSMarketLearning doesn't require registration to browse the site. Like any website, our server and any analytics tools we use may automatically log basic technical data: IP address, browser type, pages visited, and date/time of the visit.",
         "privacy_data_p2_prefix": "If you use the",
         "privacy_data_p2_link": "suggestions and feedback form",
         "privacy_data_p2_suffix": ", we store the name and email you enter (both optional) along with your message, solely so the team can review it and reply if you asked us to. These messages are private: they are not published or shown to other site visitors, and are not shared with third parties.",
@@ -647,10 +647,10 @@ T = {
         "privacy_contact_prefix": "If you have questions about this policy, write to us from the",
 
         # Disclaimer
-        "disclaimer_meta_description": "DSMarketScan does not offer financial advice; the content is informational and educational.",
+        "disclaimer_meta_description": "DSMarketLearning does not offer financial advice; the content is informational and educational.",
         "disclaimer_h1": "Legal notice / Disclaimer",
         "disclaimer_h2_not_advice": "Not investment advice",
-        "disclaimer_not_advice_text": "The content published on DSMarketScan — including scanner results, technical indicators, news, and blog articles — is for informational and educational purposes only. Nothing published here constitutes a recommendation to buy or sell, nor personalized financial, legal, or tax advice.",
+        "disclaimer_not_advice_text": "The content published on DSMarketLearning — including scanner results, technical indicators, news, and blog articles — is for informational and educational purposes only. Nothing published here constitutes a recommendation to buy or sell, nor personalized financial, legal, or tax advice.",
         "disclaimer_h2_risk": "Risk of loss",
         "disclaimer_risk_text": "Investing in stocks and other financial instruments carries risk, including possible total loss of the invested capital. Past performance of an instrument, indicator, or strategy does not guarantee future results.",
         "disclaimer_h2_data": "About the data and indicators",
@@ -659,17 +659,17 @@ T = {
         "disclaimer_h2_consult": "Consult a professional",
         "disclaimer_consult_text": "Before making any financial decision, consult a registered investment advisor authorized in your jurisdiction, who can evaluate your particular situation.",
         "disclaimer_h2_liability": "Limitation of liability",
-        "disclaimer_liability_text": "DSMarketScan and its authors are not liable for losses or damages arising from the use of the information published on this site.",
+        "disclaimer_liability_text": "DSMarketLearning and its authors are not liable for losses or damages arising from the use of the information published on this site.",
 
         # Terms
-        "terms_meta_description": "Terms of use for the DSMarketScan website.",
+        "terms_meta_description": "Terms of use for the DSMarketLearning website.",
         "terms_h2_acceptance": "Acceptance of terms",
-        "terms_acceptance_prefix": "By using DSMarketScan you accept these terms of use and our",
+        "terms_acceptance_prefix": "By using DSMarketLearning you accept these terms of use and our",
         "terms_acceptance_suffix": ". If you do not agree, please do not use the site.",
         "terms_h2_use": "Permitted use",
         "terms_use_text": "You may browse and view the site's content for personal, non-commercial use. Copying, redistributing, or reusing the content for commercial purposes without prior authorization is not permitted.",
         "terms_h2_ip": "Intellectual property",
-        "terms_ip_text": "DSMarketScan's design, text, and code are the property of its authors, except for third-party content (market data, news) which belongs to its respective owners.",
+        "terms_ip_text": "DSMarketLearning's design, text, and code are the property of its authors, except for third-party content (market data, news) which belongs to its respective owners.",
         "terms_h2_no_warranty": "No warranties",
         "terms_no_warranty_prefix": 'The site is provided "as is", with no guarantee of continuous availability, accuracy, or absence of errors. See also our',
         "terms_no_warranty_suffix": "regarding financial content.",
@@ -677,7 +677,7 @@ T = {
         "terms_changes_text": 'We may update these terms at any time; the "last updated" date will reflect the most recent change.',
 
         # Contact
-        "contact_meta_description": "Send your suggestions, feedback, or report issues with the DSMarketScan site.",
+        "contact_meta_description": "Send your suggestions, feedback, or report issues with the DSMarketLearning site.",
         "contact_intro": "Have questions about the scanner, found a bug, or want to suggest a ticker? Email us or leave your comment below — our team reviews it, it's not published on the site.",
         "contact_email_note": "Note: this address is a placeholder — replace it with your real email before publishing the site.",
         "contact_h2_suggestions": "Suggestions and feedback",

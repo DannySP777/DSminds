@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{% block meta_description %}Scanner diario de acciones, noticias de mercado y análisis técnico. Contenido informativo, no asesoría financiera.{% endblock %}">
-    <title>{% block title %}DSMarketScan{% endblock %}</title>
-    <link rel="icon" type="image/svg+xml" href="{% static 'img/logo.svg' %}">
+    <title>{% block title %}DSMarketLearning{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/logo-icon.png' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
     {% block extra_head %}{% endblock %}
 </head>
@@ -15,8 +15,8 @@
         <div class="container">
             <div class="header-brand">
                 <a href="/" class="logo">
-                    <img src="{% static 'img/logo.svg' %}" alt="DSMarketScan" class="logo__mark">
-                    <span class="logo__text">DSMarketScan</span>
+                    <img src="{% static 'img/logo-icon.png' %}" alt="DSMarketLearning" class="logo__mark">
+                    <span class="logo__text">DSMarketLearning</span>
                 </a>
                 {% block header_subtitle %}{% endblock %}
             </div>

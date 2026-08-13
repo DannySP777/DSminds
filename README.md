@@ -1,4 +1,4 @@
-# DSMarketScan
+# DSMarketLearning
 
 Scanner diario de acciones con potencial de inversión, noticias de mercado y gráficas — contenido informativo, no asesoría financiera.
 

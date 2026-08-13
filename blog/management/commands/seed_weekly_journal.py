@@ -2,7 +2,7 @@
 blog/management/commands/seed_weekly_journal.py
 
 Serie semanal en primera persona: experiencia real del autor aprendiendo
-a invertir y construyendo DSMarketScan. Es contenido editorial distinto
+a invertir y construyendo DSMarketLearning. Es contenido editorial distinto
 del catálogo de referencia técnica (seed_educational_posts) — aquí se
 comparte criterio y experiencia, no solo definiciones.
 
@@ -32,11 +32,11 @@ DISCLAIMER_EN = (
 
 JOURNAL_ENTRIES = [
     {
-        "title": "Diario del inversionista #1: por qué construí DSMarketScan",
+        "title": "Diario del inversionista #1: por qué construí DSMarketLearning",
         "slug": "diario-inversionista-1-por-que-construi-dsmarketscan",
         "excerpt": "Sin duda las tecnologías digitales permiten que el acceso a la bolsa de valores sea masivo. En mi experiencia, la curva de aprendizaje fue dura, con muchas pérdidas al inicio — y esa es exactamente la razón por la que construí este sitio.",
         "body": f"""
-<p>Empiezo esta serie semanal con algo que llevaba tiempo queriendo escribir: por qué existe DSMarketScan y qué espero que aporte a quien lo lea.</p>
+<p>Empiezo esta serie semanal con algo que llevaba tiempo queriendo escribir: por qué existe DSMarketLearning y qué espero que aporte a quien lo lea.</p>
 
 <h2>El acceso se volvió masivo</h2>
 <p>Sin duda las tecnologías digitales permiten que el acceso a la bolsa de valores sea masivo, colocando al alcance de todos la posibilidad de aprender y generar ingresos en el tiempo. Hace no tantos años, invertir era, en la práctica, algo reservado a quien tuviera un bróker de confianza, capital considerable, o trabajara cerca del mundo financiero. Hoy cualquier persona con un teléfono puede abrir una cuenta, comprar una fracción de una acción y tener acceso a datos de mercado que antes solo veían los profesionales.</p>
@@ -62,10 +62,10 @@ JOURNAL_ENTRIES = [
 
 {DISCLAIMER}
 """,
-        "title_en": "Investor journal #1: why I built DSMarketScan",
+        "title_en": "Investor journal #1: why I built DSMarketLearning",
         "excerpt_en": "Digital technology has undoubtedly made access to the stock market massive. In my experience, the learning curve was hard, with plenty of losses at the start — and that's exactly why I built this site.",
         "body_en": f"""
-<p>I'm starting this weekly series with something I'd been wanting to write for a while: why DSMarketScan exists and what I hope it brings to whoever reads it.</p>
+<p>I'm starting this weekly series with something I'd been wanting to write for a while: why DSMarketLearning exists and what I hope it brings to whoever reads it.</p>
 
 <h2>Access became massive</h2>
 <p>Digital technology has undoubtedly made access to the stock market massive, putting the chance to learn and generate income over time within everyone's reach. Not that many years ago, investing was, in practice, something reserved for people with a trusted broker, significant capital, or a job close to the financial world. Today anyone with a phone can open an account, buy a fraction of a share, and access market data that only professionals used to see.</p>

@@ -33,11 +33,11 @@ DISCLAIMER_EN = (
 
 ARTICLES = [
     {
-        "title": "Cómo usar el scanner de DSMarketScan: guía completa",
+        "title": "Cómo usar el scanner de DSMarketLearning: guía completa",
         "slug": "como-usar-el-scanner-dsmarketscan",
         "excerpt": "Un recorrido paso a paso por el dashboard: cómo leer la tabla de screening, seleccionar una acción y usar los filtros avanzados.",
         "body": f"""
-<p>El scanner de DSMarketScan es la herramienta central del sitio: cada día hábil revisa un grupo de acciones de NYSE y NASDAQ y calcula un conjunto de señales técnicas y fundamentales para ordenarlas de mayor a menor "score". Esta guía explica cómo sacarle provecho, sin asumir que ya sabes qué es cada indicador.</p>
+<p>El scanner de DSMarketLearning es la herramienta central del sitio: cada día hábil revisa un grupo de acciones de NYSE y NASDAQ y calcula un conjunto de señales técnicas y fundamentales para ordenarlas de mayor a menor "score". Esta guía explica cómo sacarle provecho, sin asumir que ya sabes qué es cada indicador.</p>
 
 <h2>La tabla de screening</h2>
 <p>Es el panel principal. Cada fila es una acción con su precio, RSI, volumen relativo, si rompió su rango de 20 periodos, su tendencia respecto a la media móvil de 200 días, fuerza relativa frente al S&amp;P 500, y datos fundamentales como market cap, P/E, PEG y deuda/patrimonio. El "score" (columna verde/naranja/roja) combina varias de estas señales en un solo número de 0 a 100 &mdash; entre más alto, más criterios técnicos favorables cumple la acción ese día. No es una nota de "qué tan buena es la empresa", es una nota de "qué tantas señales de impulso de corto plazo está mostrando hoy".</p>
@@ -53,10 +53,10 @@ ARTICLES = [
 
 {DISCLAIMER}
 """,
-        "title_en": "How to use the DSMarketScan scanner: full guide",
+        "title_en": "How to use the DSMarketLearning scanner: full guide",
         "excerpt_en": "A step-by-step walkthrough of the dashboard: how to read the screening table, select a stock, and use the advanced filters.",
         "body_en": f"""
-<p>The DSMarketScan scanner is the site's central tool: every business day it scans a group of NYSE and NASDAQ stocks and calculates a set of technical and fundamental signals to rank them from highest to lowest "score." This guide explains how to get the most out of it, without assuming you already know what each indicator is.</p>
+<p>The DSMarketLearning scanner is the site's central tool: every business day it scans a group of NYSE and NASDAQ stocks and calculates a set of technical and fundamental signals to rank them from highest to lowest "score." This guide explains how to get the most out of it, without assuming you already know what each indicator is.</p>
 
 <h2>The screening table</h2>
 <p>This is the main panel. Each row is a stock with its price, RSI, relative volume, whether it broke its 20-period range, its trend relative to the 200-day moving average, relative strength versus the S&amp;P 500, and fundamental data like market cap, P/E, PEG, and debt/equity. The "score" (green/orange/red column) combines several of these signals into a single number from 0 to 100 &mdash; the higher it is, the more favorable technical criteria the stock meets that day. It's not a grade for "how good the company is," it's a grade for "how many short-term momentum signals it's showing today."</p>
@@ -87,7 +87,7 @@ ARTICLES = [
 <ul>
 <li><strong>Sobre 70:</strong> zona de sobrecompra. El precio ha subido con fuerza y rapidez; no significa que vaya a caer de inmediato, pero sí que el "combustible" de corto plazo puede estar agotándose.</li>
 <li><strong>Bajo 30:</strong> zona de sobreventa. El precio ha caído con fuerza; puede ser una señal de rebote, o simplemente una tendencia bajista fuerte que sigue cayendo (el RSI puede quedarse "sobrevendido" por semanas en una caída seria).</li>
-<li><strong>Entre 50 y 70:</strong> la zona que el scanner de DSMarketScan pondera más en el score, porque suele indicar impulso alcista sano, sin estar todavía en el extremo de sobrecompra.</li>
+<li><strong>Entre 50 y 70:</strong> la zona que el scanner de DSMarketLearning pondera más en el score, porque suele indicar impulso alcista sano, sin estar todavía en el extremo de sobrecompra.</li>
 </ul>
 
 <h2>El error más común</h2>
@@ -107,7 +107,7 @@ ARTICLES = [
 <ul>
 <li><strong>Above 70:</strong> overbought zone. The price has risen strongly and quickly; it doesn't mean it will fall immediately, but the short-term "fuel" may be running low.</li>
 <li><strong>Below 30:</strong> oversold zone. The price has fallen sharply; it can be a sign of a bounce, or simply a strong downtrend that keeps falling (RSI can stay "oversold" for weeks in a serious decline).</li>
-<li><strong>Between 50 and 70:</strong> the zone the DSMarketScan scanner weighs most heavily in the score, because it usually signals healthy bullish momentum without yet being at the overbought extreme.</li>
+<li><strong>Between 50 and 70:</strong> the zone the DSMarketLearning scanner weighs most heavily in the score, because it usually signals healthy bullish momentum without yet being at the overbought extreme.</li>
 </ul>
 
 <h2>The most common mistake</h2>
@@ -130,7 +130,7 @@ ARTICLES = [
 <p>Una acción puede tener un RSI atractivo y volumen alto en un solo día, y aun así estar en una tendencia bajista de fondo &mdash; es decir, ser un rebote dentro de una caída, no el inicio de algo sostenible. Por eso en el score del scanner, estar por encima de la MA200 pesa 25 de 100 puntos: es el filtro que evita confundir "se movió mucho hoy" con "está en una tendencia alcista real".</p>
 
 <h2>Sus límites</h2>
-<p>La MA200 reacciona con retraso, por diseño: al promediar 200 días, tarda en reflejar cambios recientes. Eso significa que confirma tendencias ya establecidas, pero no anticipa giros. Tampoco dice nada sobre la calidad del negocio detrás de la acción &mdash; es un indicador puramente de precio. Por eso en DSMarketScan se combina con indicadores fundamentales (P/E, PEG, deuda) y no se usa solo.</p>
+<p>La MA200 reacciona con retraso, por diseño: al promediar 200 días, tarda en reflejar cambios recientes. Eso significa que confirma tendencias ya establecidas, pero no anticipa giros. Tampoco dice nada sobre la calidad del negocio detrás de la acción &mdash; es un indicador puramente de precio. Por eso en DSMarketLearning se combina con indicadores fundamentales (P/E, PEG, deuda) y no se usa solo.</p>
 
 {DISCLAIMER}
 """,
@@ -146,7 +146,7 @@ ARTICLES = [
 <p>A stock can have an attractive RSI and high volume on a single day and still be in an underlying downtrend &mdash; in other words, a bounce within a decline, not the start of something sustainable. That's why in the scanner's score, being above the MA200 is worth 25 of 100 points: it's the filter that prevents confusing "it moved a lot today" with "it's in a real uptrend."</p>
 
 <h2>Its limits</h2>
-<p>The MA200 reacts with a lag, by design: averaging 200 days means it takes time to reflect recent changes. That means it confirms trends already in place, but doesn't anticipate turns. It also says nothing about the quality of the business behind the stock &mdash; it's a purely price-based indicator. That's why DSMarketScan combines it with fundamental indicators (P/E, PEG, debt) rather than using it alone.</p>
+<p>The MA200 reacts with a lag, by design: averaging 200 days means it takes time to reflect recent changes. That means it confirms trends already in place, but doesn't anticipate turns. It also says nothing about the quality of the business behind the stock &mdash; it's a purely price-based indicator. That's why DSMarketLearning combines it with fundamental indicators (P/E, PEG, debt) rather than using it alone.</p>
 
 {DISCLAIMER_EN}
 """,
@@ -165,7 +165,7 @@ ARTICLES = [
 <h2>PEG: el P/E ajustado por crecimiento</h2>
 <p>El PEG divide el P/E entre la tasa de crecimiento esperado de utilidades. Es un intento de responder la pregunta que el P/E solo no responde: "¿este precio es razonable dado cuánto se espera que crezca la empresa?". Como referencia general (no una regla fija): un PEG por debajo de 1 puede sugerir que el precio está barato relativo a su crecimiento esperado; por encima de 2, que está caro incluso considerando ese crecimiento.</p>
 
-<h2>Por qué en DSMarketScan se muestran juntos, con semáforo</h2>
+<h2>Por qué en DSMarketLearning se muestran juntos, con semáforo</h2>
 <p>Ni el P/E ni el PEG tienen un "número correcto" universal &mdash; varían mucho por sector (una utility y una empresa de software casi nunca tienen el mismo P/E "normal"). Por eso en la página de cada acción se muestran con un medidor visual y una interpretación en texto, como referencia rápida y no como un veredicto absoluto.</p>
 
 {DISCLAIMER}
@@ -182,7 +182,7 @@ ARTICLES = [
 <h2>PEG: P/E adjusted for growth</h2>
 <p>PEG divides P/E by the expected earnings growth rate. It's an attempt to answer the question P/E alone can't: "is this price reasonable given how much the company is expected to grow?" As a general reference (not a fixed rule): a PEG below 1 can suggest the price is cheap relative to its expected growth; above 2, that it's expensive even accounting for that growth.</p>
 
-<h2>Why DSMarketScan shows them together, with a gauge</h2>
+<h2>Why DSMarketLearning shows them together, with a gauge</h2>
 <p>Neither P/E nor PEG has a universal "correct number" &mdash; they vary a lot by sector (a utility and a software company almost never share the same "normal" P/E). That's why each stock's page shows them with a visual gauge and a plain-language interpretation, as a quick reference rather than an absolute verdict.</p>
 
 {DISCLAIMER_EN}
@@ -242,7 +242,7 @@ ARTICLES = [
 <p>El ATR calcula el rango de movimiento promedio de una acción durante un periodo (normalmente 14 sesiones), considerando gaps entre el cierre de un día y la apertura del siguiente. En términos simples: cuánto se mueve esta acción en un día "normal". Una acción con ATR alto es más volátil día a día que una con ATR bajo, independientemente de su precio.</p>
 
 <h2>Por qué usarlo para el stop-loss en vez de un porcentaje fijo</h2>
-<p>Un error común es poner el stop-loss a un porcentaje fijo (por ejemplo, "siempre 5% abajo") sin importar la acción. El problema: una acción que normalmente se mueve 6-7% en un día cualquiera activaría ese stop por simple ruido, no porque la idea de inversión haya cambiado. El ATR permite ajustar el stop a la volatilidad real de cada acción: en DSMarketScan, el "stop sugerido" se calcula como el precio actual menos 1.5 veces el ATR de 14 periodos &mdash; una referencia que respira con el comportamiento normal de cada acción en particular.</p>
+<p>Un error común es poner el stop-loss a un porcentaje fijo (por ejemplo, "siempre 5% abajo") sin importar la acción. El problema: una acción que normalmente se mueve 6-7% en un día cualquiera activaría ese stop por simple ruido, no porque la idea de inversión haya cambiado. El ATR permite ajustar el stop a la volatilidad real de cada acción: en DSMarketLearning, el "stop sugerido" se calcula como el precio actual menos 1.5 veces el ATR de 14 periodos &mdash; una referencia que respira con el comportamiento normal de cada acción en particular.</p>
 
 <h2>Una referencia técnica, no una recomendación</h2>
 <p>Este cálculo es una herramienta de gestión de riesgo, no una predicción de hacia dónde va el precio. Sirve para responder de antemano la pregunta "¿en qué punto reconozco que estaba equivocado?", antes de que la emoción del momento haga esa decisión más difícil.</p>
@@ -258,7 +258,7 @@ ARTICLES = [
 <p>ATR calculates a stock's average trading range over a period (typically 14 sessions), accounting for gaps between one day's close and the next day's open. In simple terms: how much this stock moves on a "normal" day. A stock with a high ATR is more volatile day to day than one with a low ATR, regardless of its price.</p>
 
 <h2>Why use it for a stop-loss instead of a fixed percentage</h2>
-<p>A common mistake is setting the stop-loss at a fixed percentage (for example, "always 5% below") regardless of the stock. The problem: a stock that normally moves 6-7% on any given day would trigger that stop from simple noise, not because the investment thesis changed. ATR lets you adjust the stop to each stock's actual volatility: on DSMarketScan, the "suggested stop" is calculated as the current price minus 1.5 times the 14-period ATR &mdash; a reference that breathes with each particular stock's normal behavior.</p>
+<p>A common mistake is setting the stop-loss at a fixed percentage (for example, "always 5% below") regardless of the stock. The problem: a stock that normally moves 6-7% on any given day would trigger that stop from simple noise, not because the investment thesis changed. ATR lets you adjust the stop to each stock's actual volatility: on DSMarketLearning, the "suggested stop" is calculated as the current price minus 1.5 times the 14-period ATR &mdash; a reference that breathes with each particular stock's normal behavior.</p>
 
 <h2>A technical reference, not a recommendation</h2>
 <p>This calculation is a risk-management tool, not a prediction of where the price is headed. It helps answer, ahead of time, the question "at what point do I recognize I was wrong?" &mdash; before in-the-moment emotion makes that decision harder.</p>
@@ -274,7 +274,7 @@ ARTICLES = [
 <p>Es fácil alegrarse porque una acción "subió", pero esa cifra aislada puede ser engañosa. Si en el mismo periodo el mercado en general (el S&amp;P 500, por ejemplo) subió más, esa acción en realidad está rezagada &mdash; solo está subiendo porque casi todo sube quncuando el mercado está en tendencia alcista general.</p>
 
 <h2>Qué es la fuerza relativa (RS)</h2>
-<p>La fuerza relativa compara el rendimiento de una acción contra un índice de referencia durante el mismo periodo. En DSMarketScan se calcula como el rendimiento de ~3 meses de la acción, menos el rendimiento del S&amp;P 500 en ese mismo periodo, expresado en puntos porcentuales. Un RS de +8pp significa que la acción le ganó al mercado por 8 puntos porcentuales en ese periodo; un RS de -5pp significa que se quedó 5 puntos por debajo.</p>
+<p>La fuerza relativa compara el rendimiento de una acción contra un índice de referencia durante el mismo periodo. En DSMarketLearning se calcula como el rendimiento de ~3 meses de la acción, menos el rendimiento del S&amp;P 500 en ese mismo periodo, expresado en puntos porcentuales. Un RS de +8pp significa que la acción le ganó al mercado por 8 puntos porcentuales en ese periodo; un RS de -5pp significa que se quedó 5 puntos por debajo.</p>
 
 <h2>Por qué es una señal más honesta que "subió X%"</h2>
 <p>Durante un mercado alcista generalizado, casi todas las acciones suben, así que "subió" deja de ser información útil por sí sola. La fuerza relativa aísla qué parte de ese movimiento es específico de la acción y no simplemente el mercado arrastrándola. Las acciones con fuerza relativa positiva sostenida suelen ser las que atraen más interés institucional dentro de un sector o del mercado en general.</p>
@@ -290,7 +290,7 @@ ARTICLES = [
 <p>It's easy to be pleased that a stock "went up," but that number alone can be misleading. If, over the same period, the overall market (the S&amp;P 500, for example) rose more, that stock is actually lagging &mdash; it's only going up because almost everything goes up when the market is in a broad uptrend.</p>
 
 <h2>What relative strength (RS) is</h2>
-<p>Relative strength compares a stock's performance against a benchmark index over the same period. On DSMarketScan it's calculated as the stock's ~3-month return minus the S&amp;P 500's return over that same period, expressed in percentage points. An RS of +8pp means the stock beat the market by 8 percentage points over that period; an RS of -5pp means it fell 5 points short.</p>
+<p>Relative strength compares a stock's performance against a benchmark index over the same period. On DSMarketLearning it's calculated as the stock's ~3-month return minus the S&amp;P 500's return over that same period, expressed in percentage points. An RS of +8pp means the stock beat the market by 8 percentage points over that period; an RS of -5pp means it fell 5 points short.</p>
 
 <h2>Why it's a more honest signal than "it rose X%"</h2>
 <p>During a broad bull market, almost every stock rises, so "it went up" stops being useful information on its own. Relative strength isolates how much of that move is specific to the stock, rather than the market simply carrying it along. Stocks with sustained positive relative strength tend to be the ones attracting more institutional interest within a sector or the market as a whole.</p>
@@ -306,7 +306,7 @@ ARTICLES = [
         "slug": "rupturas-de-rango-corto-plazo",
         "excerpt": "Cuando el precio supera el máximo de varias sesiones anteriores, suele atraer atención y volumen adicional. Explicamos la lógica detrás de esta señal técnica clásica.",
         "body": f"""
-<p>Una "ruptura de rango" (breakout) ocurre cuando el precio de cierre de una acción supera el máximo alcanzado durante un periodo reciente &mdash; en el caso del scanner de DSMarketScan, los últimos 20 periodos. Es una de las señales técnicas más antiguas y estudiadas del análisis técnico.</p>
+<p>Una "ruptura de rango" (breakout) ocurre cuando el precio de cierre de una acción supera el máximo alcanzado durante un periodo reciente &mdash; en el caso del scanner de DSMarketLearning, los últimos 20 periodos. Es una de las señales técnicas más antiguas y estudiadas del análisis técnico.</p>
 
 <h2>La lógica detrás de la señal</h2>
 <p>Cuando una acción se mantiene "atrapada" dentro de un rango de precios por varias semanas, se acumulan órdenes de compra y venta alrededor de esos límites. Si el precio finalmente logra superar el techo de ese rango, dos cosas suelen pasar: los vendedores que estaban esperando ese nivel para vender ya lo hicieron (o se quedan esperando más arriba), y compradores que estaban al margen deciden entrar al ver la ruptura confirmada. Ese cambio de comportamiento puede generar un impulso de volumen y precio adicional.</p>
@@ -322,7 +322,7 @@ ARTICLES = [
         "title_en": "Range breakouts: what they are and why they draw short-term interest",
         "excerpt_en": "When the price clears the high of several previous sessions, it tends to attract extra attention and volume. We explain the logic behind this classic technical signal.",
         "body_en": f"""
-<p>A "range breakout" occurs when a stock's closing price exceeds the high reached over a recent period &mdash; in the case of the DSMarketScan scanner, the last 20 periods. It's one of the oldest and most studied technical signals in technical analysis.</p>
+<p>A "range breakout" occurs when a stock's closing price exceeds the high reached over a recent period &mdash; in the case of the DSMarketLearning scanner, the last 20 periods. It's one of the oldest and most studied technical signals in technical analysis.</p>
 
 <h2>The logic behind the signal</h2>
 <p>When a stock stays "trapped" inside a price range for several weeks, buy and sell orders pile up around those boundaries. If the price finally manages to clear the top of that range, two things tend to happen: sellers who were waiting for that level to sell have already done so (or are now waiting higher up), and buyers who were sitting on the sidelines decide to step in once they see the breakout confirmed. That shift in behavior can generate additional volume and price momentum.</p>
@@ -341,7 +341,7 @@ ARTICLES = [
         "slug": "recomendacion-consenso-analistas-limites",
         "excerpt": "Cuando 40 analistas cubren una acción, casi nunca opinan lo mismo. Explicamos cómo se construye el consenso y por qué no debería ser tu única fuente de decisión.",
         "body": f"""
-<p>Las acciones grandes suelen tener docenas de analistas de distintos bancos y casas de inversión que las cubren de forma continua, publicando recomendaciones de compra, mantener o venta, junto con un precio objetivo. En DSMarketScan agregamos esa información en un formato visual (gráfica de dona) para cada acción.</p>
+<p>Las acciones grandes suelen tener docenas de analistas de distintos bancos y casas de inversión que las cubren de forma continua, publicando recomendaciones de compra, mantener o venta, junto con un precio objetivo. En DSMarketLearning agregamos esa información en un formato visual (gráfica de dona) para cada acción.</p>
 
 <h2>Cómo se construye el consenso</h2>
 <p>Cada analista clasifica su recomendación en una escala que va de "compra fuerte" a "venta fuerte". El consenso que se muestra agrupa esas opiniones en tres categorías &mdash; compra, mantener, venta &mdash; y muestra cuántos analistas están en cada una, además de un puntaje promedio (donde 1 es compra fuerte y 5 es venta).</p>
@@ -357,7 +357,7 @@ ARTICLES = [
         "title_en": "How to read the analyst consensus recommendation (and its limits)",
         "excerpt_en": "When 40 analysts cover a stock, they almost never agree. We explain how the consensus is built and why it shouldn't be your only source for a decision.",
         "body_en": f"""
-<p>Large-cap stocks usually have dozens of analysts from different banks and investment firms covering them continuously, publishing buy, hold, or sell recommendations along with a target price. On DSMarketScan we aggregate that information into a visual format (a donut chart) for each stock.</p>
+<p>Large-cap stocks usually have dozens of analysts from different banks and investment firms covering them continuously, publishing buy, hold, or sell recommendations along with a target price. On DSMarketLearning we aggregate that information into a visual format (a donut chart) for each stock.</p>
 
 <h2>How the consensus is built</h2>
 <p>Each analyst rates their recommendation on a scale that runs from "strong buy" to "strong sell." The consensus shown groups those opinions into three categories &mdash; buy, hold, sell &mdash; and shows how many analysts fall into each, plus an average score (where 1 is strong buy and 5 is sell).</p>
@@ -497,7 +497,7 @@ ARTICLES = [
         "slug": "calendario-economico-cpi-ppi",
         "excerpt": "Ciertos datos macroeconómicos, como la inflación (CPI) o los precios al productor (PPI), pueden mover el mercado completo en minutos. Así funciona el calendario económico.",
         "body": f"""
-<p>Más allá de las noticias específicas de cada empresa, hay datos macroeconómicos que se publican en fechas programadas y que pueden mover el mercado completo &mdash; no solo una acción o un sector &mdash; en cuestión de minutos. El calendario económico de DSMarketScan reúne los eventos de impacto medio y alto para la semana.</p>
+<p>Más allá de las noticias específicas de cada empresa, hay datos macroeconómicos que se publican en fechas programadas y que pueden mover el mercado completo &mdash; no solo una acción o un sector &mdash; en cuestión de minutos. El calendario económico de DSMarketLearning reúne los eventos de impacto medio y alto para la semana.</p>
 
 <h2>CPI: el índice de precios al consumidor</h2>
 <p>Mide cuánto han subido los precios que pagan los consumidores por bienes y servicios &mdash; es la medida de inflación más seguida. Cuando el CPI sale más alto de lo esperado, suele generar preocupación de que la Reserva Federal mantenga o suba las tasas de interés por más tiempo, lo que típicamente presiona a la baja tanto a acciones como a bonos. Cuando sale más bajo de lo esperado, suele generar el efecto contrario.</p>
@@ -513,7 +513,7 @@ ARTICLES = [
         "title_en": "The economic calendar: why CPI and PPI move the market",
         "excerpt_en": "Certain macroeconomic data, like inflation (CPI) or producer prices (PPI), can move the entire market in minutes. Here's how the economic calendar works.",
         "body_en": f"""
-<p>Beyond company-specific news, there's macroeconomic data released on scheduled dates that can move the entire market &mdash; not just one stock or one sector &mdash; within minutes. DSMarketScan's economic calendar gathers the medium- and high-impact events for the week.</p>
+<p>Beyond company-specific news, there's macroeconomic data released on scheduled dates that can move the entire market &mdash; not just one stock or one sector &mdash; within minutes. DSMarketLearning's economic calendar gathers the medium- and high-impact events for the week.</p>
 
 <h2>CPI: the Consumer Price Index</h2>
 <p>Measures how much prices consumers pay for goods and services have risen &mdash; it's the most closely followed inflation gauge. When CPI comes in higher than expected, it usually raises concern that the Federal Reserve will hold or raise interest rates for longer, which typically pressures both stocks and bonds lower. When it comes in lower than expected, it usually has the opposite effect.</p>
@@ -614,7 +614,7 @@ ARTICLES = [
 <p>El "cuerpo" de la vela representa la distancia entre el precio de apertura y el de cierre de ese periodo. Las líneas finas que sobresalen por arriba y por abajo (las "mechas" o "sombras") muestran el máximo y el mínimo alcanzados durante ese mismo periodo, aunque el precio no haya cerrado ahí.</p>
 
 <h2>Por qué el color importa</h2>
-<p>En DSMarketScan, como en la mayoría de las plataformas, una vela verde significa que el precio cerró por encima de donde abrió en ese periodo (presión compradora neta); una vela roja significa que cerró por debajo de donde abrió (presión vendedora neta). Ver varias velas verdes seguidas con cuerpos grandes suele indicar impulso comprador sostenido; varias rojas seguidas, lo contrario.</p>
+<p>En DSMarketLearning, como en la mayoría de las plataformas, una vela verde significa que el precio cerró por encima de donde abrió en ese periodo (presión compradora neta); una vela roja significa que cerró por debajo de donde abrió (presión vendedora neta). Ver varias velas verdes seguidas con cuerpos grandes suele indicar impulso comprador sostenido; varias rojas seguidas, lo contrario.</p>
 
 <h2>El periodo cambia la historia que cuenta cada vela</h2>
 <p>Una vela diaria resume lo que pasó en un día completo de trading; una vela semanal resume una semana entera; una de 5 minutos resume solo esos 5 minutos. Por eso el scanner permite cambiar el periodo de la gráfica &mdash; de 1 minuto a mensual &mdash; según qué estés analizando: movimientos intradía muy específicos, o la tendencia de fondo de meses.</p>
@@ -633,7 +633,7 @@ ARTICLES = [
 <p>The candle's "body" represents the distance between that period's opening and closing price. The thin lines sticking out above and below (the "wicks" or "shadows") show the high and low reached during that same period, even if the price didn't close there.</p>
 
 <h2>Why color matters</h2>
-<p>On DSMarketScan, as on most platforms, a green candle means the price closed above where it opened that period (net buying pressure); a red candle means it closed below where it opened (net selling pressure). Seeing several green candles in a row with large bodies usually indicates sustained buying momentum; several red ones in a row, the opposite.</p>
+<p>On DSMarketLearning, as on most platforms, a green candle means the price closed above where it opened that period (net buying pressure); a red candle means it closed below where it opened (net selling pressure). Seeing several green candles in a row with large bodies usually indicates sustained buying momentum; several red ones in a row, the opposite.</p>
 
 <h2>The period changes the story each candle tells</h2>
 <p>A daily candle summarizes what happened over one full trading day; a weekly candle summarizes an entire week; a 5-minute candle summarizes just those 5 minutes. That's why the scanner lets you change the chart's period &mdash; from 1 minute to monthly &mdash; depending on what you're analyzing: very specific intraday moves, or the underlying trend over months.</p>
@@ -649,7 +649,7 @@ ARTICLES = [
         "slug": "nyse-vs-nasdaq-diferencias",
         "excerpt": "Ambas son bolsas de Estados Unidos, pero no son intercambiables: difieren en cómo operan, qué tipo de empresas suelen listar, y eso se refleja en el filtro de bolsa del scanner.",
         "body": f"""
-<p>NYSE (New York Stock Exchange) y NASDAQ son las dos bolsas de valores más grandes de Estados Unidos, y juntas cotizan la gran mayoría de las acciones que sigue el scanner de DSMarketScan. Aunque para un inversionista individual comprar una acción en una u otra se siente igual, hay diferencias reales detrás.</p>
+<p>NYSE (New York Stock Exchange) y NASDAQ son las dos bolsas de valores más grandes de Estados Unidos, y juntas cotizan la gran mayoría de las acciones que sigue el scanner de DSMarketLearning. Aunque para un inversionista individual comprar una acción en una u otra se siente igual, hay diferencias reales detrás.</p>
 
 <h2>Cómo operan</h2>
 <p>El NYSE tradicionalmente combina un sistema electrónico con "market makers" humanos (especialistas) que ayudan a gestionar la oferta y demanda de acciones específicas. NASDAQ, en cambio, es una bolsa completamente electrónica desde su creación, sin piso de operaciones físico, donde múltiples market makers compiten electrónicamente por cada acción.</p>
@@ -668,7 +668,7 @@ ARTICLES = [
         "title_en": "NYSE vs. NASDAQ: differences that actually matter",
         "excerpt_en": "Both are U.S. exchanges, but they're not interchangeable: they differ in how they operate and what kind of companies tend to list, and that's reflected in the scanner's exchange filter.",
         "body_en": f"""
-<p>NYSE (New York Stock Exchange) and NASDAQ are the two largest stock exchanges in the United States, and together they list the vast majority of the stocks tracked by the DSMarketScan scanner. Although buying a stock on one or the other feels the same for an individual investor, there are real differences behind the scenes.</p>
+<p>NYSE (New York Stock Exchange) and NASDAQ are the two largest stock exchanges in the United States, and together they list the vast majority of the stocks tracked by the DSMarketLearning scanner. Although buying a stock on one or the other feels the same for an individual investor, there are real differences behind the scenes.</p>
 
 <h2>How they operate</h2>
 <p>The NYSE traditionally combines an electronic system with human "market makers" (specialists) who help manage supply and demand for specific stocks. NASDAQ, by contrast, has been a fully electronic exchange since its founding, with no physical trading floor, where multiple market makers compete electronically for each stock.</p>
