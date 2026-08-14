@@ -13,8 +13,9 @@ class TickerAdmin(admin.ModelAdmin):
 class ScanResultAdmin(admin.ModelAdmin):
     list_display = (
         "ticker", "date", "price", "rsi", "relative_volume", "breakout",
-        "above_ma200", "atr", "relative_strength", "target_price",
-        "market_cap_display", "trailing_pe", "peg_ratio", "debt_to_equity", "exchange", "score",
+        "above_ma200", "atr", "relative_strength", "macd_bullish", "current_ratio",
+        "target_price", "target_upside_pct", "market_cap_display", "trailing_pe",
+        "peg_ratio", "debt_to_equity", "exchange", "score",
     )
-    list_filter = ("date", "breakout", "above_ma200", "exchange")
+    list_filter = ("date", "breakout", "above_ma200", "macd_bullish", "exchange")
     search_fields = ("ticker__symbol",)

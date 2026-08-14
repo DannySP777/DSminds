@@ -50,7 +50,7 @@ T = {
         "filters_toggle": "Filtros avanzados",
         "filters_active_badge": "activos",
         "filter_legend_price_market": "Precio y mercado",
-        "filter_price_lt": "Precio menor a",
+        "filter_price": "Precio",
         "filter_any": "Cualquiera",
         "filter_exchange": "Bolsa",
         "filter_rel_vol_min": "Volumen relativo mín.",
@@ -125,17 +125,25 @@ T = {
         # Methodology
         "methodology_title": "Cómo funciona el score",
         "methodology_p1": (
-            "DSMarketLearning diseñó una categorización de acciones definida por un "
-            "score que agrupa una decena de indicadores técnicos, lo que permite "
-            "tener una idea rápida de qué acciones están en una posición "
-            "potencialmente favorable. El score resume todas esas señales en un "
-            "solo número de 0 a 100, calculado a partir de señales de corto plazo "
-            "(RSI, volumen relativo, ruptura de rango) y de fondo (tendencia "
-            "respecto a su media de 200 días, fuerza relativa frente al S&P 500). "
-            "Si quieres ver el detalle completo de cada una de esas señales para "
-            'una acción en particular, entra a su página individual desde la '
-            'columna "Gráfica".'
+            "El score de DSMarketLearning es un número de 0 a 100 que prioriza "
+            "cinco criterios de oportunidad: que el precio objetivo promedio de "
+            "los analistas esté un 25% o más por encima del precio actual, que "
+            "el RSI esté en zona de compra, que el MACD diario confirme una "
+            "tendencia alcista, que la empresa no esté sobreendeudada y que "
+            "tenga liquidez suficiente. Esos cinco criterios pesan el 70% del "
+            "score; el 30% restante lo completan señales técnicas "
+            "complementarias (tendencia respecto a su media de 200 días, "
+            "fuerza relativa frente al S&P 500, ruptura de rango y volumen "
+            "relativo). Si quieres ver el detalle completo de cada una de esas "
+            'señales para una acción en particular, entra a su página '
+            'individual desde la columna "Gráfica".'
         ),
+        "methodology_target_label": "Precio objetivo (25% o más de upside):",
+        "methodology_target_text": "cuánto más arriba está el precio objetivo promedio de los analistas frente al precio actual — a partir de +25% de upside obtiene la puntuación máxima en este criterio del score.",
+        "methodology_rsi_macd_label": "RSI y MACD en zona de compra:",
+        "methodology_rsi_macd_text": "RSI por debajo de 50, y MACD diario con la línea por encima de su señal y ambas por encima de cero (tendencia alcista confirmada, no solo un giro reciente).",
+        "methodology_debt_liquidity_label": "Deuda y liquidez:",
+        "methodology_debt_liquidity_text": "Deuda/Patrimonio por debajo de 100% (no sobreendeudada) y Current Ratio por encima de 1 (los activos corrientes alcanzan para cubrir los pasivos corrientes).",
         "methodology_pe_peg_label": "P/E y PEG:",
         "methodology_pe_peg_text": "qué tan caro o barato luce el precio frente a las utilidades de la empresa y su crecimiento esperado. Lee más en nuestro artículo sobre",
         "methodology_pe_peg_link": "P/E, PEG y por qué el precio no dice nada por sí solo",
@@ -145,8 +153,6 @@ T = {
         "methodology_volume_text": "compara el volumen del día contra el promedio de los últimos 20 días; más volumen sugiere mayor interés del mercado.",
         "methodology_market_label": "Mercado:",
         "methodology_market_text": "la bolsa donde cotiza la acción (NASDAQ, NYSE, etc.).",
-        "methodology_target_label": "Precio objetivo:",
-        "methodology_target_text": "promedio de los precios objetivo que publican los analistas que cubren la acción — entra en más detalle, junto con la recomendación de consenso, en la página de cada acción.",
         "methodology_disclaimer": "Esta información es únicamente educativa. DSMarketLearning no ofrece asesoría de inversión personalizada; lee nuestro",
 
         # About page
@@ -395,7 +401,7 @@ T = {
         "filters_toggle": "Advanced filters",
         "filters_active_badge": "active",
         "filter_legend_price_market": "Price and market",
-        "filter_price_lt": "Price under",
+        "filter_price": "Price",
         "filter_any": "Any",
         "filter_exchange": "Exchange",
         "filter_rel_vol_min": "Min. relative volume",
@@ -470,17 +476,24 @@ T = {
         # Methodology
         "methodology_title": "How the score works",
         "methodology_p1": (
-            "DSMarketLearning designed a stock categorization defined by a score "
-            "that groups together about a dozen technical indicators, giving "
-            "you a quick read on which stocks are in a potentially favorable "
-            "position. The score summarizes all of those signals into a single "
-            "number from 0 to 100, calculated from short-term signals (RSI, "
-            "relative volume, range breakout) and longer-term ones (trend vs. "
-            "its 200-day moving average, relative strength vs. the S&P 500). "
-            "If you want the full detail behind each of those signals for a "
-            'particular stock, open its individual page from the "Chart" '
-            "column."
+            "The DSMarketLearning score is a number from 0 to 100 that "
+            "prioritizes five opportunity criteria: the analysts' average "
+            "target price sitting 25% or more above the current price, RSI in "
+            "the buy zone, a confirmed bullish daily MACD trend, the company "
+            "not being over-leveraged, and it having enough liquidity. Those "
+            "five criteria make up 70% of the score; the remaining 30% comes "
+            "from complementary technical signals (trend vs. its 200-day "
+            "moving average, relative strength vs. the S&P 500, range "
+            "breakout, and relative volume). If you want the full detail "
+            "behind each of those signals for a particular stock, open its "
+            'individual page from the "Chart" column.'
         ),
+        "methodology_target_label": "Target price (25%+ upside):",
+        "methodology_target_text": "how far above the current price the analysts' average target sits — from +25% upside onward it gets the maximum score in this criterion.",
+        "methodology_rsi_macd_label": "RSI and MACD in the buy zone:",
+        "methodology_rsi_macd_text": "RSI below 50, and a daily MACD with the line above its signal and both above zero (confirmed bullish trend, not just a recent turn).",
+        "methodology_debt_liquidity_label": "Debt and liquidity:",
+        "methodology_debt_liquidity_text": "Debt/Equity below 100% (not over-leveraged) and Current Ratio above 1 (current assets cover current liabilities).",
         "methodology_pe_peg_label": "P/E and PEG:",
         "methodology_pe_peg_text": "how expensive or cheap the price looks relative to the company's earnings and expected growth. Read more in our article on",
         "methodology_pe_peg_link": "P/E, PEG, and why price alone tells you nothing",
@@ -490,8 +503,6 @@ T = {
         "methodology_volume_text": "compares today's volume against the average of the last 20 days; higher volume suggests more market interest.",
         "methodology_market_label": "Market:",
         "methodology_market_text": "the exchange where the stock trades (NASDAQ, NYSE, etc.).",
-        "methodology_target_label": "Target price:",
-        "methodology_target_text": "average target price published by analysts covering the stock — see more detail, along with the consensus recommendation, on each stock's page.",
         "methodology_disclaimer": "This information is for educational purposes only. DSMarketLearning does not offer personalized investment advice; read our",
 
         # About page

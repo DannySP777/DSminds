@@ -32,6 +32,12 @@ class ScanResult(models.Model):
     atr = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     stop_loss = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     relative_strength = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    macd = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    macd_signal = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    # True si la línea MACD está por encima de su señal y ambas por
+    # encima de cero (cruce alcista con tendencia de fondo confirmada).
+    macd_bullish = models.BooleanField(default=False)
+    current_ratio = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
     target_price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     market_cap = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
     market_cap_display = models.CharField(max_length=20, blank=True)

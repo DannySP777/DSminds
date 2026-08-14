@@ -92,6 +92,45 @@ JOURNAL_ENTRIES = [
 {DISCLAIMER_EN}
 """,
     },
+    {
+        "title": "Diario del inversionista #2: qué hay detrás de la recuperación del Nasdaq y de SpaceX",
+        "slug": "diario-inversionista-2-recuperacion-nasdaq-spacex",
+        "excerpt": "La recuperación reciente del Nasdaq y de SpaceX no es una sola historia, sino dos: alivio macroeconómico en el mercado en general, y una acción digiriendo su propia volatilidad post-IPO sobre confianza a largo plazo.",
+        "body": f"""
+<p>Retomo la serie "Diario del inversionista" para comentar algo que seguramente ya viste si sigues el scanner esta semana: tanto el Nasdaq como SpaceX vienen recuperando terreno, pero por razones bastante distintas entre sí. Vale la pena separarlas, porque mezclarlas lleva a sacar conclusiones equivocadas sobre cualquiera de las dos.</p>
+
+<h2>El Nasdaq: alivio macro más impulso</h2>
+<p>La recuperación reciente del Nasdaq se explica por una mezcla de alivio económico y puro impulso de mercado. Por un lado, la inflación por fin dio tregua y los rendimientos de los bonos se calmaron, lo que le devolvió aire a las tecnológicas: cuando los rendimientos de los bonos bajan, el "costo de oportunidad" de tener acciones de crecimiento (que valen más por sus utilidades futuras que por las de hoy) baja también, y eso vuelve a atraer compras fuertes hacia el sector tech. Por otro lado, una vez que el índice empieza a subir, entra en juego el impulso puro: más compradores entran simplemente porque el precio ya está subiendo, no necesariamente porque hayan recalculado el valor de cada empresa una por una.</p>
+<p>Es una distinción que vale la pena tener presente: parte de este movimiento tiene una base macroeconómica real (tasas, inflación), y parte es momentum de mercado, que puede revertirse tan rápido como apareció si el dato de inflación del próximo mes decepciona.</p>
+
+<h2>SpaceX: digerir la volatilidad post-IPO</h2>
+<p>Con SpaceX la historia es distinta: acá la cosa va más por digerir la volatilidad después de su salida a bolsa. El precio logró superar su valor de IPO inicial, y detrás de eso hay confianza del mercado en lo que viene con Starlink y Starship a largo plazo &mdash; son las dos apuestas que sostienen buena parte de la narrativa de crecimiento de la empresa hacia adelante.</p>
+<p>Vale la pena recordar algo básico pero que se olvida rápido: es normal que una acción recién salida a bolsa tenga varias semanas (o meses) de volatilidad mientras el mercado "encuentra" el precio correcto, sin el histórico de cotización que sí tienen empresas con años en bolsa. Que el precio haya recuperado su nivel de IPO no es, por sí solo, una señal de que la volatilidad terminó &mdash; es un punto de referencia psicológico más que técnico.</p>
+
+<h2>Por qué separo estas dos historias</h2>
+<p>Comparto esto tal cual lo pienso porque es exactamente el tipo de distinción que trato de explicar en este sitio: un índice completo (Nasdaq) se mueve por fuerzas macro y de flujo de dinero agregado, mientras que una acción individual recién listada (SpaceX) se mueve por su propia narrativa y por la mecánica específica de una salida a bolsa. Tratar ambos movimientos como "el mercado subiendo" sin más lleva a conclusiones apresuradas &mdash; ni el Nasdaq sube por Starlink, ni SpaceX sube por el CPI.</p>
+
+{DISCLAIMER}
+""",
+        "title_en": "Investor journal #2: what's behind the Nasdaq and SpaceX recovery",
+        "excerpt_en": "The recent recovery in the Nasdaq and in SpaceX isn't one story, it's two: macroeconomic relief across the broader market, and a stock digesting its own post-IPO volatility on long-term confidence.",
+        "body_en": f"""
+<p>I'm picking the "Investor journal" series back up to talk about something you've probably already noticed if you've been following the scanner this week: both the Nasdaq and SpaceX have been recovering ground, but for fairly different reasons. It's worth separating them, because mixing them together leads to the wrong conclusions about either one.</p>
+
+<h2>The Nasdaq: macro relief plus momentum</h2>
+<p>The Nasdaq's recent recovery comes down to a mix of economic relief and pure market momentum. On one hand, inflation finally eased and bond yields calmed down, which gave tech stocks some breathing room: when bond yields fall, the "opportunity cost" of holding growth stocks (worth more for their future earnings than today's) falls too, and that pulls strong buying back into the tech sector. On the other hand, once the index starts climbing, pure momentum kicks in: more buyers step in simply because the price is already rising, not necessarily because they've re-priced every company one by one.</p>
+<p>It's a distinction worth keeping in mind: part of this move has a real macroeconomic basis (rates, inflation), and part of it is market momentum, which can reverse as fast as it showed up if next month's inflation print disappoints.</p>
+
+<h2>SpaceX: digesting post-IPO volatility</h2>
+<p>SpaceX's story is different: this one is more about digesting volatility after its stock market debut. The price managed to climb back above its initial IPO value, and behind that is market confidence in what's coming with Starlink and Starship over the long run &mdash; the two bets that carry a big part of the company's forward growth narrative.</p>
+<p>It's worth remembering something basic that's easy to forget: it's normal for a newly public stock to go through weeks (or months) of volatility while the market "finds" the right price, without the trading history that companies with years on the exchange already have. The price recovering its IPO level isn't, on its own, a sign the volatility is over &mdash; it's more of a psychological reference point than a technical one.</p>
+
+<h2>Why I'm separating these two stories</h2>
+<p>I'm sharing this exactly as I think about it because it's exactly the kind of distinction I try to explain on this site: a whole index (the Nasdaq) moves on macro forces and aggregate money flows, while a newly listed individual stock (SpaceX) moves on its own narrative and the specific mechanics of an IPO. Treating both moves as just "the market going up" leads to hasty conclusions &mdash; the Nasdaq isn't rallying because of Starlink, and SpaceX isn't rallying because of CPI.</p>
+
+{DISCLAIMER_EN}
+""",
+    },
 ]
 
 

@@ -19,8 +19,17 @@ def _get_lang(request):
     return lang if lang in SUPPORTED_LANGS else DEFAULT_LANG
 
 
-# Opciones fijas del filtro "precio menor a" (dropdown, no texto libre).
-PRICE_LT_OPTIONS = [10, 30, 50, 100, 500, 1000, 10000]
+# Opciones fijas del filtro de precio, por rango (dropdown, no texto
+# libre). (clave en la URL, mínimo o None, máximo o None, etiqueta).
+PRICE_RANGE_OPTIONS = [
+    ("lt10", None, 10, "Menor a $10"),
+    ("11-30", 11, 30, "$11 a $30"),
+    ("31-50", 31, 50, "$31 a $50"),
+    ("51-100", 51, 100, "$51 a $100"),
+    ("101-500", 101, 500, "$101 a $500"),
+    ("gt500", 500, None, "Mayores a $500"),
+]
+PRICE_RANGE_BOUNDS = {key: (lo, hi) for key, lo, hi, _label in PRICE_RANGE_OPTIONS}
 
 # Bolsas disponibles en el filtro — el valor debe calzar exactamente con
 # lo que guarda ScanResult.exchange (viene de fullExchangeName en
@@ -43,7 +52,6 @@ EXCHANGE_OPTIONS = [
 # scanner (score, precio, P/E, PEG, market cap, volumen, precio
 # objetivo) — sin indicadores técnicos avanzados que no se muestran ahí.
 NUMERIC_FILTER_FIELDS = [
-    ("price_lt", "price", "lt"),
     ("rel_vol_min", "relative_volume", "gte"),
     ("target_min", "target_price", "gte"),
     ("target_max", "target_price", "lte"),
@@ -74,6 +82,7 @@ def home(request):
     for param, _field, _op in NUMERIC_FILTER_FIELDS + MARKET_CAP_FILTER_FIELDS:
         filters[param] = request.GET.get(param, "").strip()
     filters["exchange"] = request.GET.get("exchange", "")
+    filters["price_range"] = request.GET.get("price_range", "")
     filters_active = any(filters.values())
     show_all = request.GET.get("show_all") == "1"
 
@@ -120,6 +129,14 @@ def home(request):
                     qs = qs.filter(**{f"{field}__{op}": float(raw) * 1_000_000})
                 except ValueError:
                     pass
+
+        price_bounds = PRICE_RANGE_BOUNDS.get(filters["price_range"])
+        if price_bounds:
+            lo, hi = price_bounds
+            if lo is not None:
+                qs = qs.filter(price__gte=lo)
+            if hi is not None:
+                qs = qs.filter(price__lte=hi)
 
         if filters["exchange"] == "Nasdaq":
             # Agrupa las variantes de Nasdaq (NasdaqGS, NasdaqGM, NasdaqCM).
@@ -170,7 +187,7 @@ def home(request):
         "show_less_qs": show_less_qs,
         "indices": get_market_indices(),
         "intervals": INTERVALS,
-        "price_lt_options": PRICE_LT_OPTIONS,
+        "price_range_options": PRICE_RANGE_OPTIONS,
         "exchange_options": EXCHANGE_OPTIONS,
         "selected_symbol": selected_symbol,
         "selected_chart": selected_chart,

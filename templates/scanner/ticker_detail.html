@@ -15,7 +15,7 @@
     <section class="hero">
         <h1>{{ symbol }}</h1>
         {% if latest_result %}
-            <p>{{ T.ticker_last_scan }} ({{ latest_result.date }}): {{ T.ticker_price_word }} ${{ latest_result.price }}, RSI {{ latest_result.rsi }}, {{ T.ticker_rel_vol_word }} {{ latest_result.relative_volume }}x, {{ T.ticker_score_word }} {{ latest_result.score }}.</p>
+            <p>{{ T.ticker_last_scan }} ({{ latest_result.date }}): {{ T.ticker_price_word }} ${{ latest_result.price }}, RSI {{ latest_result.rsi }}, {{ T.ticker_rel_vol_word }} {{ latest_result.relative_volume }}x, MACD {% if latest_result.macd_bullish %}&#128994; {{ T.yes }}{% else %}&#9898; {{ T.no }}{% endif %}, {{ T.ticker_score_word }} {{ latest_result.score }}.</p>
         {% else %}
             <p>{{ T.ticker_no_results }}</p>
         {% endif %}

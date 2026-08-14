@@ -124,6 +124,7 @@ def get_fundamentals(symbol: str, lang: str = "es", include_summary: bool = True
         "forward_pe": _round(info.get("forwardPE")),
         "peg_ratio": _round(info.get("pegRatio") or info.get("trailingPegRatio")),
         "debt_to_equity": _round(info.get("debtToEquity")),
+        "current_ratio": _round(info.get("currentRatio")),
         "profit_margin_pct": _round((info.get("profitMargins") or 0) * 100) if info.get("profitMargins") is not None else None,
         "dividend_yield_pct": _round(info.get("dividendYield")),
         "beta": _round(info.get("beta")),

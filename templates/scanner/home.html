@@ -54,11 +54,11 @@
         <form method="get" class="filter-form">
             <fieldset>
                 <legend>{{ T.filter_legend_price_market }}</legend>
-                <label>{{ T.filter_price_lt }}
-                    <select name="price_lt">
+                <label>{{ T.filter_price }}
+                    <select name="price_range">
                         <option value="">{{ T.filter_any }}</option>
-                        {% for amount in price_lt_options %}
-                            <option value="{{ amount }}" {% if filters.price_lt == amount|stringformat:"i" %}selected{% endif %}>${{ amount }} USD</option>
+                        {% for value, lo, hi, label in price_range_options %}
+                            <option value="{{ value }}" {% if filters.price_range == value %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}
                     </select>
                 </label>
@@ -116,7 +116,7 @@
                                 <thead>
                                     <tr>
                                         <th><span class="th-tip" data-tooltip="{{ T.tip_ver }}">{{ T.th_ver }}</span></th>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_ticker }}">{{ T.th_ticker }}</span></th>
+                                        <th class="sticky-col"><span class="th-tip" data-tooltip="{{ T.tip_ticker }}">{{ T.th_ticker }}</span></th>
                                         <th><span class="th-tip" data-tooltip="{{ T.tip_score }}">{{ T.th_score }}</span></th>
                                         <th class="th-price-current"><span class="th-tip" data-tooltip="{{ T.tip_price }}">{{ T.th_price }}</span></th>
                                         <th class="th-price-target"><span class="th-tip" data-tooltip="{{ T.tip_target }}">{{ T.th_target }}</span></th>
@@ -142,7 +142,7 @@
                                                 {% if r.ticker.symbol == selected_symbol %}checked{% endif %}
                                             >
                                         </td>
-                                        <td>
+                                        <td class="sticky-col">
                                             <a href="/accion/{{ r.ticker.symbol }}/" class="ticker-link ticker-link--table" data-symbol="{{ r.ticker.symbol }}">{{ r.ticker.symbol }}</a>
                                             {% if r.is_added_row %}
                                                 <span class="added-badge" title="{{ T.row_added_badge_title }}">{{ T.row_added_badge }}</span>
@@ -247,11 +247,13 @@
         <h2>{{ T.methodology_title }}</h2>
         <p>{{ T.methodology_p1 }}</p>
         <ul>
+            <li><strong>{{ T.methodology_target_label }}</strong> {{ T.methodology_target_text }}</li>
+            <li><strong>{{ T.methodology_rsi_macd_label }}</strong> {{ T.methodology_rsi_macd_text }}</li>
+            <li><strong>{{ T.methodology_debt_liquidity_label }}</strong> {{ T.methodology_debt_liquidity_text }}</li>
             <li><strong>{{ T.methodology_pe_peg_label }}</strong> {{ T.methodology_pe_peg_text }} <a href="/blog/pe-peg-precio-accion-no-dice-nada/">{{ T.methodology_pe_peg_link }}</a>.</li>
             <li><strong>{{ T.methodology_market_cap_label }}</strong> {{ T.methodology_market_cap_text }}</li>
             <li><strong>{{ T.methodology_volume_label }}</strong> {{ T.methodology_volume_text }}</li>
             <li><strong>{{ T.methodology_market_label }}</strong> {{ T.methodology_market_text }}</li>
-            <li><strong>{{ T.methodology_target_label }}</strong> {{ T.methodology_target_text }}</li>
         </ul>
         <p class="disclaimer-note">{{ T.methodology_disclaimer }} <a href="/disclaimer/">{{ T.disclaimer_link_text }}</a>.</p>
     </section>

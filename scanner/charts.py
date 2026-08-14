@@ -15,6 +15,7 @@ import yfinance as yf
 from django.core.cache import cache
 from plotly.subplots import make_subplots
 from ta.momentum import RSIIndicator
+from ta.trend import MACD
 
 from .fundamentals import get_fundamentals
 
@@ -47,11 +48,11 @@ COLORS = {
 
 CHART_LABELS = {
     "es": {
-        "price": "Precio", "volume": "Volumen", "rsi": "RSI (14)", "max_20": "Máx. 20 periodos",
+        "price": "Precio", "volume": "Volumen", "rsi": "RSI (14)", "macd": "MACD (12,26,9)", "max_20": "Máx. 20 periodos",
         "ref_current": "Precio actual", "ref_target": "Precio objetivo", "ref_quarter_low": "Mínimo del trimestre",
     },
     "en": {
-        "price": "Price", "volume": "Volume", "rsi": "RSI (14)", "max_20": "20-period high",
+        "price": "Price", "volume": "Volume", "rsi": "RSI (14)", "macd": "MACD (12,26,9)", "max_20": "20-period high",
         "ref_current": "Current price", "ref_target": "Target price", "ref_quarter_low": "Quarter low",
     },
 }
@@ -118,6 +119,10 @@ def _compute_price_chart(symbol: str, interval_key: str, lang: str = "es") -> di
         return {"html": None, "error": error_not_enough.get(lang, error_not_enough["es"])}
 
     rsi = RSIIndicator(data["Close"], window=14).rsi()
+    macd_calc = MACD(data["Close"])
+    macd_line = macd_calc.macd()
+    macd_signal_line = macd_calc.macd_signal()
+    macd_hist = macd_calc.macd_diff()
     avg_volume_20 = data["Volume"].rolling(20).mean()
     relative_volume = data["Volume"] / avg_volume_20
     high_20 = data["Close"].rolling(20).max().shift(1)
@@ -136,10 +141,10 @@ def _compute_price_chart(symbol: str, interval_key: str, lang: str = "es") -> di
         target_price = None
 
     fig = make_subplots(
-        rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.03,
-        row_heights=[0.55, 0.2, 0.25],
-        subplot_titles=(labels["price"], labels["volume"], labels["rsi"]),
-        specs=[[{"secondary_y": True}], [{}], [{}]],
+        rows=4, cols=1, shared_xaxes=True, vertical_spacing=0.03,
+        row_heights=[0.4, 0.15, 0.2, 0.25],
+        subplot_titles=(labels["price"], labels["volume"], labels["rsi"], labels["macd"]),
+        specs=[[{"secondary_y": True}], [{}], [{}], [{}]],
     )
 
     fig.add_trace(go.Candlestick(
@@ -203,16 +208,28 @@ def _compute_price_chart(symbol: str, interval_key: str, lang: str = "es") -> di
     fig.add_hline(y=70, line_dash="dash", line_color=COLORS["down"], opacity=0.5, row=3, col=1)
     fig.add_hline(y=30, line_dash="dash", line_color=COLORS["up"], opacity=0.5, row=3, col=1)
 
+    macd_hist_colors = [COLORS["up"] if v >= 0 else COLORS["down"] for v in macd_hist.fillna(0)]
+    fig.add_trace(go.Bar(
+        x=data.index, y=macd_hist, name="Histograma", marker_color=macd_hist_colors, opacity=0.5,
+    ), row=4, col=1)
+    fig.add_trace(go.Scatter(
+        x=data.index, y=macd_line, mode="lines", name="MACD", line=dict(color=COLORS["text"], width=1.5),
+    ), row=4, col=1)
+    fig.add_trace(go.Scatter(
+        x=data.index, y=macd_signal_line, mode="lines", name="Señal", line=dict(color="#f5a623", width=1.5),
+    ), row=4, col=1)
+    fig.add_hline(y=0, line_dash="dot", line_color=COLORS["text"], opacity=0.4, row=4, col=1)
+
     fig.update_layout(
         paper_bgcolor=COLORS["bg"],
         plot_bgcolor=COLORS["bg"],
         font=dict(color=COLORS["text"]),
         showlegend=False,
         margin=dict(l=40, r=50, t=40, b=20),
-        height=680,
+        height=880,
         xaxis_rangeslider_visible=False,
     )
-    for i in range(1, 4):
+    for i in range(1, 5):
         fig.update_xaxes(gridcolor=COLORS["grid"], row=i, col=1)
         fig.update_yaxes(gridcolor=COLORS["grid"], row=i, col=1)
     fig.update_yaxes(range=[0, 100], row=3, col=1)

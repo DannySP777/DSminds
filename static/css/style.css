@@ -1542,6 +1542,40 @@ tr.impact-medium .impact-stars {
     font-size: 1.1rem;
 }
 
+/* Columna de ticker fija al desplazar la tabla horizontalmente. Cada
+   celda necesita su propio fondo OPACO (no puede quedar transparente,
+   o el contenido de las demás columnas se vería a través al hacer
+   scroll) — se logra apilando el mismo tinte semitransparente que ya
+   usa esa fila (odds/hover/selected) sobre --surface como base sólida. */
+.table-wrap--hero th.sticky-col,
+.table-wrap--hero td.sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.35);
+}
+
+.table-wrap--hero thead th.sticky-col {
+    background: linear-gradient(rgba(61, 220, 151, 0.08), rgba(61, 220, 151, 0.08)), var(--surface);
+    z-index: 3;
+}
+
+.table-wrap--hero tbody td.sticky-col {
+    background: var(--surface);
+}
+
+.table-wrap--hero tbody tr:nth-child(odd) td.sticky-col {
+    background: linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)), var(--surface);
+}
+
+.table-wrap--hero .scan-row:hover td.sticky-col {
+    background: linear-gradient(rgba(61, 220, 151, 0.07), rgba(61, 220, 151, 0.07)), var(--surface);
+}
+
+.table-wrap--hero .scan-row.is-selected td.sticky-col {
+    background: linear-gradient(rgba(61, 220, 151, 0.1), rgba(61, 220, 151, 0.1)), var(--surface);
+}
+
 .score-badge--lg {
     font-size: 1.05rem;
     padding: 0.35rem 0.85rem;
