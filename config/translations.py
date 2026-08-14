@@ -17,7 +17,7 @@ T = {
     "es": {
         # Page title / meta
         "home_title": "DSMarketLearning — Scanner diario de acciones",
-        "home_meta_description": "Scanner diario que identifica acciones con RSI en zona de impulso, volumen relativo alto y rupturas de rango. Contenido informativo, no asesoría financiera.",
+        "home_meta_description": "Scanner diario que identifica acciones con upside de analistas, RSI y MACD en zona de compra, baja deuda y liquidez. Contenido informativo, no asesoría financiera.",
 
         # Nav / chrome
         "nav_scanner": "Scanner",
@@ -368,7 +368,7 @@ T = {
     "en": {
         # Page title / meta
         "home_title": "DSMarketLearning — Daily stock scanner",
-        "home_meta_description": "Daily scanner that identifies stocks with RSI in momentum zone, high relative volume, and range breakouts. Informational content, not financial advice.",
+        "home_meta_description": "Daily scanner that identifies stocks with analyst upside, RSI and MACD in the buy zone, low debt, and liquidity. Informational content, not financial advice.",
 
         # Nav / chrome
         "nav_scanner": "Scanner",
