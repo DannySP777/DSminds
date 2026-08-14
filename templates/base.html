@@ -4,13 +4,15 @@
 <head>
     <meta charset="UTF-8">
     {% if GOOGLE_ANALYTICS_ID or GOOGLE_ADSENSE_CLIENT_ID %}
-        {# Google Consent Mode: por defecto todo "denied" (o lo que el
-           visitante ya haya elegido antes, guardado en localStorage) —
-           los scripts de abajo cargan siempre para que Google pueda
-           verificar el sitio y mostrar anuncios sin personalizar de
-           inmediato, pero no activan cookies de seguimiento/personalización
-           hasta que el banner de cookies (ver main.js) actualice el
-           consentimiento con gtag('consent', 'update', ...). #}
+        {% comment %}
+        Google Consent Mode: por defecto todo "denied" (o lo que el
+        visitante ya haya elegido antes, guardado en localStorage) —
+        los scripts de abajo cargan siempre para que Google pueda
+        verificar el sitio y mostrar anuncios sin personalizar de
+        inmediato, pero no activan cookies de seguimiento/personalización
+        hasta que el banner de cookies (ver main.js) actualice el
+        consentimiento con gtag('consent', 'update', ...).
+        {% endcomment %}
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag() { dataLayer.push(arguments); }
