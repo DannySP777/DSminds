@@ -157,16 +157,16 @@ T = {
 
         # About page
         "about_title": "Acerca de DSMarketLearning",
-        "about_intro": "Soy un ingeniero informático amante de las finanzas, con más de 5 años de experiencia siguiendo mercados financieros e invirtiendo por cuenta propia. DSMarketLearning nace de juntar esas dos cosas: uso mis conocimientos de programación para construir herramientas de análisis técnico que yo mismo uso para investigar acciones, y decidí compartirlas abiertamente con fines educativos.",
+        "about_intro": "Somos un grupo de desarrolladores de software amantes de las finanzas, con más de 5 años de experiencia siguiendo mercados financieros e invirtiendo por cuenta propia. DSMarketLearning nace de juntar esas dos cosas: usamos nuestros conocimientos de programación para construir herramientas de análisis técnico que nosotros mismos usamos para investigar acciones, y decidimos compartirlas abiertamente con fines educativos.",
         "about_h2_what": "Qué es DSMarketLearning",
         "about_what_text": "Es un scanner diario de acciones que calcula señales técnicas (RSI, volumen relativo, ruptura de rango, tendencia respecto a la media móvil de 200 días, fuerza relativa frente al S&P 500) y datos fundamentales (P/E, PEG, deuda/patrimonio, recomendaciones de analistas) para un grupo amplio de acciones de NYSE y NASDAQ. Todo se actualiza automáticamente cada día hábil. El sitio también incluye noticias de mercado, un calendario económico semanal y artículos educativos que explican cómo interpretar cada indicador.",
         "about_h2_methodology": "Metodología, de forma transparente",
-        "about_methodology_text": "No hay caja negra: cada indicador que usa el scanner está documentado en la propia página de resultados y en el detalle de cada acción, incluyendo cómo se calcula el puntaje (score) y qué significa cada semáforo. Los datos de mercado provienen de Yahoo Finance a través de la librería pública yfinance; pueden tener errores, retrasos o estar incompletos, y lo dejo explícito donde corresponde.",
+        "about_methodology_text": "No hay caja negra: cada indicador que usa el scanner está documentado en la propia página de resultados y en el detalle de cada acción, incluyendo cómo se calcula el puntaje (score) y qué significa cada semáforo. Los datos de mercado provienen de Yahoo Finance a través de la librería pública yfinance; pueden tener errores, retrasos o estar incompletos, y lo dejamos explícito donde corresponde.",
         "about_h2_not_advice": "No es asesoría financiera",
-        "about_not_advice_prefix": "No soy un asesor de inversión registrado, y nada en este sitio — el scanner, las noticias, los artículos del blog — constituye una recomendación de compra o venta. Es contenido informativo y educativo, pensado para que investigues por tu cuenta, no para reemplazar el criterio propio ni el consejo de un profesional autorizado. Antes de invertir, lee el",
+        "about_not_advice_prefix": "No somos asesores de inversión registrados, y nada en este sitio — el scanner, las noticias, los artículos del blog — constituye una recomendación de compra o venta. Es contenido informativo y educativo, pensado para que investigues por tu cuenta, no para reemplazar el criterio propio ni el consejo de un profesional autorizado. Antes de invertir, lee el",
         "about_not_advice_link": "aviso legal completo",
         "about_h2_contact": "Contacto",
-        "about_contact_prefix": "¿Preguntas, sugerencias o encontraste un error? Escríbeme desde la página de",
+        "about_contact_prefix": "¿Preguntas, sugerencias o encontraste un error? Escríbenos desde la página de",
         "about_contact_link": "contacto",
 
         # Chart panel / ticker detail
@@ -507,16 +507,16 @@ T = {
 
         # About page
         "about_title": "About DSMarketLearning",
-        "about_intro": "I'm a software engineer who loves finance, with more than 5 years of experience following financial markets and investing on my own. DSMarketLearning comes from combining those two things: I use my programming background to build technical analysis tools that I use myself to research stocks, and I decided to share them openly for educational purposes.",
+        "about_intro": "We're a group of software developers who love finance, with more than 5 years of experience following financial markets and investing on our own. DSMarketLearning comes from combining those two things: we use our programming background to build technical analysis tools that we use ourselves to research stocks, and we decided to share them openly for educational purposes.",
         "about_h2_what": "What DSMarketLearning is",
         "about_what_text": "It's a daily stock scanner that calculates technical signals (RSI, relative volume, range breakout, trend vs. the 200-day moving average, relative strength vs. the S&P 500) and fundamental data (P/E, PEG, debt/equity, analyst recommendations) for a broad group of NYSE and NASDAQ stocks. Everything updates automatically every business day. The site also includes market news, a weekly economic calendar, and educational articles explaining how to read each indicator.",
         "about_h2_methodology": "Methodology, made transparent",
-        "about_methodology_text": "There's no black box: every indicator the scanner uses is documented right on the results page and on each stock's detail page, including how the score is calculated and what each traffic-light color means. Market data comes from Yahoo Finance via the public yfinance library; it can have errors, delays, or be incomplete, and I say so explicitly where relevant.",
+        "about_methodology_text": "There's no black box: every indicator the scanner uses is documented right on the results page and on each stock's detail page, including how the score is calculated and what each traffic-light color means. Market data comes from Yahoo Finance via the public yfinance library; it can have errors, delays, or be incomplete, and we say so explicitly where relevant.",
         "about_h2_not_advice": "This is not financial advice",
-        "about_not_advice_prefix": "I'm not a registered investment advisor, and nothing on this site — the scanner, the news, the blog articles — is a recommendation to buy or sell. It's informational and educational content, meant for you to research on your own, not to replace your own judgment or the advice of a licensed professional. Before investing, read the",
+        "about_not_advice_prefix": "We're not registered investment advisors, and nothing on this site — the scanner, the news, the blog articles — is a recommendation to buy or sell. It's informational and educational content, meant for you to research on your own, not to replace your own judgment or the advice of a licensed professional. Before investing, read the",
         "about_not_advice_link": "full disclaimer",
         "about_h2_contact": "Contact",
-        "about_contact_prefix": "Questions, suggestions, or found an error? Write to me from the",
+        "about_contact_prefix": "Questions, suggestions, or found an error? Write to us from the",
         "about_contact_link": "contact page",
 
         # Chart panel / ticker detail
