@@ -54,6 +54,19 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.dsminds.com',
 ]
 
+# Solo se activan con DEBUG=False (producción real) — con DEBUG=True
+# romperían las pruebas locales por HTTP (redirect a HTTPS en loop).
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 7  # 1 semana, para no arriesgar un typo en el dominio al principio
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # La mayoría de hostings (Render, Railway, etc.) ponen la app detrás
+    # de un proxy que termina el TLS y reenvía por HTTP puro — sin esto,
+    # Django no sabría que la conexión original sí era HTTPS.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Application definition
 
@@ -71,6 +84,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -147,6 +161,20 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+# `collectstatic` copia todo a STATIC_ROOT; whitenoise sirve desde ahí
+# en producción (comprimido, con hash en el nombre para cache-busting
+# real, sin necesitar el `?v=...` que se usa en las plantillas para
+# desarrollo). En local, `runserver` sigue sirviendo directo desde
+# STATICFILES_DIRS sin pasar por collectstatic.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 LOGGING = {
     'version': 1,
