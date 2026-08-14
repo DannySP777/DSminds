@@ -39,6 +39,11 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
+# ID de medición de Google Analytics 4 (formato G-XXXXXXXXXX). Si está
+# vacío, el sitio no carga ningún script de Analytics. Se define en
+# .env en local y como variable de entorno en Railway en producción.
+GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID', '')
+
 # dsminds.com es el dominio real del sitio (DSMarketLearning). Se
 # mantienen también localhost/127.0.0.1 para seguir probando en local,
 # y ALLOWED_HOSTS se puede ampliar sin tocar código con la variable de
@@ -107,6 +112,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'config.context_processors.language',
+                'config.context_processors.analytics',
             ],
         },
     },

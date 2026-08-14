@@ -178,6 +178,26 @@ function initScannerDashboard() {
     });
 }
 
+function loadGoogleAnalytics() {
+    var id = window.GOOGLE_ANALYTICS_ID;
+    if (!id || window.__gaLoaded) {
+        return;
+    }
+    window.__gaLoaded = true;
+
+    var script = document.createElement("script");
+    script.async = true;
+    script.src = "https://www.googletagmanager.com/gtag/js?id=" + id;
+    document.head.appendChild(script);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        window.dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", id);
+}
+
 function initCookieBanner() {
     var banner = document.getElementById("cookie-banner");
     if (!banner) {
@@ -186,16 +206,18 @@ function initCookieBanner() {
 
     var STORAGE_KEY = "dsms_cookie_consent";
 
-    // NOTA: cuando se agreguen scripts de AdSense/Analytics reales, deben
-    // consultar localStorage.getItem("dsms_cookie_consent") === "accepted"
-    // antes de cargarse, para respetar la elección del usuario.
-    if (!localStorage.getItem(STORAGE_KEY)) {
+    if (localStorage.getItem(STORAGE_KEY) === "accepted") {
+        loadGoogleAnalytics();
+    } else if (!localStorage.getItem(STORAGE_KEY)) {
         banner.hidden = false;
     }
 
     function respond(value) {
         localStorage.setItem(STORAGE_KEY, value);
         banner.hidden = true;
+        if (value === "accepted") {
+            loadGoogleAnalytics();
+        }
     }
 
     document.getElementById("cookie-accept").addEventListener("click", function () {
