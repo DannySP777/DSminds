@@ -9,6 +9,28 @@
     <link rel="icon" type="image/png" href="{% static 'img/logo-icon.png' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
     {% block extra_head %}{% endblock %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "DSMarketLearning",
+        "url": "https://www.dsminds.com/",
+        "logo": "https://www.dsminds.com{% static 'img/logo-icon.png' %}"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "DSMarketLearning",
+        "url": "https://www.dsminds.com/",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://www.dsminds.com/buscar/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
     <header class="site-header">

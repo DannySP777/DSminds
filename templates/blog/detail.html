@@ -1,8 +1,27 @@
 {% extends "base.html" %}
-{% load dsms_extras %}
+{% load dsms_extras static %}
 
 {% block title %}{{ post|get_title:LANG }} &mdash; DSMarketLearning{% endblock %}
 {% block meta_description %}{{ post|get_excerpt:LANG }}{% endblock %}
+
+{% block extra_head %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "{{ post|get_title:LANG|escapejs }}",
+        "description": "{{ post|get_excerpt:LANG|escapejs }}",
+        "datePublished": "{{ post.published_at|date:'c' }}",
+        "author": {"@type": "Organization", "name": "DSMarketLearning"},
+        "publisher": {
+            "@type": "Organization",
+            "name": "DSMarketLearning",
+            "logo": {"@type": "ImageObject", "url": "https://www.dsminds.com{% static 'img/logo-icon.png' %}"}
+        },
+        "mainEntityOfPage": "https://www.dsminds.com{% url 'blog-detail' post.slug %}"
+    }
+    </script>
+{% endblock %}
 
 {% block content %}
     <article class="post-detail">
