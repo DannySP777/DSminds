@@ -3,6 +3,36 @@
 <html lang="{{ LANG }}">
 <head>
     <meta charset="UTF-8">
+    {% if GOOGLE_ANALYTICS_ID or GOOGLE_ADSENSE_CLIENT_ID %}
+        {# Google Consent Mode: por defecto todo "denied" (o lo que el
+           visitante ya haya elegido antes, guardado en localStorage) —
+           los scripts de abajo cargan siempre para que Google pueda
+           verificar el sitio y mostrar anuncios sin personalizar de
+           inmediato, pero no activan cookies de seguimiento/personalización
+           hasta que el banner de cookies (ver main.js) actualice el
+           consentimiento con gtag('consent', 'update', ...). #}
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            var dsmsConsentState = localStorage.getItem("dsms_cookie_consent") === "accepted" ? "granted" : "denied";
+            gtag("consent", "default", {
+                ad_storage: dsmsConsentState,
+                ad_user_data: dsmsConsentState,
+                ad_personalization: dsmsConsentState,
+                analytics_storage: dsmsConsentState
+            });
+        </script>
+    {% endif %}
+    {% if GOOGLE_ANALYTICS_ID %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+        <script>
+            gtag("js", new Date());
+            gtag("config", "{{ GOOGLE_ANALYTICS_ID }}");
+        </script>
+    {% endif %}
+    {% if GOOGLE_ADSENSE_CLIENT_ID %}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ GOOGLE_ADSENSE_CLIENT_ID }}" crossorigin="anonymous"></script>
+    {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{% block meta_description %}Scanner diario de acciones, noticias de mercado y análisis técnico. Contenido informativo, no asesoría financiera.{% endblock %}">
     <title>{% block title %}DSMarketLearning{% endblock %}</title>
@@ -90,9 +120,6 @@
         </div>
     </div>
 
-    {% if GOOGLE_ANALYTICS_ID %}
-        <script>window.GOOGLE_ANALYTICS_ID = "{{ GOOGLE_ANALYTICS_ID }}";</script>
-    {% endif %}
     <script src="{% static 'js/main.js' %}?v={% now 'U' %}"></script>
 </body>
 </html>

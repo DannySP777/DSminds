@@ -44,6 +44,14 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 # .env en local y como variable de entorno en Railway en producción.
 GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID', '')
 
+# ID de cliente de Google AdSense (formato ca-pub-XXXXXXXXXXXXXXXX). Si
+# está vacío, el sitio no carga el script de AdSense. Igual que
+# GOOGLE_ANALYTICS_ID, ambos se cargan siempre (para que Google pueda
+# verificar el sitio y mostrar anuncios sin personalizar de inmediato),
+# pero arrancan en modo "sin consentimiento" vía Google Consent Mode
+# (ver templates/base.html) hasta que el visitante acepta las cookies.
+GOOGLE_ADSENSE_CLIENT_ID = os.environ.get('GOOGLE_ADSENSE_CLIENT_ID', '')
+
 # dsminds.com es el dominio real del sitio (DSMarketLearning). Se
 # mantienen también localhost/127.0.0.1 para seguir probando en local,
 # y ALLOWED_HOSTS se puede ampliar sin tocar código con la variable de

@@ -178,24 +178,20 @@ function initScannerDashboard() {
     });
 }
 
-function loadGoogleAnalytics() {
-    var id = window.GOOGLE_ANALYTICS_ID;
-    if (!id || window.__gaLoaded) {
+function updateConsent(granted) {
+    // gtag ya existe desde el <head> (ver templates/base.html) si hay
+    // Analytics o AdSense configurados; si no hay ninguno de los dos,
+    // no existe y no hay nada que actualizar.
+    if (typeof window.gtag !== "function") {
         return;
     }
-    window.__gaLoaded = true;
-
-    var script = document.createElement("script");
-    script.async = true;
-    script.src = "https://www.googletagmanager.com/gtag/js?id=" + id;
-    document.head.appendChild(script);
-
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-        window.dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
-    gtag("config", id);
+    var state = granted ? "granted" : "denied";
+    window.gtag("consent", "update", {
+        ad_storage: state,
+        ad_user_data: state,
+        ad_personalization: state,
+        analytics_storage: state
+    });
 }
 
 function initCookieBanner() {
@@ -206,18 +202,14 @@ function initCookieBanner() {
 
     var STORAGE_KEY = "dsms_cookie_consent";
 
-    if (localStorage.getItem(STORAGE_KEY) === "accepted") {
-        loadGoogleAnalytics();
-    } else if (!localStorage.getItem(STORAGE_KEY)) {
+    if (!localStorage.getItem(STORAGE_KEY)) {
         banner.hidden = false;
     }
 
     function respond(value) {
         localStorage.setItem(STORAGE_KEY, value);
         banner.hidden = true;
-        if (value === "accepted") {
-            loadGoogleAnalytics();
-        }
+        updateConsent(value === "accepted");
     }
 
     document.getElementById("cookie-accept").addEventListener("click", function () {

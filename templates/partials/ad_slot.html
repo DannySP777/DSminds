@@ -1,11 +1,14 @@
 {% comment %}
-Espacio reservado para un bloque de anuncios (Google AdSense).
-No se inserta el script/<ins> de AdSense todavía: hazlo solo después de que
-la cuenta esté aprobada, reemplazando este comentario por el snippet real
-con tu client id (ca-pub-XXXXXXXXXX) y ad slot. Mantener el contenedor
-claramente separado del contenido editorial, como pide la política de
-"Ad implementation" de AdSense (no colocar anuncios encima o mezclados
-con texto/navegación, ni cerca de elementos que inviten a clics accidentales).
+Espacio reservado para un bloque de anuncios (Google AdSense). El script
+base de AdSense (client id) ya se carga en templates/base.html en todo
+el sitio, gateado por Google Consent Mode. Falta insertar aquí la unidad
+de anuncio específica (<ins class="adsbygoogle">...</ins>) una vez que
+la cuenta esté aprobada y hayas creado un "ad unit" en el panel de
+AdSense — reemplaza este comentario por ese snippet con su ad slot.
+Mantener el contenedor claramente separado del contenido editorial, como
+pide la política de "Ad implementation" de AdSense (no colocar anuncios
+encima o mezclados con texto/navegación, ni cerca de elementos que
+inviten a clics accidentales).
 {% endcomment %}
 <div class="ad-slot" aria-label="{{ T.ad_label }}">
     <span class="ad-slot__label">{{ T.ad_label }}</span>
