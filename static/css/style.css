@@ -1803,6 +1803,8 @@ th:last-child .th-tip::after {
 .cookie-banner__btn--accent {
     background: var(--accent);
     color: var(--bg);
+    padding: 0.55rem 1.35rem;
+    box-shadow: 0 0 14px rgba(61, 220, 151, 0.45);
 }
 
 .cookie-banner__btn--ghost {
