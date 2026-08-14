@@ -1735,6 +1735,10 @@ th:last-child .th-tip::after {
     gap: 1rem;
 }
 
+.cookie-banner[hidden] {
+    display: none;
+}
+
 .cookie-banner__text {
     flex: 1 1 320px;
     font-size: 0.85rem;
