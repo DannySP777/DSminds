@@ -4,6 +4,7 @@ robots.txt y sitemap.xml. Construyen las URLs con el dominio real de la
 petición (request.build_absolute_uri), así que funcionan igual en
 localhost que en producción sin tocar nada al desplegar.
 """
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.html import escape
@@ -35,6 +36,22 @@ def robots_txt(request):
         f"Sitemap: {sitemap_url}",
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+def ads_txt(request):
+    """
+    Declara ante los rastreadores de AdSense que este sitio está
+    autorizado a vender su propio inventario publicitario — sin este
+    archivo, Google no aprueba el sitio para mostrar anuncios. El ID
+    "f08c47fec0942fa0" es un identificador fijo de Google (Certification
+    Authority ID), igual para todos los publishers, no es un dato propio.
+    """
+    if not settings.GOOGLE_ADSENSE_CLIENT_ID:
+        return HttpResponse("", content_type="text/plain")
+
+    pub_id = settings.GOOGLE_ADSENSE_CLIENT_ID.removeprefix("ca-pub-")
+    line = f"google.com, pub-{pub_id}, DIRECT, f08c47fec0942fa0"
+    return HttpResponse(line, content_type="text/plain")
 
 
 def sitemap_xml(request):

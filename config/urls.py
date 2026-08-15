@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import include, path
 
 from blog.urls import pages_urlpatterns
-from config.views import robots_txt, set_language, sitemap_xml
+from config.views import ads_txt, robots_txt, set_language, sitemap_xml
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('robots.txt', robots_txt, name='robots-txt'),
     path('sitemap.xml', sitemap_xml, name='sitemap-xml'),
+    path('ads.txt', ads_txt, name='ads-txt'),
     path('idioma/<str:lang>/', set_language, name='set-language'),
     path('', include('scanner.urls')),
     path('noticias/', include('news.urls')),
