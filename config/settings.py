@@ -52,6 +52,11 @@ GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID', '')
 # (ver templates/base.html) hasta que el visitante acepta las cookies.
 GOOGLE_ADSENSE_CLIENT_ID = os.environ.get('GOOGLE_ADSENSE_CLIENT_ID', '')
 
+# API key gratuita de Finnhub (finnhub.io) para el calendario económico y
+# noticias generales que usa DSprofeta al entrenar/predecir. Si se deja
+# vacía, esas dos fuentes simplemente se omiten (ver dsprofeta/services.py).
+FINNHUB_API_KEY = os.environ.get('FINNHUB_API_KEY', '')
+
 # dsminds.com es el dominio real del sitio (DSMarketLearning). Se
 # mantienen también localhost/127.0.0.1 para seguir probando en local,
 # y ALLOWED_HOSTS se puede ampliar sin tocar código con la variable de
@@ -94,6 +99,7 @@ INSTALLED_APPS = [
     'scanner',
     'news',
     'blog',
+    'dsprofeta',
 ]
 
 MIDDLEWARE = [
@@ -212,6 +218,7 @@ LOGGING = {
     'loggers': {
         'scanner': {'handlers': ['console'], 'level': 'INFO'},
         'news': {'handlers': ['console'], 'level': 'INFO'},
+        'dsprofeta': {'handlers': ['console'], 'level': 'INFO'},
     },
 }
 

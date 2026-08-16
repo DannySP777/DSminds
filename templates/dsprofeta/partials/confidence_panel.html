@@ -1,0 +1,43 @@
+{% comment %}
+Panel de confianza: sale del track record REAL de predicciones ya
+resueltas (incluyendo las de backtest_predictions), no de un número
+inventado. Contexto esperado: confidence, confidence_label_text (ver
+dsprofeta/confidence.py y views.predictor_home).
+{% endcomment %}
+{% if not confidence or not confidence.available %}
+    <p class="empty-state">{{ T.dsp_confidence_no_data }}</p>
+{% else %}
+    <div class="confidence-summary">
+        <span class="gauge-dot gauge-dot--{{ confidence.css_level }}"></span>
+        <strong class="confidence-summary__label">{{ confidence_label_text }}</strong>
+    </div>
+    <div class="fundamentals-grid" style="margin-top: 1rem;">
+        <div class="fundamentals-item">
+            <span class="fundamentals-label">{{ T.dsp_confidence_direction_accuracy }}</span>
+            <span class="fundamentals-value">
+                {% if confidence.direction_accuracy != None %}{{ confidence.direction_accuracy }}%{% else %}{{ T.dsp_no_data }}{% endif %}
+            </span>
+        </div>
+        <div class="fundamentals-item">
+            <span class="fundamentals-label">{{ T.dsp_confidence_mean_error }}</span>
+            <span class="fundamentals-value">
+                {% if confidence.mean_error_pct != None %}{{ confidence.mean_error_pct }}%{% else %}{{ T.dsp_no_data }}{% endif %}
+            </span>
+        </div>
+        <div class="fundamentals-item">
+            <span class="fundamentals-label">{{ T.dsp_confidence_resolved }}</span>
+            <span class="fundamentals-value">{{ confidence.n_resolved }}</span>
+        </div>
+        {% if confidence.run %}
+        <div class="fundamentals-item">
+            <span class="fundamentals-label">{{ T.dsp_confidence_train_mae }}</span>
+            <span class="fundamentals-value">{{ confidence.run.mae }}</span>
+        </div>
+        <div class="fundamentals-item">
+            <span class="fundamentals-label">{{ T.dsp_confidence_model_version }}</span>
+            <span class="fundamentals-value">{{ confidence.run.version }}</span>
+        </div>
+        {% endif %}
+    </div>
+    <p class="scan-date" style="margin-top: 1rem;">{{ T.dsp_confidence_explainer }}</p>
+{% endif %}

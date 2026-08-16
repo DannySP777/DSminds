@@ -1,0 +1,15 @@
+{% comment %}
+Velocímetro de DIRECCIÓN del precio (rojo=baja, amarillo=indecisión,
+verde=alza) — combina RSI + MACD + la predicción más reciente. La
+confianza (% de acierto direccional) es otra cosa y se muestra aparte,
+como semáforo simple en confidence_panel.html, no aquí. Contexto
+esperado: direction_dial (ver dsprofeta/dial_gauges.py).
+{% endcomment %}
+<div class="indicator-bar">
+    <div class="indicator-bar__item indicator-bar__item--big">
+        <span class="indicator-bar__label">{{ T.dsp_final_signal_label }}</span>
+        {% if direction_dial.html %}{{ direction_dial.html|safe }}{% endif %}
+        <span class="indicator-bar__value indicator-bar__value--big">{{ direction_dial.signal_label }}</span>
+        <span class="indicator-bar__hint">{{ T.dsp_final_signal_explainer }}</span>
+    </div>
+</div>

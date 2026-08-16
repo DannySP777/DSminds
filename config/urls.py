@@ -29,5 +29,6 @@ urlpatterns = [
     path('', include('scanner.urls')),
     path('noticias/', include('news.urls')),
     path('blog/', include('blog.urls')),
+    path('prediccion/', include('dsprofeta.urls')),
     path('', include(pages_urlpatterns)),
 ]

@@ -125,6 +125,11 @@ function initScannerDashboard() {
             .then(function (r) { return r.text(); })
             .then(function (html) {
                 indicatorsBody.innerHTML = html;
+                // El panel de indicadores ahora incluye la gráfica de
+                // balances financieros (Plotly, ver financials_panel.html),
+                // que trae su propio <script> embebido — sin esto, ese
+                // script nunca se ejecuta y la gráfica queda en blanco.
+                runInlineScripts(indicatorsBody);
             })
             .catch(function () {
                 indicatorsBody.innerHTML = '<p class="mini-chart-error">No se pudieron cargar los indicadores.</p>';

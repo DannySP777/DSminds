@@ -1,0 +1,15 @@
+{% comment %}
+Panel de gráfica reutilizable de DSprofeta: predicción vs. precio real.
+Contexto esperado: symbol, timeframe, chart (con caption/stats_text/mae_text
+ya formateados en el idioma correcto por views.predictor_home).
+{% endcomment %}
+{% if chart.error %}
+    <p class="empty-state">{{ chart.error }}</p>
+{% else %}
+    <div class="chart-wrap">{{ chart.html|safe }}</div>
+    <p class="scan-date">{{ chart.caption }}</p>
+    <p class="scan-date">
+        {{ chart.stats_text }}
+        {% if chart.mae_text %} &middot; {{ chart.mae_text }}{% endif %}
+    </p>
+{% endif %}

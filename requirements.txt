@@ -11,3 +11,6 @@ psycopg2-binary>=2.9  # driver de PostgreSQL (usado en producción vía DATABASE
 dj-database-url>=2.2  # parsea DATABASE_URL para configurar Postgres en producción
 gunicorn>=22.0  # servidor WSGI de producción (runserver es solo para desarrollo)
 whitenoise>=6.7  # sirve los archivos estáticos (CSS/JS/imágenes) en producción
+lightgbm>=4.3  # modelo de predicción de precios de DSprofeta (gradient boosting, liviano, sin TensorFlow)
+scikit-learn>=1.4  # split de datos y métricas (MAE/RMSE) para evaluar el modelo de DSprofeta
+joblib>=1.4  # guarda/carga los modelos entrenados de DSprofeta a disco

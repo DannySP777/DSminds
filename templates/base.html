@@ -85,6 +85,7 @@
             <nav class="main-nav">
                 <a href="/" class="main-nav__link{% if request.path == '/' or '/accion/' in request.path or '/buscar/' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_scanner }}</a>
                 <a href="/noticias/" class="main-nav__link{% if '/noticias' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_news }}</a>
+                <a href="/prediccion/" class="main-nav__link{% if '/prediccion' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_dsprofeta }}</a>
                 <a href="/blog/" class="main-nav__link{% if '/blog' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_blog }}</a>
                 <a href="/acerca-de/" class="main-nav__link{% if '/acerca-de' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_about }}</a>
                 <a href="/contacto/" class="main-nav__link{% if '/contacto' in request.path %} main-nav__link--active{% endif %}">{{ T.nav_suggestions }}</a>
@@ -93,6 +94,7 @@
                 <a href="{% url 'set-language' 'es' %}" class="lang-switch__link{% if LANG == 'es' %} lang-switch__link--active{% endif %}">ES</a>
                 <a href="{% url 'set-language' 'en' %}" class="lang-switch__link{% if LANG == 'en' %} lang-switch__link--active{% endif %}">EN</a>
             </div>
+            {% block header_tagline %}{% endblock %}
         </div>
     </header>
 

@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 
 from config.translations import DEFAULT_LANG, SUPPORTED_LANGS, get_translations
 
-from .charts import DEFAULT_INTERVAL, INTERVALS, build_mini_chart, build_price_chart
+from .charts import DEFAULT_INTERVAL, INTERVALS, build_financials_chart, build_mini_chart, build_price_chart
 from .fundamentals import get_fundamentals
 from .indices import get_market_indices
 from .models import ScanResult, Ticker
@@ -173,6 +173,7 @@ def home(request):
     selected_symbol = resultados[0].ticker.symbol if resultados else None
     selected_chart = build_price_chart(selected_symbol, DEFAULT_INTERVAL, lang) if selected_symbol else None
     selected_fundamentals = get_fundamentals(selected_symbol, lang) if selected_symbol else None
+    selected_financials_chart = build_financials_chart(selected_symbol, lang) if selected_symbol else None
 
     return render(request, "scanner/home.html", {
         "resultados": resultados,
@@ -193,6 +194,7 @@ def home(request):
         "selected_chart": selected_chart,
         "selected_interval": DEFAULT_INTERVAL,
         "selected_fundamentals": selected_fundamentals,
+        "selected_financials_chart": selected_financials_chart,
     })
 
 
@@ -205,6 +207,7 @@ def ticker_detail(request, symbol):
 
     chart = build_price_chart(symbol, interval, lang)
     fundamentals = get_fundamentals(symbol, lang)
+    financials_chart = build_financials_chart(symbol, lang)
     latest_result = (
         ScanResult.objects.select_related("ticker")
         .filter(ticker__symbol=symbol)
@@ -219,6 +222,7 @@ def ticker_detail(request, symbol):
         "intervals": INTERVALS,
         "latest_result": latest_result,
         "fundamentals": fundamentals,
+        "financials_chart": financials_chart,
     })
 
 
@@ -244,9 +248,11 @@ def ticker_indicators_panel(request, symbol):
     lang = _get_lang(request)
     symbol = symbol.upper()
     fundamentals = get_fundamentals(symbol, lang)
+    financials_chart = build_financials_chart(symbol, lang)
     return render(request, "scanner/partials/indicators_panel.html", {
         "symbol": symbol,
         "fundamentals": fundamentals,
+        "financials_chart": financials_chart,
     })
 
 

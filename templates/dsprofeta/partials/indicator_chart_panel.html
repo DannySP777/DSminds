@@ -1,0 +1,9 @@
+{% comment %}
+Panel de gráfica genérico para un indicador (RSI o MACD), en un panel
+aparte del de precio/predicción. Contexto esperado: chart.
+{% endcomment %}
+{% if chart.error %}
+    <p class="empty-state">{{ chart.error }}</p>
+{% else %}
+    <div class="chart-wrap">{{ chart.html|safe }}</div>
+{% endif %}

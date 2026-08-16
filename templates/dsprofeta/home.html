@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}{{ T.dsp_page_title }}{% endblock %}
+{% block meta_description %}{{ T.dsp_meta_description }}{% endblock %}
+
+{% block header_tagline %}
+    <span class="header-tagline">{{ T.dsp_header_tagline }}</span>
+{% endblock %}
+
+{% block extra_head %}
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="tool-disclaimer">
+    {{ T.dsp_disclaimer }} <strong>{{ T.dsp_disclaimer_strong }}</strong> {{ T.dsp_disclaimer_suffix }}
+</div>
+
+<section class="hero">
+    <h1>{{ T.dsp_hero_title }}</h1>
+    <p>{{ T.dsp_hero_subtitle }}</p>
+</section>
+
+<form method="get" class="filter-form" id="dsp-filter-form">
+    <fieldset>
+        <legend>{{ T.dsp_filter_legend }}</legend>
+        <label>{{ T.dsp_filter_asset }}
+            <select name="asset" onchange="document.getElementById('dsp-filter-form').submit()">
+                {% for asset in assets %}
+                    <option value="{{ asset.symbol }}" {% if asset.symbol == selected_asset %}selected{% endif %}>{{ asset.display_name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>{{ T.dsp_filter_timeframe }}
+            <select name="timeframe" onchange="document.getElementById('dsp-filter-form').submit()">
+                {% for value, label in timeframes %}
+                    <option value="{{ value }}" {% if value == selected_timeframe %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>{{ T.dsp_filter_history_bars }}
+            <select name="history_bars" onchange="document.getElementById('dsp-filter-form').submit()">
+                {% for n in history_bar_choices %}
+                    <option value="{{ n }}" {% if n == selected_history_bars %}selected{% endif %}>{{ n }} {{ T.dsp_history_bars_suffix }}</option>
+                {% endfor %}
+            </select>
+        </label>
+    </fieldset>
+</form>
+
+<form method="post" action="{% url 'predictor-predict' %}" style="margin: 1rem 0 1.5rem;">
+    {% csrf_token %}
+    <input type="hidden" name="asset" value="{{ selected_asset }}">
+    <input type="hidden" name="timeframe" value="{{ selected_timeframe }}">
+    <input type="hidden" name="history_bars" value="{{ selected_history_bars }}">
+    <button type="submit" class="price-filter__btn price-filter__btn--high">{{ T.dsp_btn_generate }}</button>
+</form>
+
+<div class="dashboard">
+    <div class="dashboard-col dashboard-col--main">
+        <section class="chart-section dashboard-panel">
+            <div class="dashboard-panel__header">
+                <h2>{{ T.dsp_price_panel_title }} — {{ selected_asset }}</h2>
+            </div>
+            <div class="dashboard-panel__body">
+                {% include "dsprofeta/partials/chart_panel.html" with symbol=selected_asset timeframe=selected_timeframe %}
+            </div>
+        </section>
+        <section class="chart-section dashboard-panel">
+            <div class="dashboard-panel__header">
+                <h2>{{ T.dsp_rsi_panel_title }}</h2>
+            </div>
+            <div class="dashboard-panel__body">
+                {% include "dsprofeta/partials/indicator_chart_panel.html" with chart=rsi_chart %}
+            </div>
+        </section>
+        <section class="chart-section dashboard-panel">
+            <div class="dashboard-panel__header">
+                <h2>{{ T.dsp_macd_panel_title }}</h2>
+            </div>
+            <div class="dashboard-panel__body">
+                {% include "dsprofeta/partials/indicator_chart_panel.html" with chart=macd_chart %}
+            </div>
+        </section>
+    </div>
+    <div class="dashboard-col dashboard-col--side">
+        <section class="dashboard-panel smart-analysis">
+            <div class="dashboard-panel__header">
+                <h2>{{ T.dsp_smart_analysis_title }}</h2>
+            </div>
+            <div class="dashboard-panel__body">
+                {% include "dsprofeta/partials/indicator_bar.html" %}
+                {% include "dsprofeta/partials/commentary_panel.html" %}
+                {% include "dsprofeta/partials/confidence_panel.html" %}
+                <p class="scan-date" style="margin-top: 1rem;">{{ T.dsp_smart_analysis_reminder }}</p>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

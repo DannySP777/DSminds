@@ -108,6 +108,11 @@ Contexto esperado: symbol, fundamentals.
         </div>
     </div>
     <p class="disclaimer-note">{{ T.fund_disclaimer }}</p>
+
+    <div class="financials-panel">
+        <h4>{{ T.ticker_financials_h2 }}</h4>
+        {% include "scanner/partials/financials_panel.html" %}
+    </div>
 {% else %}
     <p class="empty-state">{{ T.fund_no_data_available }} {{ symbol }}.</p>
 {% endif %}

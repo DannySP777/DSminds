@@ -17,6 +17,9 @@ staticfiles/
 # Variables de entorno / secretos
 .env
 
+# Modelos entrenados de DSprofeta (se regeneran con train_predictors)
+dsprofeta/trained_models/*.joblib
+
 # VS Code
 .vscode/
 

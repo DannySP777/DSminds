@@ -5,8 +5,8 @@
 {% block meta_description %}{{ T.home_meta_description }}{% endblock %}
 {% block body_class %}page-scanner{% endblock %}
 
-{% block header_subtitle %}
-    <span class="header-subtitle" title="{{ T.header_subtitle_title }}">{{ T.header_subtitle_text }}</span>
+{% block header_tagline %}
+    <span class="header-tagline" title="{{ T.header_subtitle_title }}">{{ T.header_subtitle_text }}</span>
 {% endblock %}
 
 {% block extra_head %}
@@ -92,6 +92,8 @@
             </div>
         </form>
     </details>
+
+    <p class="scan-intro">{{ T.scan_intro }}</p>
 
     <div class="dashboard">
         <div class="dashboard-col dashboard-col--main">
@@ -204,10 +206,10 @@
 
         <div class="dashboard-col dashboard-col--side">
             <section class="dashboard-panel dashboard-panel--indicators">
-                <header class="dashboard-panel__header"><h2>&#128269; {{ T.panel_indicators }}</h2></header>
+                <header class="dashboard-panel__header"><h2>&#129504; {{ T.panel_indicators }}</h2></header>
                 <div class="dashboard-panel__body" id="indicators-panel-body">
                     {% if selected_symbol %}
-                        {% include "scanner/partials/indicators_panel.html" with symbol=selected_symbol fundamentals=selected_fundamentals %}
+                        {% include "scanner/partials/indicators_panel.html" with symbol=selected_symbol fundamentals=selected_fundamentals financials_chart=selected_financials_chart %}
                     {% else %}
                         <p class="empty-state">{{ T.select_stock_for_indicators }}</p>
                     {% endif %}

@@ -1,0 +1,16 @@
+{% comment %}
+Balances financieros (últimos 3 trimestres): botones HTML normales del
+sitio + Plotly.restyle() para alternar entre estado de resultados y
+hoja de balance — no usa el "updatemenus" nativo de Plotly porque su
+botón activo se ve blanco/roto sobre el tema oscuro del sitio.
+Contexto esperado: financials_chart (ver scanner/charts.py).
+{% endcomment %}
+{% if financials_chart.error %}
+    <p class="empty-state">{{ financials_chart.error }}</p>
+{% elif financials_chart.html %}
+    <div class="financials-toggle">
+        <button type="button" class="price-filter__btn price-filter__btn--high" onclick="Plotly.restyle('{{ financials_chart.div_id }}', {visible: {{ financials_chart.income_visibility_json|safe }}})">{{ financials_chart.income_btn_label }}</button>
+        <button type="button" class="price-filter__btn price-filter__btn--high" onclick="Plotly.restyle('{{ financials_chart.div_id }}', {visible: {{ financials_chart.balance_visibility_json|safe }}})">{{ financials_chart.balance_btn_label }}</button>
+    </div>
+    <div class="chart-wrap">{{ financials_chart.html|safe }}</div>
+{% endif %}

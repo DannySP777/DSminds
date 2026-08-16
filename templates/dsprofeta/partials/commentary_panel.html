@@ -1,0 +1,37 @@
+{% comment %}
+Panel de comentarios: interpretación automática de RSI/MACD (reglas fijas,
+ver dsprofeta/commentary.py) y próximos eventos del calendario económico
+que podrían mover el precio. Contexto esperado: rsi_comment, macd_comment,
+upcoming_events.
+{% endcomment %}
+<div class="smart-analysis-item smart-analysis-item--{{ rsi_comment.css_level }}">
+    <span class="smart-analysis-item__label">RSI</span>
+    <p class="smart-analysis-item__text">
+        <span class="gauge-dot gauge-dot--{{ rsi_comment.css_level }}"></span>
+        {{ rsi_comment.text }}
+    </p>
+</div>
+<div class="smart-analysis-item smart-analysis-item--{{ macd_comment.css_level }}">
+    <span class="smart-analysis-item__label">MACD</span>
+    <p class="smart-analysis-item__text">
+        <span class="gauge-dot gauge-dot--{{ macd_comment.css_level }}"></span>
+        {{ macd_comment.text }}
+    </p>
+</div>
+
+<div class="smart-analysis-item smart-analysis-item--unknown">
+    <span class="smart-analysis-item__label">{{ T.dsp_calendar_title }}</span>
+    {% if not upcoming_events %}
+        <p class="scan-date">{{ T.dsp_calendar_no_events }}</p>
+    {% else %}
+        <ul style="list-style: none; padding: 0; margin: 0.5rem 0 0;">
+            {% for event in upcoming_events %}
+                <li class="smart-analysis-item smart-analysis-item--{{ event.css_level }}">
+                    <span class="gauge-dot gauge-dot--{{ event.css_level }}"></span>
+                    <strong>{{ event.event_time|date:"D H:i" }} UTC</strong> — {{ event.title }} ({{ event.country }})
+                    <p class="smart-analysis-item__text">{{ event.comment }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>

@@ -9,6 +9,8 @@ Los resultados se cachean por símbolo+periodo para no volver a golpear
 Yahoo Finance en cada request (por ejemplo, cada vez que alguien pasa
 el mouse sobre un ticker en la tabla del scanner).
 """
+import json
+
 import pandas as pd
 import plotly.graph_objects as go
 import yfinance as yf
@@ -17,6 +19,7 @@ from plotly.subplots import make_subplots
 from ta.momentum import RSIIndicator
 from ta.trend import MACD
 
+from .financials import get_financial_statements
 from .fundamentals import get_fundamentals
 
 INTERVALS = {
@@ -304,4 +307,121 @@ def build_mini_chart(symbol: str, lang: str = "es") -> dict:
     )
     result = {"html": html, "error": None}
     cache.set(cache_key, result, MINI_CHART_TTL)
+    return result
+
+
+FINANCIALS_CHART_LABELS = {
+    "es": {
+        "income_btn": "Estado de resultados", "balance_btn": "Hoja de balance",
+        "no_data": "No hay balances financieros públicos disponibles para",
+        # "Billón" en español es 10^12, NO 10^9 como "billion" en inglés —
+        # por eso el eje nunca dice "billones" para miles de millones, y
+        # tampoco usamos el sufijo "G" (giga) de Plotly, que nadie lee como
+        # plata. Se rotula la unidad completa en el título del eje.
+        "unit_trillions": "USD (billones)", "unit_billions": "USD (miles de millones)",
+        "unit_millions": "USD (millones)", "unit_plain": "USD",
+    },
+    "en": {
+        "income_btn": "Income statement", "balance_btn": "Balance sheet",
+        "no_data": "No public financial statements available for",
+        "unit_trillions": "USD (trillions)", "unit_billions": "USD (billions)",
+        "unit_millions": "USD (millions)", "unit_plain": "USD",
+    },
+}
+
+
+def _pick_financials_scale(all_values, labels):
+    magnitude = max((abs(v) for v in all_values if v is not None), default=0)
+    if magnitude >= 1e12:
+        return 1e12, labels["unit_trillions"]
+    if magnitude >= 1e9:
+        return 1e9, labels["unit_billions"]
+    if magnitude >= 1e6:
+        return 1e6, labels["unit_millions"]
+    return 1, labels["unit_plain"]
+
+
+def build_financials_chart(symbol: str, lang: str = "es") -> dict:
+    """
+    Últimos 3 trimestres de estado de resultados (ingresos/utilidad
+    neta) y hoja de balance (activos/pasivos/patrimonio) — inspirado en
+    el resumen financiero típico de apps de bolsa, no una copia exacta.
+
+    El toggle entre las dos vistas se arma con botones HTML normales del
+    sitio (ver templates), no con el "updatemenus" nativo de Plotly: ese
+    widget resalta el botón activo con un fondo claro fijo que Plotly no
+    deja recolorear del todo, y se ve como un cuadro blanco roto sobre el
+    tema oscuro del sitio.
+    """
+    lang = lang if lang in FINANCIALS_CHART_LABELS else "es"
+    cache_key = f"scanner:financialschart:{symbol}:{lang}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    labels = FINANCIALS_CHART_LABELS[lang]
+    data = get_financial_statements(symbol, lang)
+    if not data["has_data"]:
+        result = {"html": None, "error": f"{labels['no_data']} {symbol}."}
+        cache.set(cache_key, result, CACHE_TTL.get("1d", 1800))
+        return result
+
+    x = data["quarter_labels"]
+    income_series = data["income"]
+    balance_series = data["balance"]
+
+    all_values = [v for series in (income_series, balance_series) for values in series.values() for v in values]
+    divisor, unit_label = _pick_financials_scale(all_values, labels)
+
+    def scale(values):
+        return [(v / divisor) if v is not None else None for v in values]
+
+    income_colors = [COLORS["up"], "#f5a623"]
+    balance_colors = [COLORS["up"], COLORS["down"], "#f5a623"]
+
+    fig = go.Figure()
+    for i, (name, values) in enumerate(income_series.items()):
+        fig.add_trace(go.Bar(x=x, y=scale(values), name=name, marker_color=income_colors[i % len(income_colors)], visible=True))
+    for i, (name, values) in enumerate(balance_series.items()):
+        fig.add_trace(go.Bar(x=x, y=scale(values), name=name, marker_color=balance_colors[i % len(balance_colors)], visible=False))
+
+    n_income, n_balance = len(income_series), len(balance_series)
+    income_visibility = [True] * n_income + [False] * n_balance
+    balance_visibility = [False] * n_income + [True] * n_balance
+
+    # Django cachea este resultado por símbolo+idioma — el div_id incluye
+    # ambos para que dos gráficas nunca compartan id en la misma página
+    # (ej. no pasa hoy, pero evita el bug si en el futuro se muestran dos
+    # activos a la vez).
+    div_id = f"financials-chart-{symbol}-{lang}"
+
+    fig.update_layout(
+        paper_bgcolor=COLORS["bg"],
+        plot_bgcolor=COLORS["bg"],
+        font=dict(color=COLORS["text"]),
+        barmode="group",
+        margin=dict(l=60, r=20, t=30, b=30),
+        height=340,
+        legend=dict(orientation="h", y=1.16),
+        yaxis_title=unit_label,
+    )
+    fig.update_xaxes(gridcolor=COLORS["grid"])
+    fig.update_yaxes(gridcolor=COLORS["grid"])
+
+    html = fig.to_html(
+        full_html=False,
+        include_plotlyjs=False,
+        div_id=div_id,
+        config={"displaylogo": False, "responsive": True},
+    )
+    result = {
+        "html": html,
+        "error": None,
+        "div_id": div_id,
+        "income_btn_label": labels["income_btn"],
+        "balance_btn_label": labels["balance_btn"],
+        "income_visibility_json": json.dumps(income_visibility),
+        "balance_visibility_json": json.dumps(balance_visibility),
+    }
+    cache.set(cache_key, result, CACHE_TTL.get("1d", 1800))
     return result
