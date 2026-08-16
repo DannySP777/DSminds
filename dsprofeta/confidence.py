@@ -8,7 +8,6 @@ predicción, más que el error absoluto en precio.
 """
 from config.translations import get_translations
 
-from .ml import TIMEFRAME_DELTAS
 from .models import ModelRun, PriceBar, Prediction
 
 # Reutiliza los mismos colores que el gauge de fundamentales del scanner
@@ -35,7 +34,6 @@ def compute_confidence(asset, timeframe, lookback_predictions=100, lang="es"):
             "label": level_labels["unknown"], "css_level": LEVEL_CSS_CLASS["unknown"],
         }
 
-    delta = TIMEFRAME_DELTAS[timeframe]
     errors_pct = []
     direction_hits, direction_total = 0, 0
 
@@ -45,11 +43,17 @@ def compute_confidence(asset, timeframe, lookback_predictions=100, lang="es"):
         if actual:
             errors_pct.append(abs(actual - predicted) / actual * 100)
 
-        # La vela base es exactamente target_time - delta: así se armó
-        # target_time tanto en predict_next como en el backtest.
-        base_bar = PriceBar.objects.filter(
-            asset=asset, timeframe=timeframe, timestamp=prediction.target_time - delta,
-        ).first()
+        # La vela base es la última disponible antes de target_time. No se
+        # puede asumir timestamp == target_time - delta porque predict_next
+        # adelanta target_time cuando cae en fin de semana (ver
+        # ml._skip_weekend) — la resta ya no da la vela real en ese caso.
+        base_bar = (
+            PriceBar.objects.filter(
+                asset=asset, timeframe=timeframe, timestamp__lt=prediction.target_time,
+            )
+            .order_by("-timestamp")
+            .first()
+        )
         if base_bar is None:
             continue
         base_close = float(base_bar.close)

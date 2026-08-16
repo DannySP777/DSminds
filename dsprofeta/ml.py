@@ -33,6 +33,21 @@ def _model_path(asset, timeframe, version):
     return MODELS_DIR / f"{asset.symbol}_{timeframe}_{version}.joblib"
 
 
+def _skip_weekend(dt):
+    """
+    El mercado no opera sábado ni domingo (charts.py oculta ese rango con
+    un rangebreak para no mostrar huecos), así que un target_time que caiga
+    ahí nunca se ve dibujado aunque esté guardado correctamente. Lo
+    adelantamos al lunes a la misma hora — el próximo momento en que
+    realmente puede existir una vela nueva.
+    """
+    if dt.weekday() == 5:  # sábado
+        return dt + timedelta(days=2)
+    if dt.weekday() == 6:  # domingo
+        return dt + timedelta(days=1)
+    return dt
+
+
 def train(asset, timeframe, test_size=0.2):
     """
     Entrena un modelo nuevo para (asset, timeframe) con el historial
@@ -106,7 +121,7 @@ def predict_next(asset, timeframe):
     predicted_return = float(model.predict(X)[0])
     current_close = float(X["close"].iloc[0])
     predicted_close = current_close * (1 + predicted_return)
-    target_time = current_time + TIMEFRAME_DELTAS[timeframe]
+    target_time = _skip_weekend(current_time + TIMEFRAME_DELTAS[timeframe])
 
     return Prediction.objects.create(
         asset=asset, timeframe=timeframe, target_time=target_time,
