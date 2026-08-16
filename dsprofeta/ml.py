@@ -1,9 +1,9 @@
 """
 Entrenamiento e inferencia del predictor de DSprofeta (LightGBM).
 """
+import io
 import logging
 from datetime import timedelta
-from pathlib import Path
 
 import joblib
 import pandas as pd
@@ -14,9 +14,6 @@ from .features import FEATURE_COLUMNS, build_feature_frame, build_inference_feat
 from .models import ModelRun, Prediction
 
 logger = logging.getLogger(__name__)
-
-MODELS_DIR = Path(__file__).resolve().parent / "trained_models"
-MODELS_DIR.mkdir(exist_ok=True)
 
 TIMEFRAME_DELTAS = {
     "15m": timedelta(minutes=15),
@@ -29,8 +26,14 @@ TIMEFRAME_DELTAS = {
 MIN_TRAINING_SAMPLES = 30
 
 
-def _model_path(asset, timeframe, version):
-    return MODELS_DIR / f"{asset.symbol}_{timeframe}_{version}.joblib"
+def _dump_model(model):
+    buffer = io.BytesIO()
+    joblib.dump(model, buffer)
+    return buffer.getvalue()
+
+
+def _load_model(run):
+    return joblib.load(io.BytesIO(run.model_blob))
 
 
 def _skip_weekend(dt):
@@ -87,12 +90,12 @@ def train(asset, timeframe, test_size=0.2):
         mae = rmse = 0.0
 
     version = dj_timezone.now().strftime("%Y%m%d%H%M%S")
-    joblib.dump(model, _model_path(asset, timeframe, version))
 
     ModelRun.objects.filter(asset=asset, timeframe=timeframe, is_active=True).update(is_active=False)
     run = ModelRun.objects.create(
         asset=asset, timeframe=timeframe, version=version,
         mae=round(mae, 6), rmse=round(rmse, 6), n_samples=len(X), is_active=True,
+        model_blob=_dump_model(model),
     )
     logger.info(
         "Entrenado %s (%s) v%s — MAE=%.4f RMSE=%.4f n=%d",
@@ -103,7 +106,7 @@ def train(asset, timeframe, test_size=0.2):
 
 def _load_active_run(asset, timeframe):
     run = ModelRun.objects.filter(asset=asset, timeframe=timeframe, is_active=True).first()
-    if run is None:
+    if run is None or not run.model_blob:
         raise ValueError(
             f"No hay un modelo entrenado para {asset.symbol} ({timeframe}). "
             f"Corre train_predictors primero."
@@ -113,7 +116,7 @@ def _load_active_run(asset, timeframe):
 
 def predict_next(asset, timeframe):
     run = _load_active_run(asset, timeframe)
-    model = joblib.load(_model_path(asset, timeframe, run.version))
+    model = _load_model(run)
     X, current_time = build_inference_features(asset, timeframe)
     if X is None:
         raise ValueError(f"No hay suficientes datos recientes para predecir {asset.symbol} ({timeframe}).")
@@ -137,7 +140,7 @@ def predict_from_features(asset, timeframe, feature_row):
     Devuelve (predicted_return, model_version).
     """
     run = _load_active_run(asset, timeframe)
-    model = joblib.load(_model_path(asset, timeframe, run.version))
+    model = _load_model(run)
     X = pd.DataFrame([feature_row], columns=FEATURE_COLUMNS)
     predicted_return = float(model.predict(X)[0])
     return predicted_return, run.version

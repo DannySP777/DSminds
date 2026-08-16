@@ -112,6 +112,12 @@ class ModelRun(models.Model):
     rmse = models.DecimalField(max_digits=14, decimal_places=6)
     n_samples = models.PositiveIntegerField()
     is_active = models.BooleanField(default=False)
+    # El modelo entrenado (joblib) se guarda acá en vez de en disco: Railway
+    # reconstruye el contenedor en cada deploy y borra el filesystem local,
+    # así que un archivo en dsprofeta/trained_models/ desaparece con el
+    # próximo push aunque la fila de ModelRun siga apuntando a esa versión.
+    # La base de datos es lo único que persiste entre deploys.
+    model_blob = models.BinaryField(null=True, blank=True)
 
     class Meta:
         ordering = ["-trained_at"]
