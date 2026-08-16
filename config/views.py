@@ -17,6 +17,7 @@ from .translations import SUPPORTED_LANGS
 STATIC_SITEMAP_PATHS = [
     "/",
     "/noticias/",
+    "/prediccion/",
     "/blog/",
     "/acerca-de/",
     "/contacto/",

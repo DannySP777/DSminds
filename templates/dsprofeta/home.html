@@ -9,6 +9,19 @@
 
 {% block extra_head %}
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    {% autoescape off %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "{{ T.dsp_hero_title }}",
+        "description": "{{ T.dsp_meta_description }}",
+        "applicationCategory": "FinanceApplication",
+        "url": "https://www.dsminds.com{{ request.path }}",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+    {% endautoescape %}
 {% endblock %}
 
 {% block content %}
@@ -20,6 +33,7 @@
     <h1>{{ T.dsp_hero_title }}</h1>
     <p>{{ T.dsp_hero_subtitle }}</p>
 </section>
+<p class="scan-intro">{{ T.dsp_seo_intro }}</p>
 
 <form method="get" class="filter-form" id="dsp-filter-form">
     <fieldset>
