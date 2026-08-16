@@ -196,11 +196,14 @@ def _compute_prediction_chart(asset, timeframe, history_bars, lang):
         actual = [float(p["actual_close"]) if p["actual_close"] is not None else None for p in visible_predictions]
         fig.add_trace(go.Scatter(
             x=px, y=predicted, mode="lines+markers", name=T["dsp_trace_predicted"],
-            line=dict(color=COLORS["predicted"], width=2, dash="dot"), marker=dict(size=7),
+            line=dict(color=COLORS["predicted"], width=2, dash="dot"),
+            marker=dict(size=18, symbol="star", color="#ffffff", line=dict(color=COLORS["predicted"], width=2)),
         ))
         fig.add_trace(go.Scatter(
             x=px, y=actual, mode="lines+markers", name=T["dsp_trace_actual"],
-            line=dict(color=COLORS["actual"], width=2), marker=dict(size=7), connectgaps=False,
+            line=dict(color=COLORS["actual"], width=2),
+            marker=dict(size=11, color=COLORS["actual"], line=dict(color="#ffffff", width=1.5)),
+            connectgaps=False,
         ))
 
     # Plotly no dibuja los ticks del eje secundario si ningún trace lo
