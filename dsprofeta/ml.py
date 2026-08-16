@@ -8,7 +8,6 @@ from pathlib import Path
 import joblib
 import pandas as pd
 from django.utils import timezone as dj_timezone
-from lightgbm import LGBMRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from .features import FEATURE_COLUMNS, build_feature_frame, build_inference_features
@@ -42,6 +41,8 @@ def train(asset, timeframe, test_size=0.2):
     con cada reentreno). Split temporal (nunca aleatorio): la parte
     de test es siempre posterior a la de entrenamiento.
     """
+    from lightgbm import LGBMRegressor
+
     X, y = build_feature_frame(asset, timeframe)
     if len(X) < MIN_TRAINING_SAMPLES:
         raise ValueError(
