@@ -197,7 +197,7 @@ def _compute_prediction_chart(asset, timeframe, history_bars, lang):
         fig.add_trace(go.Scatter(
             x=px, y=predicted, mode="lines+markers", name=T["dsp_trace_predicted"],
             line=dict(color=COLORS["predicted"], width=2, dash="dot"),
-            marker=dict(size=18, symbol="star", color="#ffffff", line=dict(color=COLORS["predicted"], width=2)),
+            marker=dict(size=11, color="#ffffff", line=dict(color=COLORS["predicted"], width=2)),
         ))
         fig.add_trace(go.Scatter(
             x=px, y=actual, mode="lines+markers", name=T["dsp_trace_actual"],
