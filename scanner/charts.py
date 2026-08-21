@@ -42,11 +42,13 @@ CACHE_TTL = {
 MINI_CHART_TTL = 300
 
 COLORS = {
-    "bg": "#171a21",
-    "grid": "#262a33",
-    "text": "#e6e8eb",
-    "up": "#3ddc97",
+    "bg": "#121820",
+    "grid": "#232b35",
+    "text": "#edeff2",
+    "up": "#3fbf7f",
     "down": "#e5484d",
+    "accent": "#8bc78a",
+    "warning": "#f2994a",
 }
 
 CHART_LABELS = {
@@ -192,9 +194,9 @@ def _compute_price_chart(symbol: str, interval_key: str, lang: str = "es") -> di
     if quarter_low:
         fig.add_hline(
             y=quarter_low, row=1, col=1,
-            line_dash="dot", line_color="#f5a623", line_width=1.5, opacity=0.8,
+            line_dash="dot", line_color=COLORS["warning"], line_width=1.5, opacity=0.8,
             annotation_text=f"{labels['ref_quarter_low']}: ${quarter_low:,.2f}",
-            annotation_position="bottom left", annotation_font_size=10, annotation_font_color="#f5a623",
+            annotation_position="bottom left", annotation_font_size=10, annotation_font_color=COLORS["warning"],
         )
 
     volume_colors = [
@@ -206,7 +208,7 @@ def _compute_price_chart(symbol: str, interval_key: str, lang: str = "es") -> di
     ), row=2, col=1)
 
     fig.add_trace(go.Scatter(
-        x=data.index, y=rsi, mode="lines", name=labels["rsi"], line=dict(color="#f5a623", width=1.5),
+        x=data.index, y=rsi, mode="lines", name=labels["rsi"], line=dict(color=COLORS["accent"], width=1.5),
     ), row=3, col=1)
     fig.add_hline(y=70, line_dash="dash", line_color=COLORS["down"], opacity=0.5, row=3, col=1)
     fig.add_hline(y=30, line_dash="dash", line_color=COLORS["up"], opacity=0.5, row=3, col=1)
@@ -219,7 +221,7 @@ def _compute_price_chart(symbol: str, interval_key: str, lang: str = "es") -> di
         x=data.index, y=macd_line, mode="lines", name="MACD", line=dict(color=COLORS["text"], width=1.5),
     ), row=4, col=1)
     fig.add_trace(go.Scatter(
-        x=data.index, y=macd_signal_line, mode="lines", name="Señal", line=dict(color="#f5a623", width=1.5),
+        x=data.index, y=macd_signal_line, mode="lines", name="Señal", line=dict(color=COLORS["accent"], width=1.5),
     ), row=4, col=1)
     fig.add_hline(y=0, line_dash="dot", line_color=COLORS["text"], opacity=0.4, row=4, col=1)
 
@@ -376,8 +378,8 @@ def build_financials_chart(symbol: str, lang: str = "es") -> dict:
     def scale(values):
         return [(v / divisor) if v is not None else None for v in values]
 
-    income_colors = [COLORS["up"], "#f5a623"]
-    balance_colors = [COLORS["up"], COLORS["down"], "#f5a623"]
+    income_colors = [COLORS["up"], COLORS["accent"]]
+    balance_colors = [COLORS["up"], COLORS["down"], COLORS["accent"]]
 
     fig = go.Figure()
     for i, (name, values) in enumerate(income_series.items()):

@@ -27,7 +27,7 @@ Contexto esperado: symbol, fundamentals.
     {% if fundamentals.analyst_breakdown %}
         <div class="analyst-donut-wrap">
             <div class="analyst-donut-outer">
-                <div class="analyst-donut" style="background: conic-gradient(var(--accent) 0% {{ fundamentals.analyst_breakdown.buy_stop }}%, #f5a623 {{ fundamentals.analyst_breakdown.buy_stop }}% {{ fundamentals.analyst_breakdown.hold_stop }}%, #e5484d {{ fundamentals.analyst_breakdown.hold_stop }}% 100%);"></div>
+                <div class="analyst-donut" style="background: conic-gradient(var(--bull) 0% {{ fundamentals.analyst_breakdown.buy_stop }}%, var(--warning) {{ fundamentals.analyst_breakdown.buy_stop }}% {{ fundamentals.analyst_breakdown.hold_stop }}%, var(--bear) {{ fundamentals.analyst_breakdown.hold_stop }}% 100%);"></div>
                 <div class="analyst-donut__center">
                     <span class="analyst-donut__total">{{ fundamentals.analyst_breakdown.total }}</span>
                     <span class="analyst-donut__total-label">{{ T.fund_analysts }}</span>

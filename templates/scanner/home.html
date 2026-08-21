@@ -13,6 +13,28 @@
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 {% endblock %}
 
+{% block below_header %}
+    {% if indices %}
+        <div class="ticker-marquee" role="group" aria-label="{{ T.panel_indices }}">
+            <div class="ticker-marquee__track">
+                {% for idx in indices|add:indices %}
+                    <span class="ticker-marquee__item"{% if forloop.counter0 >= indices|length %} aria-hidden="true"{% endif %}>
+                        <span class="ticker-marquee__label">{{ T|dict_get:idx.key }}</span>
+                        {% if idx.price %}
+                            <span class="ticker-marquee__price">{{ idx.price }}</span>
+                            <span class="ticker-marquee__change--{% if idx.change_pct >= 0 %}up{% else %}down{% endif %}">
+                                {% if idx.change_pct >= 0 %}&#9650;{% else %}&#9660;{% endif %} {{ idx.change_pct }}%
+                            </span>
+                        {% else %}
+                            <span class="ticker-marquee__price">N/D</span>
+                        {% endif %}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <p class="tool-disclaimer">
         {{ T.tool_disclaimer_prefix }} <a href="/disclaimer/">{{ T.disclaimer_link_text }}</a>.
@@ -98,7 +120,7 @@
     <div class="dashboard">
         <div class="dashboard-col dashboard-col--main">
             <section class="dashboard-panel dashboard-panel--table">
-                <header class="dashboard-panel__header"><h2>&#128202; {{ T.panel_screening }}</h2></header>
+                <header class="dashboard-panel__header"><h2>{{ T.panel_screening }}</h2></header>
                 <div class="dashboard-panel__body">
                     {% if resultados %}
                         <p class="scan-date">
@@ -134,7 +156,7 @@
                                 <tbody>
                                     {% for r in resultados %}
                                     <tr class="scan-row{% if r.ticker.symbol == selected_symbol %} is-selected{% endif %}{% if r.is_added_row %} scan-row--added{% endif %}" data-symbol="{{ r.ticker.symbol }}">
-                                        <td class="scan-row__select-cell">
+                                        <td class="scan-row__select-cell" data-label="{{ T.th_ver }}">
                                             <input
                                                 type="radio"
                                                 name="ticker-select"
@@ -144,7 +166,7 @@
                                                 {% if r.ticker.symbol == selected_symbol %}checked{% endif %}
                                             >
                                         </td>
-                                        <td class="sticky-col">
+                                        <td class="sticky-col" data-label="{{ T.th_ticker }}">
                                             <a href="/accion/{{ r.ticker.symbol }}/" class="ticker-link ticker-link--table" data-symbol="{{ r.ticker.symbol }}">{{ r.ticker.symbol }}</a>
                                             {% if r.is_added_row %}
                                                 <span class="added-badge" title="{{ T.row_added_badge_title }}">{{ T.row_added_badge }}</span>
@@ -154,11 +176,11 @@
                                                 </form>
                                             {% endif %}
                                         </td>
-                                        <td>
+                                        <td data-label="{{ T.th_score }}">
                                             <span class="score-badge score-badge--lg {% if r.score >= 70 %}score-badge--strong{% elif r.score >= 40 %}score-badge--moderate{% else %}score-badge--weak{% endif %}">{{ r.score }}</span>
                                         </td>
-                                        <td class="td-price-current">${{ r.price }}</td>
-                                        <td class="td-price-target">
+                                        <td class="td-price-current" data-label="{{ T.th_price }}">${{ r.price }}</td>
+                                        <td class="td-price-target" data-label="{{ T.th_target }}">
                                             {% if r.target_price %}
                                                 <span class="target-price-value">${{ r.target_price }}</span>
                                                 {% if r.target_upside_pct != None %}
@@ -168,13 +190,13 @@
                                                 N/D
                                             {% endif %}
                                         </td>
-                                        <td>{{ r.trailing_pe|default:"N/D" }}</td>
-                                        <td>{{ r.peg_ratio|default:"N/D" }}</td>
-                                        <td>{{ r.market_cap_display|default:"N/D" }}</td>
-                                        <td>{{ r.relative_volume }}x</td>
-                                        <td>{{ r.exchange|default:"N/D" }}</td>
-                                        <td><a href="/accion/{{ r.ticker.symbol }}/">{{ T.link_ver }}</a></td>
-                                        <td><a href="/noticias/?ticker={{ r.ticker.symbol }}">{{ T.link_ver }}</a></td>
+                                        <td data-label="{{ T.th_pe }}">{{ r.trailing_pe|default:"N/D" }}</td>
+                                        <td data-label="{{ T.th_peg }}">{{ r.peg_ratio|default:"N/D" }}</td>
+                                        <td data-label="{{ T.th_market_cap }}">{{ r.market_cap_display|default:"N/D" }}</td>
+                                        <td data-label="{{ T.th_volume }}">{{ r.relative_volume }}x</td>
+                                        <td data-label="{{ T.th_market }}">{{ r.exchange|default:"N/D" }}</td>
+                                        <td data-label="{{ T.th_chart }}"><a href="/accion/{{ r.ticker.symbol }}/">{{ T.link_ver }}</a></td>
+                                        <td data-label="{{ T.th_news }}"><a href="/noticias/?ticker={{ r.ticker.symbol }}">{{ T.link_ver }}</a></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -193,7 +215,7 @@
             </section>
 
             <section class="dashboard-panel dashboard-panel--chart">
-                <header class="dashboard-panel__header"><h2>&#128200; {{ T.panel_chart }}</h2></header>
+                <header class="dashboard-panel__header"><h2>{{ T.panel_chart }}</h2></header>
                 <div class="dashboard-panel__body" id="chart-panel-body">
                     {% if selected_symbol %}
                         {% include "scanner/partials/chart_panel.html" with symbol=selected_symbol chart=selected_chart interval=selected_interval intervals=intervals %}
@@ -206,40 +228,13 @@
 
         <div class="dashboard-col dashboard-col--side">
             <section class="dashboard-panel dashboard-panel--indicators">
-                <header class="dashboard-panel__header"><h2>&#129504; {{ T.panel_indicators }}</h2></header>
+                <header class="dashboard-panel__header"><h2>{{ T.panel_indicators }}</h2></header>
                 <div class="dashboard-panel__body" id="indicators-panel-body">
                     {% if selected_symbol %}
                         {% include "scanner/partials/indicators_panel.html" with symbol=selected_symbol fundamentals=selected_fundamentals financials_chart=selected_financials_chart %}
                     {% else %}
                         <p class="empty-state">{{ T.select_stock_for_indicators }}</p>
                     {% endif %}
-                </div>
-            </section>
-
-            <section class="dashboard-panel dashboard-panel--indices">
-                <header class="dashboard-panel__header"><h2>&#127760; {{ T.panel_indices }}</h2></header>
-                <div class="dashboard-panel__body">
-                    <div class="index-gauge-list">
-                        {% for idx in indices %}
-                        <div class="index-gauge-item">
-                            <div class="index-gauge-item__top">
-                                <span class="index-gauge-item__label">{{ T|dict_get:idx.key }}</span>
-                                <span class="gauge-dot gauge-dot--{{ idx.gauge.level }}"></span>
-                            </div>
-                            {% if idx.price %}
-                                <div class="index-gauge-item__price">
-                                    {{ idx.price }}
-                                    <span class="index-card__change {% if idx.change_pct >= 0 %}index-card__change--up{% else %}index-card__change--down{% endif %}">
-                                        {% if idx.change_pct >= 0 %}&#9650;{% else %}&#9660;{% endif %} {{ idx.change_pct }}%
-                                    </span>
-                                </div>
-                                {% include "partials/gauge.html" with gauge=idx.gauge %}
-                            {% else %}
-                                <span class="index-card__price index-card__price--na">N/D</span>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
                 </div>
             </section>
         </div>

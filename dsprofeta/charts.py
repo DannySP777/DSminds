@@ -25,13 +25,20 @@ from config.translations import get_translations
 from .models import PriceBar, Prediction
 
 COLORS = {
-    "bg": "#171a21",
-    "grid": "#262a33",
-    "text": "#e6e8eb",
-    "up": "#3ddc97",
+    # Sincronizado con las variables --surface/--border/--text/--bull/--bear/
+    # --accent de static/css/style.css. Python no puede leer custom
+    # properties CSS, así que estos valores se mantienen a mano.
+    "bg": "#121218",
+    "grid": "#232b35",
+    "text": "#f2f1ee",
+    "up": "#3fbf7f",
     "down": "#e5484d",
-    "predicted": "#f5a623",
-    "actual": "#3ddc97",
+    "predicted": "#8bc78a",
+    # Antes iba en el mismo verde que "up" (subida de vela): el sistema de
+    # color nuevo reserva verde/rojo exclusivamente para dirección de
+    # precio, así que "real ya resuelto" pasa a texto neutro para no
+    # duplicar el significado de ese verde.
+    "actual": "#f2f1ee",
 }
 
 CACHE_TTL = 60
@@ -220,9 +227,9 @@ def _compute_prediction_chart(asset, timeframe, history_bars, lang):
     # vistazo dónde está el precio actual contra la predicción.
     fig.add_vline(x=t_now, line_dash="dash", line_color=COLORS["text"], opacity=0.4)
     fig.add_hline(
-        y=stats["last_close"], line_dash="dash", line_color="#f5d423", line_width=2, opacity=0.9,
+        y=stats["last_close"], line_dash="dash", line_color=COLORS["predicted"], line_width=2, opacity=0.9,
         annotation_text=f"{stats['last_close']:,.2f}", annotation_position="right",
-        annotation_font_color="#f5d423",
+        annotation_font_color=COLORS["predicted"],
     )
 
     fig.update_layout(**_base_layout(460, xaxis_range=[t_start, t_future_end], right_margin=50))
@@ -253,7 +260,7 @@ def build_rsi_chart(asset, timeframe, history_bars=DEFAULT_HISTORY_BARS, lang="e
     last_rsi = float(rsi.iloc[-1]) if pd.notna(rsi.iloc[-1]) else None
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=rsi, mode="lines", name=T["dsp_trace_rsi"], line=dict(color="#f5a623", width=1.5)))
+    fig.add_trace(go.Scatter(x=x, y=rsi, mode="lines", name=T["dsp_trace_rsi"], line=dict(color="#f2994a", width=1.5)))
     fig.add_hline(y=70, line_dash="dash", line_color=COLORS["down"], opacity=0.5)
     fig.add_hline(y=30, line_dash="dash", line_color=COLORS["up"], opacity=0.5)
     fig.add_vline(x=series["t_now"], line_dash="dash", line_color=COLORS["text"], opacity=0.4)
@@ -292,7 +299,7 @@ def build_macd_chart(asset, timeframe, history_bars=DEFAULT_HISTORY_BARS, lang="
     fig = go.Figure()
     fig.add_trace(go.Bar(x=x, y=macd_hist, name=T["dsp_trace_histogram"], marker_color=macd_hist_colors, opacity=0.5))
     fig.add_trace(go.Scatter(x=x, y=macd_line, mode="lines", name=T["dsp_trace_macd"], line=dict(color=COLORS["text"], width=1.5)))
-    fig.add_trace(go.Scatter(x=x, y=macd_signal, mode="lines", name=T["dsp_trace_signal"], line=dict(color="#f5a623", width=1.5)))
+    fig.add_trace(go.Scatter(x=x, y=macd_signal, mode="lines", name=T["dsp_trace_signal"], line=dict(color="#f2994a", width=1.5)))
     fig.add_hline(y=0, line_dash="dot", line_color=COLORS["text"], opacity=0.4)
     fig.add_vline(x=series["t_now"], line_dash="dash", line_color=COLORS["text"], opacity=0.4)
     fig.update_layout(**_base_layout(300))

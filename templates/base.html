@@ -47,6 +47,9 @@
     {% endcomment %}
     <link rel="canonical" href="https://www.dsminds.com{{ request.path }}">
     <link rel="icon" type="image/png" href="{% static 'img/logo-icon.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
     {% block extra_head %}{% endblock %}
     <script type="application/ld+json">
@@ -97,6 +100,8 @@
             {% block header_tagline %}{% endblock %}
         </div>
     </header>
+
+    {% block below_header %}{% endblock %}
 
     <main class="container">
         {% if messages %}

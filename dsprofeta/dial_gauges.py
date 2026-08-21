@@ -15,10 +15,13 @@ import plotly.graph_objects as go
 
 from config.translations import get_translations
 
-BG = "#171a21"
-TEXT = "#e6e8eb"
-GREEN = "#3ddc97"
-YELLOW = "#f5a623"
+# Sincronizado con las variables --surface/--text/--bull/--warning/--bear
+# de static/css/style.css; Python no lee custom properties CSS, así que
+# estos valores se mantienen a mano.
+BG = "#121218"
+TEXT = "#f2f1ee"
+GREEN = "#3fbf7f"
+YELLOW = "#f2994a"
 RED = "#e5484d"
 
 _LEVEL_SCORE = {"bullish": 1, "bearish": -1, "neutral": 0}
@@ -33,7 +36,7 @@ NEEDLE_PIVOT = (0.5, 0.08)
 NEEDLE_LENGTH = 0.42
 
 
-def _add_needle(fig, value, min_value=0, max_value=100, color="#ffffff"):
+def _add_needle(fig, value, min_value=0, max_value=100, color=TEXT):
     """
     Dibuja la aguja a mano con add_shape (línea + triángulo + pivote),
     todo en coordenadas "paper". add_annotation NO sirve para esto en
