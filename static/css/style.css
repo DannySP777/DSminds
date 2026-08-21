@@ -1623,8 +1623,15 @@ tr.impact-medium .impact-stars {
 }
 
 .dashboard-panel__header h2::before {
+    /* Este h2 también matchea la regla genérica "main h2::before" (la
+       barrita de color de la izquierda) — sin resetear position/width/
+       background aquí, ambas reglas se mezclan en el mismo pseudo-elemento
+       y la barra absoluta queda flotando encima del texto "// ". */
     content: "// ";
     color: var(--muted);
+    position: static;
+    width: auto;
+    background: none;
 }
 
 .dashboard-panel__body {
