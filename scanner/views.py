@@ -78,6 +78,7 @@ DEFAULT_RESULT_LIMIT = 10
 
 def home(request):
     lang = _get_lang(request)
+    T = get_translations(lang)
     filters = {}
     for param, _field, _op in NUMERIC_FILTER_FIELDS + MARKET_CAP_FILTER_FIELDS:
         filters[param] = request.GET.get(param, "").strip()
@@ -195,6 +196,8 @@ def home(request):
         "selected_interval": DEFAULT_INTERVAL,
         "selected_fundamentals": selected_fundamentals,
         "selected_financials_chart": selected_financials_chart,
+        "og_title": T["home_h1"],
+        "og_description": T["home_meta_description"],
     })
 
 

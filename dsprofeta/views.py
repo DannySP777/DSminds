@@ -95,9 +95,27 @@ def predictor_home(request):
     else:
         confidence_label_text = None
 
+    # Título/h1/meta por activo (en vez del genérico) para que cada
+    # ?asset= sea una página indexable por separado — ver el canonical_url
+    # que se arma a juego en templates/dsprofeta/home.html.
+    if asset:
+        asset_display_name = T.get(ASSET_NAME_KEYS.get(asset_symbol), asset.display_name)
+        page_title = T["dsp_asset_page_title"].format(asset=asset_display_name)
+        page_meta_description = T["dsp_asset_meta_description"].format(asset=asset_display_name)
+        hero_title = T["dsp_asset_hero_title"].format(asset=asset_display_name)
+    else:
+        page_title = T["dsp_page_title"]
+        page_meta_description = T["dsp_meta_description"]
+        hero_title = T["dsp_hero_title"]
+
     return render(request, "dsprofeta/home.html", {
         "assets": _localized_assets(assets, T),
         "selected_asset": asset_symbol,
+        "page_title": page_title,
+        "page_meta_description": page_meta_description,
+        "hero_title": hero_title,
+        "og_title": page_title,
+        "og_description": page_meta_description,
         "timeframes": [(value, T[key]) for value, key in TIMEFRAME_LABEL_KEYS.items()],
         "selected_timeframe": timeframe,
         "history_bar_choices": HISTORY_BAR_CHOICES,

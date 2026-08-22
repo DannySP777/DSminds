@@ -1,0 +1,51 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustración: una serie de precios con patrones cíclicos, analizada por una red de nodos que representa un modelo de inteligencia artificial">
+  <rect width="1200" height="630" fill="#0a0a0d"/>
+
+  <!-- Grid sutil -->
+  <g stroke="#1c1f26" stroke-width="1">
+    <line x1="0" y1="140" x2="1200" y2="140"/>
+    <line x1="0" y1="260" x2="1200" y2="260"/>
+    <line x1="0" y1="380" x2="1200" y2="380"/>
+    <line x1="0" y1="500" x2="1200" y2="500"/>
+  </g>
+
+  <!-- Serie de precio con patrón cíclico -->
+  <polyline points="60,400 160,320 260,380 360,260 460,340 560,220 660,300 760,180 860,260 960,150 1010,190"
+            fill="none" stroke="#8a8b96" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Nodos de la "red" leyendo los picos del ciclo -->
+  <g>
+    <circle cx="160" cy="320" r="7" fill="#8bc78a"/>
+    <circle cx="360" cy="260" r="7" fill="#8bc78a"/>
+    <circle cx="560" cy="220" r="7" fill="#8bc78a"/>
+    <circle cx="760" cy="180" r="7" fill="#8bc78a"/>
+    <circle cx="960" cy="150" r="7" fill="#8bc78a"/>
+  </g>
+
+  <!-- Capa oculta -->
+  <g stroke="#2c3440" stroke-width="1.5" fill="none">
+    <line x1="167" y1="320" x2="1080" y2="210"/>
+    <line x1="367" y1="260" x2="1080" y2="210"/>
+    <line x1="567" y1="220" x2="1080" y2="210"/>
+    <line x1="767" y1="180" x2="1080" y2="270"/>
+    <line x1="967" y1="150" x2="1080" y2="270"/>
+    <line x1="167" y1="320" x2="1080" y2="330"/>
+    <line x1="367" y1="260" x2="1080" y2="330"/>
+    <line x1="567" y1="220" x2="1080" y2="330"/>
+    <line x1="767" y1="180" x2="1080" y2="210"/>
+    <line x1="967" y1="150" x2="1080" y2="330"/>
+
+    <line x1="1080" y1="210" x2="1150" y2="270"/>
+    <line x1="1080" y1="270" x2="1150" y2="270"/>
+    <line x1="1080" y1="330" x2="1150" y2="270"/>
+  </g>
+  <g>
+    <circle cx="1080" cy="210" r="9" fill="#121218" stroke="#8bc78a" stroke-width="2"/>
+    <circle cx="1080" cy="270" r="9" fill="#121218" stroke="#8bc78a" stroke-width="2"/>
+    <circle cx="1080" cy="330" r="9" fill="#121218" stroke="#8bc78a" stroke-width="2"/>
+    <circle cx="1150" cy="270" r="12" fill="#8bc78a"/>
+  </g>
+
+  <text x="60" y="560" fill="#f2f1ee" font-family="'Space Grotesk', 'IBM Plex Sans', sans-serif" font-size="30" font-weight="700">Patrones cíclicos, leídos por un modelo</text>
+  <text x="60" y="596" fill="#8a8b96" font-family="'IBM Plex Sans', sans-serif" font-size="18">La IA no adivina el futuro: reconoce relaciones en datos históricos</text>
+</svg>

@@ -18,6 +18,7 @@ T = {
         # Page title / meta
         "home_title": "Screening Smart de Acciones con IA | Smart Scanner — DSMarketLearning",
         "home_meta_description": "Smart Scanner con inteligencia artificial: screening diario que identifica acciones con upside de analistas, RSI y MACD en zona de compra, baja deuda, liquidez y balances financieros trimestrales. Contenido informativo, no asesoría financiera.",
+        "home_h1": "Scanner de acciones con análisis técnico e inteligencia artificial",
 
         # Nav / chrome
         "nav_scanner": "Smart Scanner",
@@ -371,6 +372,11 @@ T = {
         # DSprofeta
         "dsp_page_title": "Análisis Predictivo de Trading con IA | Predicción de Mercado con Machine Learning — DSprofeta",
         "dsp_meta_description": "DSprofeta — análisis del mercado con inteligencia artificial: predicción de precios de NASDAQ 100, Oro, EUR/USD y S&P 500 con Machine Learning, RSI, MACD y Fibonacci. Contenido educativo, no es una recomendación de inversión.",
+        # Variantes por activo, para que cada ?asset= tenga su propio título/h1/meta
+        # y sea indexable por separado (ver dsprofeta/views.py predictor_home).
+        "dsp_asset_page_title": "Pronóstico de {asset} con IA — DSprofeta",
+        "dsp_asset_meta_description": "Predicción del precio de {asset} generada con inteligencia artificial (LightGBM) y comparada después contra el resultado real. Contenido educativo, no es asesoría de inversión.",
+        "dsp_asset_hero_title": "DSprofeta — Pronóstico de {asset} con IA",
         "dsp_header_tagline": "Predicción inteligente del mercado",
         "dsp_disclaimer": "DSprofeta es un análisis predictivo de trading con inteligencia artificial: genera predicciones automáticas con Machine Learning a partir de precios históricos, indicadores técnicos (RSI, MACD, Fibonacci) y calendario económico/noticias.",
         "dsp_disclaimer_strong": "Es contenido con fines educativos únicamente — no es asesoría financiera ni una recomendación de inversión.",
@@ -454,6 +460,7 @@ T = {
         # Page title / meta
         "home_title": "Smart AI Stock Screening | Smart Scanner — DSMarketLearning",
         "home_meta_description": "AI-powered Smart Scanner: daily screening that identifies stocks with analyst upside, RSI and MACD in the buy zone, low debt, liquidity, and quarterly financial statements. Informational content, not financial advice.",
+        "home_h1": "Stock scanner with technical analysis and artificial intelligence",
 
         # Nav / chrome
         "nav_scanner": "Smart Scanner",
@@ -806,6 +813,9 @@ T = {
         # DSprofeta
         "dsp_page_title": "AI Trading Predictive Analysis | Market Prediction with Machine Learning — DSprophecy",
         "dsp_meta_description": "DSprophecy — market analysis with artificial intelligence: price prediction for NASDAQ 100, Gold, EUR/USD and S&P 500 with Machine Learning, RSI, MACD and Fibonacci. Educational content, not investment advice.",
+        "dsp_asset_page_title": "{asset} Price Forecast with AI — DSprophecy",
+        "dsp_asset_meta_description": "AI-generated price forecast for {asset} (LightGBM), later compared against the real outcome. Educational content, not investment advice.",
+        "dsp_asset_hero_title": "DSprophecy — {asset} Forecast with AI",
         "dsp_header_tagline": "Smart market prediction",
         "dsp_disclaimer": "DSprophecy is an AI-powered predictive trading analysis: it generates automatic Machine Learning predictions from historical prices, technical indicators (RSI, MACD, Fibonacci) and economic calendar/news.",
         "dsp_disclaimer_strong": "This is educational content only — it is not financial advice nor an investment recommendation.",

@@ -732,6 +732,65 @@ ARTICLES = [
 {DISCLAIMER_EN}
 """,
     },
+    {
+        "title": "IA en el trading: cómo potencia el análisis de mercado",
+        "slug": "ia-en-el-trading-analisis-de-mercado",
+        "excerpt": "Redes neuronales, ciclos de mercado y por qué la verdadera ventaja de la IA en el trading es la velocidad y precisión del análisis, no la adivinación.",
+        "body": f"""
+<p>La IA en el trading dejó de ser un concepto futurista: hoy es una herramienta activa detrás de cómo se analizan precios, indicadores técnicos y contexto económico a gran escala en los mercados financieros. Este artículo explica, en términos simples, qué hay realmente detrás de esa idea &mdash; y qué tan lejos llega.</p>
+
+<img src="/static/img/blog/ia-analisis-mercado.svg" alt="Ilustración de una serie de precios con patrones cíclicos, analizada por una red de nodos que representa un modelo de inteligencia artificial" style="width:100%;height:auto;border-radius:8px;margin:1.5rem 0;">
+
+<h2>Redes neuronales que aprenden de la historia</h2>
+<p>Un modelo de machine learning &mdash; como el LightGBM que usa <a href="/prediccion/">DSprofeta</a> &mdash; no "adivina" hacia dónde va un precio: aprende relaciones estadísticas a partir de miles de ejemplos históricos, combinando precio, RSI, MACD, niveles de Fibonacci y calendario económico con lo que ocurrió después de cada combinación. Cuantos más ciclos de mercado observa un modelo durante su entrenamiento, más patrones recurrentes puede llegar a identificar entre esas variables.</p>
+
+<h2>La historia no se repite, pero el mercado sí puede ser cíclico</h2>
+<p>Una idea central del análisis técnico &mdash; resumida en la frase, atribuida a Mark Twain, "la historia no se repite, pero rima" &mdash; es que los mercados no van a replicar un ciclo pasado de forma exacta, pero sí tienden a mostrar comportamientos recurrentes: zonas de sobrecompra y sobreventa, tendencias que se agotan, reacciones parecidas cerca de ciertos niveles de precio. Un modelo entrenado con suficiente historia puede reconocer ese tipo de patrones de forma más sistemática que una revisión manual, gráfica por gráfica.</p>
+
+<h2>La ventaja real: velocidad y precisión, no adivinación</h2>
+<p>La contribución más concreta de la inteligencia artificial en este campo no es "predecir el futuro" &mdash; es procesar volúmenes de datos que serían poco prácticos de revisar a mano, en fracciones de segundo y con el mismo criterio cada vez. Eso es lo que la vuelve relevante como herramienta de apoyo para el análisis de mercado: más variables, revisadas más rápido, de forma consistente.</p>
+
+<h2>Un ejemplo aplicado: DSprofeta</h2>
+<p>En DSMarketLearning, <a href="/prediccion/">DSprofeta</a> aplica justamente este enfoque: un modelo entrenado con precio, RSI, MACD, Fibonacci y calendario económico genera una predicción de precio para NASDAQ&nbsp;100, Oro, EUR/USD y S&amp;P&nbsp;500, y cada predicción se guarda para compararse después contra lo que realmente ocurrió &mdash; construyendo con el tiempo un historial real de aciertos y errores, no una promesa abstracta.</p>
+
+<h2>En video</h2>
+<p>Un resumen rápido de esta misma idea, en video:</p>
+<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@dsmarketlearning/video/7675176204151966994" data-video-id="7675176204151966994" style="max-width: 605px; min-width: 325px; margin: 1.5rem auto;">
+  <section></section>
+</blockquote>
+<script async src="https://www.tiktok.com/embed.js"></script>
+
+{DISCLAIMER}
+""",
+        "title_en": "AI in trading: how it powers market analysis",
+        "excerpt_en": "Neural networks, market cycles, and why AI's real advantage in trading is analysis speed and precision, not fortune-telling.",
+        "body_en": f"""
+<p>AI in trading stopped being a futuristic concept a while ago: today it's an active tool behind how prices, technical indicators, and economic context get analyzed at scale in financial markets. This article explains, in simple terms, what's actually behind that idea &mdash; and how far it really goes.</p>
+
+<img src="/static/img/blog/ia-analisis-mercado.svg" alt="Illustration of a price series with cyclical patterns, analyzed by a network of nodes representing an artificial intelligence model" style="width:100%;height:auto;border-radius:8px;margin:1.5rem 0;">
+
+<h2>Neural networks that learn from history</h2>
+<p>A machine learning model &mdash; like the LightGBM one <a href="/prediccion/">DSprophecy</a> uses &mdash; doesn't "guess" where a price is headed: it learns statistical relationships from thousands of historical examples, combining price, RSI, MACD, Fibonacci levels, and economic calendar data with what happened after each combination. The more market cycles a model observes during training, the more recurring patterns it can identify among those variables.</p>
+
+<h2>History doesn't repeat, but markets can still be cyclical</h2>
+<p>A core idea in technical analysis &mdash; summed up in the phrase, often attributed to Mark Twain, "history doesn't repeat itself, but it rhymes" &mdash; is that markets won't replay a past cycle exactly, but they do tend to show recurring behaviors: overbought and oversold zones, trends running out of steam, similar reactions near certain price levels. A model trained on enough history can recognize that kind of pattern more systematically than a manual, chart-by-chart review.</p>
+
+<h2>The real advantage: speed and precision, not fortune-telling</h2>
+<p>AI's most concrete contribution in this field isn't "predicting the future" &mdash; it's processing volumes of data that would be impractical to review by hand, in fractions of a second, with the same criteria every time. That's what makes it a relevant support tool for market analysis: more variables, reviewed faster, consistently.</p>
+
+<h2>An applied example: DSprophecy</h2>
+<p>At DSMarketLearning, <a href="/prediccion/">DSprophecy</a> applies exactly this approach: a model trained on price, RSI, MACD, Fibonacci, and the economic calendar generates a price forecast for NASDAQ&nbsp;100, Gold, EUR/USD, and S&amp;P&nbsp;500, and each prediction is saved to be compared later against what actually happened &mdash; building a real track record of hits and misses over time, not an abstract promise.</p>
+
+<h2>On video</h2>
+<p>A quick summary of this same idea, on video:</p>
+<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@dsmarketlearning/video/7675176204151966994" data-video-id="7675176204151966994" style="max-width: 605px; min-width: 325px; margin: 1.5rem auto;">
+  <section></section>
+</blockquote>
+<script async src="https://www.tiktok.com/embed.js"></script>
+
+{DISCLAIMER_EN}
+""",
+    },
 ]
 
 

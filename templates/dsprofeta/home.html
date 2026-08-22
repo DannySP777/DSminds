@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}{{ T.dsp_page_title }}{% endblock %}
-{% block meta_description %}{{ T.dsp_meta_description }}{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_description %}{{ page_meta_description }}{% endblock %}
+{% block canonical_url %}https://www.dsminds.com{% url 'predictor-home' %}{% if selected_asset %}?asset={{ selected_asset }}{% endif %}{% endblock %}
 
 {% block header_tagline %}
     <span class="header-tagline">{{ T.dsp_header_tagline }}</span>
@@ -14,10 +15,10 @@
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "{{ T.dsp_hero_title }}",
-        "description": "{{ T.dsp_meta_description }}",
+        "name": "{{ hero_title|escapejs }}",
+        "description": "{{ page_meta_description|escapejs }}",
         "applicationCategory": "FinanceApplication",
-        "url": "https://www.dsminds.com{{ request.path }}",
+        "url": "https://www.dsminds.com{% url 'predictor-home' %}{% if selected_asset %}?asset={{ selected_asset }}{% endif %}",
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
     }
     </script>
@@ -30,7 +31,7 @@
 </div>
 
 <section class="hero">
-    <h1>{{ T.dsp_hero_title }}</h1>
+    <h1>{{ hero_title }}</h1>
     <p>{{ T.dsp_hero_subtitle }}</p>
 </section>
 

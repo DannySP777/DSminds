@@ -41,7 +41,12 @@ def post_list(request):
 
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug, is_published=True)
-    return render(request, "blog/detail.html", {"post": post})
+    lang = _get_lang(request)
+    return render(request, "blog/detail.html", {
+        "post": post,
+        "og_title": post.get_title(lang),
+        "og_description": post.get_excerpt(lang),
+    })
 
 
 def about(request):

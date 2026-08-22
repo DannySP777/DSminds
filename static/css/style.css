@@ -27,6 +27,21 @@
     box-sizing: border-box;
 }
 
+/* Presente para lectores de pantalla y motores de búsqueda, invisible
+   para el resto — para contenido semánticamente real (ej. un h1) que ya
+   se muestra en otra forma en la página y no necesita repetirse visualmente. */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -332,41 +347,56 @@ table,
     line-height: 1.4;
 }
 
+/* Cada enlace del menú es su propio "servicio" del sitio (Scanner,
+   DSprofeta, Blog...), no una opción intercambiable dentro de una sola
+   píldora — por eso cada uno es un botón aparte, con su propio borde e
+   ícono, en vez de compartir un solo contenedor. */
 .main-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.3rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 0.3rem;
+    gap: 0.4rem;
 }
 
 .main-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
     color: var(--text);
     text-decoration: none;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    padding: 0.4rem 0.9rem;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.main-nav__link svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    stroke: currentColor;
 }
 
 .main-nav__link:hover {
-    color: var(--accent);
+    color: var(--text);
     border-color: var(--accent);
-    background: rgba(var(--accent-rgb), 0.08);
+    background: rgba(var(--accent-rgb), 0.1);
+    transform: translateY(-1px);
 }
 
 .main-nav__link--active {
     background: var(--accent);
     color: var(--bg);
+    border-color: var(--accent);
 }
 
 .main-nav__link--active:hover {
     color: var(--bg);
-    border-color: transparent;
+    border-color: var(--accent);
+    background: var(--accent);
+    transform: none;
 }
 
 .lang-switch {
@@ -748,28 +778,63 @@ tr.impact-medium .impact-stars {
 }
 
 .news-item, .post-item {
-    padding: 1.25rem 0;
+    padding: 1.85rem 0;
     border-bottom: 1px solid var(--border);
 }
 
 .news-item h2, .post-item h2 {
-    margin-bottom: 0.25rem;
-    font-size: 1.15rem;
+    margin: 0 0 0.5rem;
+    font-size: 1.55rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+@media (min-width: 640px) {
+    .news-item h2, .post-item h2 {
+        font-size: 1.75rem;
+    }
 }
 
 .news-item h2 a, .post-item h2 a {
     color: var(--text);
-    text-decoration: none;
+    text-decoration-line: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 0.18s ease;
 }
 
 .news-item h2 a:hover, .post-item h2 a:hover {
-    color: var(--accent);
+    color: var(--text);
+    text-decoration-color: var(--accent);
 }
 
 .news-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--muted);
-    font-size: 0.85rem;
-    margin: 0 0 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin: 0 0 0.65rem;
+}
+
+/* Marca de "entrada nueva" en la bitácora — un único punto de acento
+   por artículo, no decoración repetida en todo el bloque. */
+.news-meta::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    flex-shrink: 0;
+    border-radius: 1px;
+    background: var(--accent);
+}
+
+.news-item p:last-child, .post-item p:last-child {
+    color: var(--muted);
+    max-width: 42rem;
 }
 
 .ticker-badge {
