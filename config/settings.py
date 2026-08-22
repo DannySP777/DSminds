@@ -68,6 +68,15 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ] + [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
+# dsminds.com (sin www) estaba respondiendo 200 directo en vez de
+# redirigir a www.dsminds.com — dos copias completas del sitio en
+# dominios distintos, sin nada que le dijera a Google cuál es la real
+# más allá del <link rel="canonical">. CommonMiddleware (ya en
+# MIDDLEWARE) hace el 301 real cuando esto es True. Solo en producción:
+# con DEBUG=True redirigiría localhost -> www.localhost y rompería el
+# servidor de desarrollo.
+PREPEND_WWW = not DEBUG
+
 CSRF_TRUSTED_ORIGINS = [
     'https://dsminds.com',
     'https://www.dsminds.com',

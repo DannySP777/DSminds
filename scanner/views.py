@@ -206,6 +206,7 @@ def home(request):
 
 def ticker_detail(request, symbol):
     lang = _get_lang(request)
+    T = get_translations(lang)
     symbol = symbol.upper()
     interval = request.GET.get("interval", DEFAULT_INTERVAL)
     if interval not in INTERVALS:
@@ -221,6 +222,18 @@ def ticker_detail(request, symbol):
         .first()
     )
 
+    # Título/meta por ticker: antes eran plantilla + símbolo únicamente
+    # (72+ páginas casi idénticas entre sí para un rastreador). Con el
+    # nombre real de la empresa y los datos del último scan, cada ficha
+    # queda genuinamente distinta.
+    company_name = fundamentals.get("company_name", symbol) if fundamentals else symbol
+    page_title = T["ticker_page_title"].format(symbol=symbol, company=company_name)
+    page_meta_description = T["ticker_page_description_base"].format(symbol=symbol, company=company_name)
+    if latest_result:
+        page_meta_description += T["ticker_page_description_data"].format(
+            price=latest_result.price, rsi=latest_result.rsi, score=latest_result.score,
+        )
+
     return render(request, "scanner/ticker_detail.html", {
         "symbol": symbol,
         "chart": chart,
@@ -229,6 +242,11 @@ def ticker_detail(request, symbol):
         "latest_result": latest_result,
         "fundamentals": fundamentals,
         "financials_chart": financials_chart,
+        "company_name": company_name,
+        "page_title": page_title,
+        "page_meta_description": page_meta_description,
+        "og_title": page_title,
+        "og_description": page_meta_description,
     })
 
 

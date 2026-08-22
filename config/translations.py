@@ -187,6 +187,12 @@ T = {
         "ticker_title_suffix": "— gráfica y señales técnicas",
         "ticker_meta_description_prefix": "Gráfica de velas de",
         "ticker_meta_description_suffix": "con RSI, volumen y ruptura de rango, con periodos desde 1 minuto hasta mensual.",
+        # Título/meta por ticker (72+ páginas casi idénticas era el hallazgo
+        # real de la auditoría): con nombre de empresa y datos del último
+        # scan, cada ficha deja de ser solo la plantilla + símbolo.
+        "ticker_page_title": "{symbol} ({company}) — gráfica y señales técnicas",
+        "ticker_page_description_base": "{company} ({symbol}): gráfica de velas con RSI, volumen y ruptura de rango, con periodos desde 1 minuto hasta mensual.",
+        "ticker_page_description_data": " Último scan: precio ${price}, RSI {rsi}, score {score}/100.",
         "ticker_last_scan": "Último scan",
         "ticker_price_word": "precio",
         "ticker_rel_vol_word": "volumen relativo",
@@ -628,6 +634,9 @@ T = {
         "ticker_title_suffix": "— chart and technical signals",
         "ticker_meta_description_prefix": "Candlestick chart for",
         "ticker_meta_description_suffix": "with RSI, volume, and range breakout, with periods from 1 minute to monthly.",
+        "ticker_page_title": "{symbol} ({company}) — chart and technical signals",
+        "ticker_page_description_base": "{company} ({symbol}): candlestick chart with RSI, volume, and range breakout, with periods from 1 minute to monthly.",
+        "ticker_page_description_data": " Latest scan: price ${price}, RSI {rsi}, score {score}/100.",
         "ticker_last_scan": "Last scan",
         "ticker_price_word": "price",
         "ticker_rel_vol_word": "relative volume",
