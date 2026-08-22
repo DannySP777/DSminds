@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% load dsms_extras static %}
 
-{% block title %}{{ post|get_title:LANG }} &mdash; DSMarketLearning{% endblock %}
+{# Sin sufijo "— DSMarketLearning": los títulos de artículo ya son largos
+   por sí solos, y el sufijo los empuja fuera del límite de ~60 caracteres
+   que Google muestra sin truncar. La marca ya va en og:site_name. #}
+{% block title %}{{ post|get_title:LANG }}{% endblock %}
 {% block meta_description %}{{ post|get_excerpt:LANG }}{% endblock %}
 
 {% block extra_head %}

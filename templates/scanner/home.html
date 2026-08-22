@@ -9,9 +9,12 @@
     <span class="header-tagline" title="{{ T.header_subtitle_title }}">{{ T.header_subtitle_text }}</span>
 {% endblock %}
 
-{% block extra_head %}
-    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-{% endblock %}
+{% comment %}
+Plotly (~1MB) NO va en extra_head/<head>: bloquearía el primer render de
+todo el header/hero/tabla mientras descarga. Se carga justo antes del
+primer chart_panel.html que lo necesita (más abajo en este archivo) —
+mismo orden de ejecución síncrona, pero ya no bloquea lo de arriba.
+{% endcomment %}
 
 {% block below_header %}
     {% if indices %}
@@ -220,6 +223,7 @@
                 <header class="dashboard-panel__header"><h2>{{ T.panel_chart }}</h2></header>
                 <div class="dashboard-panel__body" id="chart-panel-body">
                     {% if selected_symbol %}
+                        <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
                         {% include "scanner/partials/chart_panel.html" with symbol=selected_symbol chart=selected_chart interval=selected_interval intervals=intervals %}
                     {% else %}
                         <p class="empty-state">{{ T.select_stock_for_chart }}</p>

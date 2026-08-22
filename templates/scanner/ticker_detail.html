@@ -3,10 +3,6 @@
 {% block title %}{{ symbol }} {{ T.ticker_title_suffix }} &mdash; DSMarketLearning{% endblock %}
 {% block meta_description %}{{ T.ticker_meta_description_prefix }} {{ symbol }} {{ T.ticker_meta_description_suffix }}{% endblock %}
 
-{% block extra_head %}
-    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-{% endblock %}
-
 {% block content %}
     <p class="tool-disclaimer">
         {{ T.tool_disclaimer_prefix }} <a href="/disclaimer/">{{ T.disclaimer_link_text }}</a>.
@@ -35,6 +31,8 @@
 
     <section class="chart-section">
         <h2>{{ T.ticker_price_chart_h2 }}</h2>
+        {# Plotly (~1MB) se carga aquí, no en <head>, para no bloquear el render del hero/buscador de arriba. #}
+        <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
         {% include "scanner/partials/chart_panel.html" %}
     </section>
 

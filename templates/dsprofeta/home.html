@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block extra_head %}
-    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
     {% autoescape off %}
     <script type="application/ld+json">
     {
@@ -77,6 +76,8 @@
                 <h2>{{ T.dsp_price_panel_title }} — {{ selected_asset }}</h2>
             </div>
             <div class="dashboard-panel__body">
+                {# Plotly (~1MB) se carga aquí, no en <head>, para no bloquear el render del hero/formulario de arriba. #}
+                <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
                 {% include "dsprofeta/partials/chart_panel.html" with symbol=selected_asset timeframe=selected_timeframe %}
             </div>
         </section>
