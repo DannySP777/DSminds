@@ -126,6 +126,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'config.context_processors.language',
+                'config.context_processors.hreflang',
                 'config.context_processors.analytics',
             ],
         },

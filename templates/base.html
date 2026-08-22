@@ -45,8 +45,27 @@
     etiqueta le dice cuál es la versión "oficial" a efectos de
     posicionamiento, sin redirigir ni bloquear ninguna de las dos.
     {% endcomment %}
-    <link rel="canonical" href="{% block canonical_url %}https://www.dsminds.com{{ request.path }}{% endblock %}">
+    {% comment %}
+    Si la URL trae ?lang= explícito, el canonical debe auto-referenciarse
+    CON ese parámetro — si no, ES y EN de la misma página canonicalizan
+    al mismo sitio y Google puede terminar ignorando el hreflang de
+    arriba. No se toca el resto de query params (ver el override de
+    DSprofeta más abajo para el caso ?asset=), para no revertir el fix
+    de ?interval= del Scanner (esas variantes sí deben seguir
+    colapsando al canonical sin parámetros).
+    {% endcomment %}
+    <link rel="canonical" href="{% block canonical_url %}https://www.dsminds.com{{ request.path }}{% if request.GET.lang %}?lang={{ request.GET.lang }}{% endif %}{% endblock %}">
     <link rel="icon" type="image/png" href="{% static 'img/logo-icon.png' %}">
+    {% comment %}
+    HREFLANG_URLS viene de config.context_processors.hreflang: cada
+    versión de idioma vive en la MISMA ruta con ?lang=es / ?lang=en (el
+    sitio no tiene URLs separadas por idioma), así que estas son las
+    URLs reales que sirven ese idioma de forma determinística sin
+    depender de la cookie site_lang.
+    {% endcomment %}
+    <link rel="alternate" hreflang="es" href="{{ HREFLANG_URLS.es }}">
+    <link rel="alternate" hreflang="en" href="{{ HREFLANG_URLS.en }}">
+    <link rel="alternate" hreflang="x-default" href="{{ HREFLANG_URLS.x_default }}">
     {% comment %}
     Vista previa al compartir en redes/chat (WhatsApp, Slack, X, etc.) — sin
     esto el link sale pelado, sin título ni imagen. og_title/og_description

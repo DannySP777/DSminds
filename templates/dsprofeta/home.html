@@ -2,7 +2,7 @@
 
 {% block title %}{{ page_title }}{% endblock %}
 {% block meta_description %}{{ page_meta_description }}{% endblock %}
-{% block canonical_url %}https://www.dsminds.com{% url 'predictor-home' %}{% if selected_asset %}?asset={{ selected_asset }}{% endif %}{% endblock %}
+{% block canonical_url %}https://www.dsminds.com{% url 'predictor-home' %}{% if selected_asset %}?asset={{ selected_asset }}{% if request.GET.lang %}&lang={{ request.GET.lang }}{% endif %}{% elif request.GET.lang %}?lang={{ request.GET.lang }}{% endif %}{% endblock %}
 
 {% block header_tagline %}
     <span class="header-tagline">{{ T.dsp_header_tagline }}</span>

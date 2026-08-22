@@ -31,7 +31,10 @@ HISTORY_BAR_CHOICES = [20, 50, 100]
 
 
 def _get_lang(request):
-    lang = request.COOKIES.get("site_lang", DEFAULT_LANG)
+    # ?lang= manda sobre la cookie — debe resolver igual que
+    # config.context_processors._resolve_lang, o T/LANG del layout queda
+    # desincronizado del idioma que arma esta vista.
+    lang = request.GET.get("lang") or request.COOKIES.get("site_lang", DEFAULT_LANG)
     return lang if lang in SUPPORTED_LANGS else DEFAULT_LANG
 
 
