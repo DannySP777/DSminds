@@ -1,10 +1,15 @@
 {% load static %}
 <div class="solar-welcome-video">
     <h3 class="solar-tutorial__title">{{ T.welcome_video_title }}</h3>
+    {% if LANG == "en" %}
+        {% static 'video/dsminds-bienvenida-en.mp4' as welcome_video_src %}
+    {% else %}
+        {% static 'video/dsminds-bienvenida.mp4' as welcome_video_src %}
+    {% endif %}
     <video class="solar-welcome-video__player" controls preload="metadata" playsinline>
-        <source src="{% static 'video/dsminds-bienvenida.mp4' %}" type="video/mp4">
+        <source src="{{ welcome_video_src }}" type="video/mp4">
         {{ T.welcome_video_fallback }}
-        <a href="{% static 'video/dsminds-bienvenida.mp4' %}">{{ T.welcome_video_fallback_link }}</a>.
+        <a href="{{ welcome_video_src }}">{{ T.welcome_video_fallback_link }}</a>.
     </video>
 </div>
 
