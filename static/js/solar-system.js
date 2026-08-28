@@ -90,7 +90,7 @@
 
         var filterState = {
             breakout: false, minRelVol: 0, minMarketCap: 0, minUpside: 0,
-            tiers: { best: true, mid: true, worst: true }, search: "", sortBy: "rank",
+            tiers: { best: true, mid: true, worst: true }, sortBy: "rank",
         };
 
         // Tercio de ranking dentro de la lista ORDENADA y visible
@@ -149,11 +149,6 @@
                 if (p.target_upside_pct < filterState.minUpside) return false;
             }
             if (tier && !filterState.tiers[tier]) return false;
-            if (filterState.search) {
-                var needle = filterState.search.toLowerCase();
-                var haystack = (p.symbol + " " + (p.name || "")).toLowerCase();
-                if (haystack.indexOf(needle) === -1) return false;
-            }
             return true;
         }
 
@@ -416,7 +411,6 @@
             var upsideInput = document.getElementById("solar-filter-upside");
             var upsideOutput = document.getElementById("solar-filter-upside-output");
             var sortSelect = document.getElementById("solar-filter-sort");
-            var searchInput = document.getElementById("solar-search");
             var trendChips = root.querySelectorAll(".solar-trend-chip");
 
             if (breakoutInput) {
@@ -454,12 +448,6 @@
             if (sortSelect) {
                 sortSelect.addEventListener("change", function () {
                     filterState.sortBy = sortSelect.value;
-                    refreshView();
-                });
-            }
-            if (searchInput) {
-                searchInput.addEventListener("input", function () {
-                    filterState.search = searchInput.value.trim();
                     refreshView();
                 });
             }
