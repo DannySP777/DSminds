@@ -1,3 +1,13 @@
+{% load static %}
+<div class="solar-welcome-video">
+    <h3 class="solar-tutorial__title">{{ T.welcome_video_title }}</h3>
+    <video class="solar-welcome-video__player" controls preload="metadata" playsinline>
+        <source src="{% static 'video/dsminds-bienvenida.mp4' %}" type="video/mp4">
+        {{ T.welcome_video_fallback }}
+        <a href="{% static 'video/dsminds-bienvenida.mp4' %}">{{ T.welcome_video_fallback_link }}</a>.
+    </video>
+</div>
+
 <div class="solar-tutorial" id="solar-tutorial">
     <h3 class="solar-tutorial__title">{{ T.tutorial_title }}</h3>
     <div class="solar-tutorial__steps" role="list">

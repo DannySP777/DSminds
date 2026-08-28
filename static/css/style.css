@@ -909,6 +909,16 @@ tr.impact-medium .impact-stars {
     margin-top: 1.5rem;
 }
 
+.post-body video,
+.post-body img {
+    display: block;
+    width: 100%;
+    max-height: 520px;
+    border-radius: 10px;
+    margin: 1.25rem 0;
+    background: #000;
+}
+
 /* Filtro de rango de precio: llamativo a propósito, para que se note
    que es una elección distinta a la navegación normal del sitio. */
 .price-filter {
@@ -2311,6 +2321,22 @@ th:last-child .th-tip::after {
     font-family: var(--font-mono);
     color: var(--accent);
     font-size: 0.95rem;
+}
+
+.solar-welcome-video {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.solar-welcome-video__player {
+    display: block;
+    width: 100%;
+    max-height: 480px;
+    border-radius: 8px;
+    background: #000;
 }
 
 .solar-tutorial {

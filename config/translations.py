@@ -143,6 +143,9 @@ T = {
         "methodology_momentum_text": "El sistema solar rankea cada grupo (penny/monster/standard) combinando el % de upside al precio objetivo de analistas y el volumen relativo, por percentil dentro de cada grupo — independiente del score técnico que usan las gráficas individuales.",
 
         # Tutorial de 4 pasos arriba del sistema solar
+        "welcome_video_title": "Video de bienvenida",
+        "welcome_video_fallback": "Tu navegador no soporta el video.",
+        "welcome_video_fallback_link": "Descargalo acá",
         "tutorial_title": "Cómo usar el scanner",
         "tutorial_step1_label": "Elegí el grupo",
         "tutorial_step1_text": "Una acción es una pequeña parte de una empresa que se compra y se vende en bolsa — tener una acción es ser dueño de un pedacito de esa empresa. Acá las separamos en tres grupos por precio y tamaño: Penny (acciones baratas, por debajo de $2), Monster (las empresas más grandes y valiosas del mercado) y Standard (todas las demás). Elegí un grupo arriba para ver sus acciones.",
@@ -692,6 +695,9 @@ T = {
         "methodology_momentum_text": "The solar system ranks each group (penny/monster/standard) by combining analyst target-price upside % and relative volume, percentile-ranked within each group — independent of the technical score used by the individual charts.",
 
         # 4-step tutorial above the solar system
+        "welcome_video_title": "Welcome video",
+        "welcome_video_fallback": "Your browser doesn't support video.",
+        "welcome_video_fallback_link": "Download it here",
         "tutorial_title": "How to use the scanner",
         "tutorial_step1_label": "Pick a group",
         "tutorial_step1_text": "A stock is a small piece of a company that's bought and sold on the market — owning a stock means owning a tiny slice of that company. We sort them into three groups by price and size: Penny (cheap stocks, under $2), Monster (the biggest, most valuable companies in the market), and Standard (everything else). Pick a group above to see its stocks.",
