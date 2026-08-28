@@ -368,9 +368,13 @@
             renderFallbackList(group, ordered);
         }
 
+        // Alto del canvas por defecto, 30% más grande que la versión
+        // original (era clamp(360, ancho*0.62, 560)) — mismo cálculo,
+        // los tres números escalados x1.3, así crece proporcional en
+        // todo el rango de anchos en vez de solo en un extremo.
         function resize() {
             var w = stage.clientWidth || 600;
-            var h = Math.max(360, Math.min(560, Math.round(w * 0.62)));
+            var h = Math.max(468, Math.min(728, Math.round(w * 0.806)));
             stage.style.height = h + "px";
             camera.aspect = w / h;
             camera.updateProjectionMatrix();
