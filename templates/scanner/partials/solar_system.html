@@ -94,6 +94,23 @@
         <div id="solar-tooltip" class="solar-tooltip" hidden></div>
         <p id="solar-loading" class="solar-loading">{{ T.solar_loading }}</p>
         <p id="solar-no-data" class="empty-state" hidden>{{ T.solar_no_data }}</p>
+        <div class="solar-zoom-controls" id="solar-zoom-controls" hidden>
+            <button type="button" id="solar-zoom-in" class="solar-zoom-btn" aria-label="{{ T.solar_zoom_in }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="10" cy="10" r="6.5"/>
+                    <line x1="14.8" y1="14.8" x2="20" y2="20"/>
+                    <line x1="7" y1="10" x2="13" y2="10"/>
+                    <line x1="10" y1="7" x2="10" y2="13"/>
+                </svg>
+            </button>
+            <button type="button" id="solar-zoom-out" class="solar-zoom-btn" aria-label="{{ T.solar_zoom_out }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="10" cy="10" r="6.5"/>
+                    <line x1="14.8" y1="14.8" x2="20" y2="20"/>
+                    <line x1="7" y1="10" x2="13" y2="10"/>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <div class="solar-fallback" id="solar-fallback">

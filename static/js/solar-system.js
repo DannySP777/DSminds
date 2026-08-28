@@ -242,7 +242,14 @@
         function makeLabelSprite(text) {
             var canvas = document.createElement("canvas");
             var ctx = canvas.getContext("2d");
-            var fontSize = 40;
+            // En pantallas chicas la cámara arranca más lejos en
+            // proporción a lo que se ve, y el nombre del planeta se
+            // volvía casi ilegible — texto más grande + más
+            // "pxToWorld" (la esfera crece con la pantalla, pero la
+            // etiqueta no lo hacía) para que ocupe más espacio en
+            // pantalla, no solo en el mundo 3D.
+            var fontSize = isMobile ? 60 : 40;
+            var pxToWorld = isMobile ? 0.085 : 0.055;
             ctx.font = "700 " + fontSize + "px " + cssVar("--font-mono", "monospace");
             var textWidth = ctx.measureText(text).width;
             canvas.width = Math.ceil(textWidth) + 24;
@@ -260,7 +267,6 @@
             texture.minFilter = THREE.LinearFilter;
             var material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false });
             var sprite = new THREE.Sprite(material);
-            var pxToWorld = 0.055;
             sprite.scale.set(canvas.width * pxToWorld, canvas.height * pxToWorld, 1);
             return sprite;
         }
@@ -503,20 +509,67 @@
             }
         }
 
+        function zoomBy(factor) {
+            cameraDistance = Math.min(Math.max(cameraDistance * factor, 60), 500);
+            updateCameraPosition();
+        }
+
         function wireInteraction() {
             var dragging = false;
             var lastX = 0;
             var lastY = 0;
             var moved = false;
 
-            // Arrastrar para rotar y la rueda para zoom funcionan siempre
-            // (mouse o touch, vía Pointer Events) — antes se apagaban por
-            // completo si la ventana medía menos de 640px, así que
-            // cualquiera con el navegador no maximizado se quedaba sin
-            // poder mover la escena. El recorte a 15 planetas en pantallas
-            // chicas (ver MOBILE_PLANET_CAP) es la única diferencia real
-            // que debería depender del tamaño.
+            // Un dedo (o mouse) rota, la rueda hace zoom — funcionan
+            // siempre, no solo en desktop (antes se apagaban por completo
+            // bajo 640px de ancho, así que cualquiera con el navegador no
+            // maximizado se quedaba sin poder mover la escena). Dos dedos
+            // hacen pinch-to-zoom: activePointers guarda la posición de
+            // cada dedo por su pointerId (Pointer Events unifica touch y
+            // mouse), y con dos activos se compara la distancia entre
+            // ellos contra la distancia al empezar el gesto para escalar
+            // cameraDistance — el mismo truco que usaría una librería de
+            // gestos, sin sumar una.
+            var activePointers = {};
+            var pinchStartDistance = null;
+            var pinchStartCameraDistance = null;
+
+            function pointerDistance() {
+                var ids = Object.keys(activePointers);
+                if (ids.length < 2) return null;
+                var a = activePointers[ids[0]];
+                var b = activePointers[ids[1]];
+                return Math.hypot(a.x - b.x, a.y - b.y);
+            }
+
+            function releasePointer(e) {
+                delete activePointers[e.pointerId];
+                if (Object.keys(activePointers).length < 2) {
+                    pinchStartDistance = null;
+                }
+                dragging = false;
+                renderer.domElement.style.cursor = "grab";
+            }
+
             renderer.domElement.addEventListener("pointermove", function (e) {
+                if (activePointers[e.pointerId]) {
+                    activePointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+                }
+
+                if (Object.keys(activePointers).length >= 2) {
+                    moved = true;
+                    var dist = pointerDistance();
+                    if (dist && pinchStartDistance) {
+                        // Distancia ABSOLUTA contra el inicio del gesto,
+                        // no un delta acumulado frame a frame — dedos
+                        // separándose (dist crece) acerca la cámara.
+                        var ratio = pinchStartDistance / dist;
+                        cameraDistance = Math.min(Math.max(pinchStartCameraDistance * ratio, 60), 500);
+                        updateCameraPosition();
+                    }
+                    return;
+                }
+
                 if (dragging) {
                     var dx = e.clientX - lastX;
                     var dy = e.clientY - lastY;
@@ -532,20 +585,24 @@
             });
 
             renderer.domElement.addEventListener("pointerdown", function (e) {
-                dragging = true;
-                moved = false;
-                lastX = e.clientX;
-                lastY = e.clientY;
-                renderer.domElement.style.cursor = "grabbing";
+                activePointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+                if (Object.keys(activePointers).length === 2) {
+                    pinchStartDistance = pointerDistance();
+                    pinchStartCameraDistance = cameraDistance;
+                    dragging = false;
+                } else {
+                    dragging = true;
+                    moved = false;
+                    lastX = e.clientX;
+                    lastY = e.clientY;
+                    renderer.domElement.style.cursor = "grabbing";
+                }
             });
-            window.addEventListener("pointerup", function () {
-                dragging = false;
-                renderer.domElement.style.cursor = "grab";
-            });
+            window.addEventListener("pointerup", releasePointer);
+            window.addEventListener("pointercancel", releasePointer);
             renderer.domElement.addEventListener("wheel", function (e) {
                 e.preventDefault();
-                cameraDistance = Math.min(Math.max(cameraDistance + e.deltaY * 0.15, 60), 500);
-                updateCameraPosition();
+                zoomBy(1 + e.deltaY * 0.0015);
             }, { passive: false });
 
             renderer.domElement.addEventListener("click", function (e) {
@@ -560,6 +617,13 @@
             });
 
             tooltip.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+
+            // Botones de lupa — respaldo explícito para quien no
+            // descubra el gesto de pellizcar (ver comentario arriba).
+            var zoomInBtn = document.getElementById("solar-zoom-in");
+            var zoomOutBtn = document.getElementById("solar-zoom-out");
+            if (zoomInBtn) zoomInBtn.addEventListener("click", function () { zoomBy(0.8); });
+            if (zoomOutBtn) zoomOutBtn.addEventListener("click", function () { zoomBy(1.25); });
         }
 
         function animate() {
@@ -606,6 +670,8 @@
             // pantalla y como progressive-enhancement si WebGL falla
             // a mitad de sesión.
             root.classList.add("solar-js-ready");
+            var zoomControls = document.getElementById("solar-zoom-controls");
+            if (zoomControls) zoomControls.hidden = false;
             wireTabs(function (group) {
                 activeGroup = group;
                 refreshView();

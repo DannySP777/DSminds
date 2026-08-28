@@ -2560,6 +2560,44 @@ th:last-child .th-tip::after {
     max-width: 220px;
 }
 
+/* Botones de zoom — respaldo explícito al pellizco de dos dedos (ver
+   wireInteraction() en solar-system.js): en pantallas chicas no todos
+   descubren el gesto de pellizcar, así que estos quedan siempre
+   visibles ahí, no solo como fallback si el pellizco fallara. */
+.solar-zoom-controls {
+    position: absolute;
+    right: 0.7rem;
+    bottom: 0.7rem;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.solar-zoom-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(18, 18, 24, 0.85);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    backdrop-filter: blur(2px);
+}
+
+.solar-zoom-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.solar-zoom-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
 .solar-fallback-table {
     width: 100%;
     border-collapse: collapse;
