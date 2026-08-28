@@ -44,6 +44,7 @@ T = {
         "header_subtitle_text": "Screening smart de acciones con IA",
         "header_subtitle_title": "Cada día clasificamos acciones en tres grupos (penny, monster, standard) y calculamos señales técnicas de corto plazo (RSI, volumen relativo, rupturas de rango) y de fondo (tendencia vs. su media de 200 días, upside al precio objetivo de analistas). Elegí un grupo y una esfera para ver su gráfica e indicadores.",
         "scan_intro": "Olvidate de tablas complicadas y aburridas — ahora Smart Scanner te permite aprender y escoger tus acciones de forma divertida e intuitiva.",
+        "scan_intro_cta": "Seguí nuestro tutorial",
 
         # Strings que main.js arma por JS (no pasan por una plantilla Django) — ver window.DSMS_I18N en base.html
         "js_loading_chart_of": "Cargando gráfica de",
@@ -146,7 +147,7 @@ T = {
         "welcome_video_title": "Video de bienvenida",
         "welcome_video_fallback": "Tu navegador no soporta el video.",
         "welcome_video_fallback_link": "Descargalo acá",
-        "tutorial_title": "Cómo usar el scanner",
+        "tutorial_title": "Seguí nuestro tutorial señalando cada caja a continuación",
         "tutorial_step1_label": "Elegí el grupo",
         "tutorial_step1_text": "Una acción es una pequeña parte de una empresa que se compra y se vende en bolsa — tener una acción es ser dueño de un pedacito de esa empresa. Acá las separamos en tres grupos por precio y tamaño: Penny (acciones baratas, por debajo de $2), Monster (las empresas más grandes y valiosas del mercado) y Standard (todas las demás). Elegí un grupo arriba para ver sus acciones.",
         "tutorial_step2_label": "Interpretá el gráfico",
@@ -596,6 +597,7 @@ T = {
         "header_subtitle_text": "Smart AI stock screening",
         "header_subtitle_title": "Every day we sort stocks into three groups (penny, monster, standard) and calculate short-term technical signals (RSI, relative volume, range breakouts) and longer-term ones (trend vs. 200-day moving average, upside to analyst target price). Pick a group and a sphere to see its chart and indicators.",
         "scan_intro": "Forget complicated, boring tables — Smart Scanner now lets you learn and pick your stocks in a fun, intuitive way.",
+        "scan_intro_cta": "Follow our tutorial",
 
         # Strings main.js builds via JS (don't go through a Django template) — see window.DSMS_I18N in base.html
         "js_loading_chart_of": "Loading chart for",
@@ -698,7 +700,7 @@ T = {
         "welcome_video_title": "Welcome video",
         "welcome_video_fallback": "Your browser doesn't support video.",
         "welcome_video_fallback_link": "Download it here",
-        "tutorial_title": "How to use the scanner",
+        "tutorial_title": "Follow our tutorial by pointing to each box below",
         "tutorial_step1_label": "Pick a group",
         "tutorial_step1_text": "A stock is a small piece of a company that's bought and sold on the market — owning a stock means owning a tiny slice of that company. We sort them into three groups by price and size: Penny (cheap stocks, under $2), Monster (the biggest, most valuable companies in the market), and Standard (everything else). Pick a group above to see its stocks.",
         "tutorial_step2_label": "Read the chart",
