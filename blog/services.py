@@ -17,6 +17,7 @@ respaldo).
 from django.utils import timezone
 
 from news.models import EconomicEvent
+from scanner.commentary import build_ticker_commentary
 from scanner.models import ScanResult
 
 MESES = {
@@ -115,13 +116,29 @@ def build_daily_summary(target_date=None) -> dict | None:
     rsi_values = [float(r.rsi) for r in results if r.rsi is not None]
     avg_rsi = sum(rsi_values) / len(rsi_values) if rsi_values else None
 
+    # Agregados extra para densificar el texto (auditoría AdSense 28-ago:
+    # el párrafo de conclusión reciclaba casi la misma plantilla día a
+    # día, solo cambiando números) — más señales reales = menos repetición
+    # de frase entre un resumen y el siguiente.
+    breakouts = [r for r in results if r.breakout]
+    overbought = [r for r in results if r.rsi is not None and float(r.rsi) >= 70]
+    oversold = [r for r in results if r.rsi is not None and float(r.rsi) <= 30]
+    relvol_leader = max(
+        (r for r in results if r.relative_volume is not None and float(r.relative_volume) >= 2),
+        key=lambda r: float(r.relative_volume),
+        default=None,
+    )
+
     events = list(EconomicEvent.objects.order_by("event_time"))
     top_results = results[:5]
 
     data = {"slug": f"resumen-mercado-{scan_date.isoformat()}", "published_at": timezone.now()}
 
     for lang, key_suffix in (("es", ""), ("en", "_en")):
-        conclusion = _build_conclusion(lang, total, bullish, outperformers, avg_rsi, events)
+        conclusion = _build_conclusion(
+            lang, total, bullish, outperformers, avg_rsi, events,
+            breakouts, overbought, oversold, relvol_leader,
+        )
         body = _render_body(lang, scan_date, top_results, events, conclusion, total, bullish, outperformers, avg_rsi)
         excerpt = conclusion if len(conclusion) <= 280 else conclusion[:277].rsplit(" ", 1)[0] + "…"
         title = (
@@ -135,7 +152,13 @@ def build_daily_summary(target_date=None) -> dict | None:
     return data
 
 
-def _build_conclusion(lang, total, bullish, outperformers, avg_rsi, events) -> str:
+def _build_conclusion(
+    lang, total, bullish, outperformers, avg_rsi, events,
+    breakouts=None, overbought=None, oversold=None, relvol_leader=None,
+) -> str:
+    breakouts = breakouts or []
+    overbought = overbought or []
+    oversold = oversold or []
     bullish_pct = len(bullish) / total if total else 0
     parts = []
 
@@ -174,6 +197,29 @@ def _build_conclusion(lang, total, bullish, outperformers, avg_rsi, events) -> s
             f"{len(outperformers)} of {total} stocks are beating the S&P 500 over the last ~3 months "
             "(positive relative strength); the rest are moving slower than the broader market."
         )
+
+        if breakouts:
+            breakout_pct = round(len(breakouts) / total * 100)
+            names = ", ".join(r.ticker.symbol for r in breakouts[:3])
+            parts.append(
+                f"{breakout_pct}% of the group ({len(breakouts)} of {total}) is breaking out of its 20-day "
+                f"range today, led by {names} — notable technical activity worth watching."
+            )
+
+        if overbought or oversold:
+            bits = []
+            if overbought:
+                bits.append(f"{len(overbought)} in overbought territory (RSI ≥ 70)")
+            if oversold:
+                bits.append(f"{len(oversold)} oversold (RSI ≤ 30)")
+            parts.append(f"On RSI extremes: {' and '.join(bits)}.")
+
+        if relvol_leader is not None:
+            parts.append(
+                f"{relvol_leader.ticker.symbol} stands out with today's highest relative volume "
+                f"({float(relvol_leader.relative_volume):.1f}x its average) — a sign of unusually heavy "
+                "trading interest."
+            )
 
         high_impact = [e for e in events if e.impact == "high"]
         if high_impact:
@@ -220,6 +266,29 @@ def _build_conclusion(lang, total, bullish, outperformers, avg_rsi, events) -> s
         "(fuerza relativa positiva); el resto se está moviendo más despacio que el mercado en general."
     )
 
+    if breakouts:
+        breakout_pct = round(len(breakouts) / total * 100)
+        names = ", ".join(r.ticker.symbol for r in breakouts[:3])
+        parts.append(
+            f"El {breakout_pct}% del grupo ({len(breakouts)} de {total}) está rompiendo su rango de 20 días "
+            f"hoy, liderado por {names} — actividad técnica notable a seguir."
+        )
+
+    if overbought or oversold:
+        bits = []
+        if overbought:
+            bits.append(f"{len(overbought)} en zona de sobrecompra (RSI ≥ 70)")
+        if oversold:
+            bits.append(f"{len(oversold)} en zona de sobreventa (RSI ≤ 30)")
+        parts.append(f"En los extremos de RSI: {' y '.join(bits)}.")
+
+    if relvol_leader is not None:
+        parts.append(
+            f"{relvol_leader.ticker.symbol} se destaca con el volumen relativo más alto del día "
+            f"({float(relvol_leader.relative_volume):.1f}x su promedio) — señal de interés de negociación "
+            "inusualmente alto."
+        )
+
     high_impact = [e for e in events if e.impact == "high"]
     if high_impact:
         names = ", ".join(f"{e.title} ({_fecha_corta(e.event_time, lang)})" for e in high_impact[:3])
@@ -261,6 +330,16 @@ def _render_body(lang, scan_date, top_results, events, conclusion, total, bullis
 
     avg_rsi_display = f"{avg_rsi:.1f}" if avg_rsi is not None else ("N/A" if lang == "en" else "N/D")
 
+    # Lectura acción por acción del top 5 — reusa el mismo motor de
+    # comentario genuino que ya interpreta los números reales de cada
+    # ticker en su ficha individual (scanner/commentary.py), en vez de
+    # repetir una plantilla fija con solo los números cambiando.
+    stock_notes = "".join(
+        f"<p><strong>{r.ticker.symbol}</strong> &mdash; {build_ticker_commentary(r, lang)}</p>"
+        for r in top_results
+        if build_ticker_commentary(r, lang)
+    )
+
     if lang == "en":
         return f"""<section class="daily-summary">
     <h2>Scanner summary &mdash; {scan_date:%m/%d/%Y}</h2>
@@ -277,6 +356,11 @@ def _render_body(lang, scan_date, top_results, events, conclusion, total, bullis
             <tbody>{rows}</tbody>
         </table>
     </div>
+</section>
+
+<section class="daily-summary">
+    <h2>Stock-by-stock read</h2>
+    {stock_notes}
 </section>
 
 <section class="daily-summary">
@@ -309,6 +393,11 @@ def _render_body(lang, scan_date, top_results, events, conclusion, total, bullis
             <tbody>{rows}</tbody>
         </table>
     </div>
+</section>
+
+<section class="daily-summary">
+    <h2>Lectura acción por acción</h2>
+    {stock_notes}
 </section>
 
 <section class="daily-summary">
