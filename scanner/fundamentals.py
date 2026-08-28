@@ -94,8 +94,17 @@ def get_fundamentals(symbol: str, lang: str = "es", include_summary: bool = True
 
     sector_raw = info.get("sector") or ""
 
+    # bool(info) NO alcanza para detectar un símbolo inexistente: para
+    # esos casos yfinance (1.5.2) no lanza una excepción ni devuelve {}
+    # — devuelve un dict de un solo campo con valor None (ej.
+    # {'trailingPegRatio': None}), que sigue siendo verdadero. Un precio
+    # o un nombre real son la única señal confiable de que el símbolo
+    # existe de verdad (ver auditoría AdSense: esto es lo que dejaba
+    # pasar fichas de acciones 100% "N/D" como contenido indexable).
+    has_data = bool(current_price or info.get("longName") or info.get("shortName"))
+
     result = {
-        "has_data": bool(info),
+        "has_data": has_data,
         "current_price": current_price,
         "exchange": info.get("fullExchangeName") or info.get("exchange") or "",
         "company_name": info.get("longName") or info.get("shortName") or symbol,

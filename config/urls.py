@@ -27,7 +27,6 @@ urlpatterns = [
     path('ads.txt', ads_txt, name='ads-txt'),
     path('idioma/<str:lang>/', set_language, name='set-language'),
     path('', include('scanner.urls')),
-    path('noticias/', include('news.urls')),
     path('blog/', include('blog.urls')),
     path('prediccion/', include('dsprofeta.urls')),
     path('', include(pages_urlpatterns)),

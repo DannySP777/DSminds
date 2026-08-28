@@ -270,3 +270,162 @@ def save_scan_results(symbols: list[str]) -> int:
         saved += 1
 
     return saved
+
+
+def save_universe_results(lang: str = "es") -> int:
+    """
+    Corre universe.build_universe() para descubrir/clasificar/rankear
+    el universo ampliado (penny/monster/standard, top 20 c/u — ver
+    scanner/universe.py), y para los símbolos ganadores (máx. 60) reusa
+    run_daily_scan() para calcular los mismos indicadores técnicos
+    (RSI/MACD/MA200/ATR/etc.) que ya muestran ticker_detail.html y los
+    paneles AJAX — así un planeta clickeado en el sistema solar puede
+    reusar esos paneles sin duplicar la matemática técnica.
+
+    No toca la ruta legacy (run_daily_scan/save_scan_results, usada por
+    run_scan y add_ticker) — ScanResult.group/momentum_score/
+    momentum_rank quedan blank en las filas que esa ruta escribe.
+    """
+    from .models import ScanResult, Ticker
+    from .universe import build_universe
+
+    ranked = build_universe(lang)
+    today = date.today()
+    saved = 0
+
+    # Los ganadores de hoy pueden ser menos (o distintos) que los de la
+    # corrida anterior en el mismo día (ej. si se corre --dry-run y
+    # después la real, o si se vuelve a correr a mano) — sin este borrado,
+    # un símbolo que cae del top 20 se queda pegado en la base con el
+    # rank/fecha de hoy, y la vista JSON lo seguiría devolviendo.
+    ScanResult.objects.filter(date=today).exclude(group="").delete()
+
+    for group, entries in ranked.items():
+        symbols = [e["_symbol"] for e in entries]
+        if not symbols:
+            continue
+
+        technicals = {r["symbol"]: r for r in run_daily_scan(symbols)}
+        rank_by_symbol = {e["_symbol"]: e for e in entries}
+
+        for symbol, tech in technicals.items():
+            entry = rank_by_symbol[symbol]
+            ticker, _ = Ticker.objects.get_or_create(symbol=symbol)
+            ScanResult.objects.update_or_create(
+                ticker=ticker,
+                date=today,
+                defaults={
+                    "price": tech["price"],
+                    "rsi": tech["rsi"],
+                    "relative_volume": tech["relative_volume"],
+                    "breakout": tech["breakout"],
+                    "ma200": tech["ma200"],
+                    "above_ma200": tech["above_ma200"],
+                    "atr": tech["atr"],
+                    "stop_loss": tech["stop_loss"],
+                    "relative_strength": tech["relative_strength"],
+                    "macd": tech["macd"],
+                    "macd_signal": tech["macd_signal"],
+                    "macd_bullish": tech["macd_bullish"],
+                    "current_ratio": tech["current_ratio"],
+                    "target_price": tech["target_price"],
+                    "market_cap": tech["market_cap"],
+                    "market_cap_display": tech["market_cap_display"],
+                    "trailing_pe": tech["trailing_pe"],
+                    "peg_ratio": tech["peg_ratio"],
+                    "debt_to_equity": tech["debt_to_equity"],
+                    "exchange": tech["exchange"],
+                    "score": tech["score"],
+                    "group": group,
+                    "momentum_score": entry["_composite"],
+                    "momentum_rank": entry["_rank"],
+                },
+            )
+            saved += 1
+
+    return saved
+
+
+def build_group_summary(group: str, lang: str = "es") -> dict:
+    """
+    Resumen operativo del día para un grupo del sistema solar (penny/
+    monster/standard): agregados del último scan de ese grupo + un
+    texto de 2-4 oraciones que combina lectura técnica (amplitud sobre
+    MA200, RSI promedio, % con ruptura, volumen relativo promedio) y
+    fundamental (upside promedio al precio objetivo de analistas).
+    Mismo criterio que blog/services.py::_build_conclusion (reglas
+    fijas sobre datos reales del día, no texto genérico) pero por
+    grupo y bilingüe vía config.translations, ya que esta vista sí
+    tiene versión en inglés (el blog no).
+    """
+    from config.translations import get_translations
+
+    from .models import ScanResult
+
+    T = get_translations(lang)
+
+    latest_date = (
+        ScanResult.objects.filter(group=group).order_by("-date").values_list("date", flat=True).first()
+    )
+    results = list(ScanResult.objects.filter(group=group, date=latest_date)) if latest_date else []
+    total = len(results)
+
+    if not total:
+        return {"date": latest_date, "total": 0, "text": T["solar_summary_empty"]}
+
+    bullish = [r for r in results if r.above_ma200]
+    breakouts = [r for r in results if r.breakout]
+    rsi_values = [float(r.rsi) for r in results if r.rsi is not None]
+    upside_values = [r.target_upside_pct for r in results if r.target_upside_pct is not None]
+    relvol_values = [float(r.relative_volume) for r in results if r.relative_volume is not None]
+
+    avg_rsi = sum(rsi_values) / len(rsi_values) if rsi_values else None
+    avg_upside = sum(upside_values) / len(upside_values) if upside_values else None
+    avg_relvol = sum(relvol_values) / len(relvol_values) if relvol_values else None
+    bullish_pct = len(bullish) / total
+    breakout_pct = len(breakouts) / total
+
+    parts = []
+
+    if bullish_pct >= 0.6:
+        parts.append(T["solar_summary_breadth_high"].format(bullish=len(bullish), total=total))
+    elif bullish_pct <= 0.35:
+        parts.append(T["solar_summary_breadth_low"].format(bullish=len(bullish), total=total))
+    else:
+        parts.append(T["solar_summary_breadth_mixed"].format(bullish=len(bullish), total=total))
+
+    if avg_rsi is not None:
+        if avg_rsi >= 65:
+            parts.append(T["solar_summary_rsi_high"].format(rsi=round(avg_rsi, 1)))
+        elif avg_rsi <= 40:
+            parts.append(T["solar_summary_rsi_low"].format(rsi=round(avg_rsi, 1)))
+        else:
+            parts.append(T["solar_summary_rsi_neutral"].format(rsi=round(avg_rsi, 1)))
+
+    if avg_upside is not None:
+        parts.append(T["solar_summary_upside"].format(upside=round(avg_upside, 1)))
+
+    if breakout_pct >= 0.25:
+        parts.append(T["solar_summary_breakout"].format(pct=round(breakout_pct * 100)))
+
+    if avg_relvol is not None:
+        parts.append(T["solar_summary_relvol"].format(relvol=round(avg_relvol, 2)))
+
+    return {
+        "date": latest_date,
+        "total": total,
+        "bullish_pct": round(bullish_pct * 100),
+        "avg_rsi": round(avg_rsi, 1) if avg_rsi is not None else None,
+        "avg_upside": round(avg_upside, 1) if avg_upside is not None else None,
+        "avg_relvol": round(avg_relvol, 2) if avg_relvol is not None else None,
+        "text": " ".join(parts),
+    }
+
+
+def build_all_group_summaries(lang: str = "es") -> dict:
+    from .models import ScanResult
+
+    return {
+        group: build_group_summary(group, lang)
+        for group in (ScanResult.GROUP_PENNY, ScanResult.GROUP_MONSTER, ScanResult.GROUP_STANDARD)
+    }

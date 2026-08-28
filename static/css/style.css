@@ -18,6 +18,26 @@
     --bear-rgb: 229, 72, 77;
     --border: #232b35;
 
+    /* Sistema solar del scanner: el sol es el grupo (siempre amarillo,
+       para que se distinga de cualquier planeta a simple vista) y cada
+       planeta se colorea por tercio de ranking dentro de su grupo — no
+       por tendencia técnica — verde el mejor tercio, tomate el medio,
+       rojo el último. */
+    --sun-color: #f2c94a;
+    --sun-color-rgb: 242, 201, 74;
+    --tier-best: #3fbf7f;
+    --tier-best-rgb: 63, 191, 127;
+    --tier-mid: #ff6347;
+    --tier-mid-rgb: 255, 99, 71;
+    --tier-worst: #e5484d;
+    --tier-worst-rgb: 229, 72, 77;
+
+    /* Cuarto color solo para el tutorial (paso 2, "interpretá el
+       gráfico") — los otros tres pasos reusan sun/tier-best/tier-mid
+       para que el tutorial ya "hable" la paleta real de la escena. */
+    --tutorial-blue: #5ec8f2;
+    --tutorial-blue-rgb: 94, 200, 242;
+
     --font-display: "Space Grotesk", "Segoe UI", Roboto, sans-serif;
     --font-body: "IBM Plex Sans", "Segoe UI", Roboto, sans-serif;
     --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
@@ -64,6 +84,15 @@ select:focus-visible,
     font-size: 1.05rem;
     font-weight: 700;
     margin: 1.25rem 0 0.5rem;
+}
+
+.ticker-commentary {
+    color: var(--text);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    border-left: 3px solid var(--accent);
+    padding-left: 0.9rem;
+    margin: 0.9rem 0;
 }
 
 .tool-disclaimer {
@@ -2220,5 +2249,370 @@ th:last-child .th-tip::after {
 
     .cookie-banner__actions {
         justify-content: flex-end;
+    }
+}
+
+/* ---- Sistema solar del scanner (reemplaza la tabla vieja) ---- */
+
+.solar-summary {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.solar-summary__title {
+    margin: 0 0 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+}
+
+.solar-summary__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.9rem 1.4rem;
+}
+
+.solar-summary__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.solar-summary__group {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+}
+
+.solar-summary__item p {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text);
+}
+
+.solar-selected {
+    display: flex;
+    gap: 0.4rem;
+    align-items: baseline;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+}
+
+.solar-selected strong {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-size: 0.95rem;
+}
+
+.solar-tutorial {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.solar-tutorial__title {
+    margin: 0 0 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+}
+
+.solar-tutorial__steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    /* La perspectiva vive en el contenedor, no en cada tarjeta —
+       así el "giro" de cada una (ver .solar-tutorial__step) se ve
+       coherente entre sí, como si todas estuvieran en la misma vitrina. */
+    perspective: 800px;
+}
+
+.solar-tutorial__step {
+    --step-color: var(--sun-color);
+    --step-color-rgb: var(--sun-color-rgb);
+
+    flex: 1 1 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    background:
+        radial-gradient(circle at 50% 20%, rgba(var(--step-color-rgb), 0.22), transparent 65%),
+        var(--surface);
+    border: 1px solid rgba(var(--step-color-rgb), 0.35);
+    border-radius: 12px;
+    padding: 1rem 0.6rem 0.9rem;
+    color: rgba(var(--step-color-rgb), 0.75);
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) rotateY(0deg) translateZ(0);
+    /* Sombra en dos capas: una "de contacto" pegada abajo (simula
+       grosor, como si la tarjeta tuviera un borde físico) y otra
+       difusa más ancha (profundidad) — es lo que vende el efecto 3D
+       sin necesitar WebGL para cuatro iconos chicos. */
+    box-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.45),
+        0 8px 18px rgba(0, 0, 0, 0.35);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.35s ease, border-color 0.25s, color 0.25s;
+}
+
+.solar-tutorial__step--2 { --step-color: var(--tutorial-blue); --step-color-rgb: var(--tutorial-blue-rgb); }
+.solar-tutorial__step--3 { --step-color: var(--tier-best); --step-color-rgb: var(--tier-best-rgb); }
+.solar-tutorial__step--4 { --step-color: var(--tier-mid); --step-color-rgb: var(--tier-mid-rgb); }
+
+.solar-tutorial__icon {
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(0 0 6px rgba(var(--step-color-rgb), 0.5));
+}
+
+.solar-tutorial__icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.solar-tutorial__label {
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    text-align: center;
+}
+
+/* "Se prende": el paso activo (o el que se está por elegir, al pasar
+   el mouse) sube de brillo, se levanta hacia el usuario (translateZ +
+   una leve rotación) y agranda su sombra — mismo lenguaje de "prender"
+   que un planeta al seleccionarlo (ver applySelectionHighlight en
+   solar-system.js), para que el tutorial ya anticipe esa interacción. */
+.solar-tutorial__step:hover,
+.solar-tutorial__step.is-active {
+    color: var(--step-color);
+    border-color: rgba(var(--step-color-rgb), 0.85);
+    transform: rotateX(-8deg) rotateY(8deg) translateZ(18px) scale(1.05);
+    box-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.45),
+        0 18px 30px rgba(0, 0, 0, 0.45),
+        0 0 26px rgba(var(--step-color-rgb), 0.45);
+}
+
+.solar-tutorial__desc {
+    margin: 1.1rem 0 0;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--text);
+    min-height: 2.8em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .solar-tutorial__step,
+    .solar-tutorial__step:hover,
+    .solar-tutorial__step.is-active {
+        transition: none;
+        transform: none;
+    }
+}
+
+.solar-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+}
+
+.solar-tab {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.45rem 1.1rem;
+    cursor: pointer;
+}
+
+.solar-tab.is-active {
+    color: var(--bg);
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.solar-group-desc {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin: 0 0 0.9rem;
+}
+
+.solar-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.9rem 1.4rem;
+    padding: 0.8rem 0.9rem;
+    margin-bottom: 0.9rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.solar-control {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.solar-control select,
+.solar-control input[type="search"] {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.3rem 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+}
+
+.solar-control--search {
+    flex: 1 1 160px;
+    min-width: 140px;
+}
+
+.solar-control--trend {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.solar-trend-chip {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    padding: 0.25rem 0.65rem;
+    cursor: pointer;
+    opacity: 0.45;
+}
+
+.solar-trend-chip.is-active {
+    opacity: 1;
+}
+
+.solar-trend-chip--best { color: var(--tier-best); border-color: rgba(var(--tier-best-rgb), 0.5); }
+.solar-trend-chip--mid { color: var(--tier-mid); border-color: rgba(var(--tier-mid-rgb), 0.5); }
+.solar-trend-chip--worst { color: var(--tier-worst); border-color: rgba(var(--tier-worst-rgb), 0.5); }
+
+.solar-trend-chip.is-active.solar-trend-chip--best { background: rgba(var(--tier-best-rgb), 0.15); }
+.solar-trend-chip.is-active.solar-trend-chip--mid { background: rgba(var(--tier-mid-rgb), 0.15); }
+.solar-trend-chip.is-active.solar-trend-chip--worst { background: rgba(var(--tier-worst-rgb), 0.15); }
+
+.solar-stage {
+    position: relative;
+}
+
+.solar-canvas-container {
+    width: 100%;
+    border-radius: 10px;
+    background: radial-gradient(ellipse at center, var(--surface-2) 0%, var(--bg) 100%);
+    overflow: hidden;
+}
+
+.solar-canvas-container canvas {
+    display: block;
+    touch-action: none;
+}
+
+.solar-loading {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.solar-tooltip {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--text);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    max-width: 220px;
+}
+
+.solar-fallback-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+}
+
+.solar-fallback-table caption {
+    text-align: left;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+}
+
+.solar-fallback-table th,
+.solar-fallback-table td {
+    text-align: left;
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.solar-fallback-table a {
+    color: var(--text);
+    font-family: var(--font-mono);
+}
+
+/* Cuando Three.js inicializa bien, la lista de respaldo sigue en el DOM
+   (lectores de pantalla, y como progressive-enhancement si WebGL falla
+   a mitad de sesión) pero se oculta visualmente — mismo patrón que
+   .visually-hidden de arriba. */
+.solar-system.solar-js-ready .solar-fallback {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 640px) {
+    .solar-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.7rem;
+    }
+
+    .solar-control--search {
+        min-width: 0;
     }
 }

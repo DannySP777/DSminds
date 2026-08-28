@@ -48,6 +48,24 @@ class ScanResult(models.Model):
     score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     notes = models.CharField(max_length=200, blank=True)
 
+    GROUP_PENNY = "penny"
+    GROUP_MONSTER = "monster"
+    GROUP_STANDARD = "standard"
+    GROUP_CHOICES = [
+        (GROUP_PENNY, "Penny"),
+        (GROUP_MONSTER, "Monster"),
+        (GROUP_STANDARD, "Standard"),
+    ]
+
+    # Los tres campos de abajo solo los llena scanner/universe.py (vista
+    # "sistema solar"). Las filas de la ruta legacy (run_daily_scan /
+    # add_ticker) los dejan en blanco — el ranking por momentum es
+    # independiente del score técnico de arriba, mezclarlos rompería el
+    # ordering/filtro por -score que ya usa la tabla vieja.
+    group = models.CharField(max_length=10, choices=GROUP_CHOICES, blank=True, db_index=True)
+    momentum_score = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    momentum_rank = models.PositiveSmallIntegerField(null=True, blank=True)
+
     class Meta:
         ordering = ["-date", "-score"]
         unique_together = ("ticker", "date")

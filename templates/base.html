@@ -128,10 +128,6 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
                     {{ T.nav_scanner }}
                 </a>
-                <a href="/noticias/" class="main-nav__link{% if '/noticias' in request.path %} main-nav__link--active{% endif %}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M7 9h4M7 12h4M7 15h4M14 9h3v6h-3z"/></svg>
-                    {{ T.nav_news }}
-                </a>
                 <a href="/prediccion/" class="main-nav__link{% if '/prediccion' in request.path %} main-nav__link--active{% endif %}">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-5 4 3 7-8"/><path d="M15 6h5v5"/></svg>
                     {{ T.nav_dsprofeta }}
@@ -193,6 +189,17 @@
         </div>
     </div>
 
+    <script>
+        // Strings de main.js que arma HTML por JS (no pasan por una
+        // plantilla Django) — sin esto quedaban fijas en español sin
+        // importar el idioma elegido (?lang=/cookie site_lang).
+        window.DSMS_I18N = {
+            loadingChartOf: "{{ T.js_loading_chart_of|escapejs }}",
+            loading: "{{ T.js_loading|escapejs }}",
+            chartError: "{{ T.js_chart_error|escapejs }}",
+            indicatorsError: "{{ T.js_indicators_error|escapejs }}"
+        };
+    </script>
     <script src="{% static 'js/main.js' %}?v={% now 'U' %}"></script>
 </body>
 </html>

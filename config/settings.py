@@ -164,6 +164,20 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+            'OPTIONS': {
+                # SQLite solo permite un escritor a la vez. El journal mode
+                # por defecto (rollback journal) hace que un escritor
+                # bloquee a TODOS los lectores mientras dura la
+                # transacción — con scan_universe (~60 UPDATE/INSERT
+                # seguidos, ver scanner/services.py) esa ventana alcanza
+                # para que un POST normal a /accion/agregar/ tope con
+                # "database is locked" (timeout por defecto de sqlite3:
+                # 5s). WAL deja que lectores y el escritor convivan; el
+                # timeout más alto es el margen para el caso, ahora más
+                # raro, de dos escritores al mismo tiempo.
+                'timeout': 20,
+                'init_command': 'PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;',
+            },
         }
     }
 

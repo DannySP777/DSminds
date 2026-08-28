@@ -42,8 +42,14 @@ T = {
 
         # Scanner header
         "header_subtitle_text": "Screening smart de acciones con IA",
-        "header_subtitle_title": "Cada día revisamos un grupo de acciones y calculamos señales técnicas de corto plazo (RSI, volumen relativo, rupturas de rango) y de fondo (tendencia vs. su media de 200 días, fuerza relativa vs. el S&P 500). Selecciona una acción en la tabla para ver su gráfica e indicadores.",
-        "scan_intro": "Selecciona la acción que te interese analizar en la tabla, revisa los indicadores en la página y descubre muchas sorpresas más.",
+        "header_subtitle_title": "Cada día clasificamos acciones en tres grupos (penny, monster, standard) y calculamos señales técnicas de corto plazo (RSI, volumen relativo, rupturas de rango) y de fondo (tendencia vs. su media de 200 días, upside al precio objetivo de analistas). Elegí un grupo y una esfera para ver su gráfica e indicadores.",
+        "scan_intro": "Olvidate de tablas complicadas y aburridas — ahora Smart Scanner te permite aprender y escoger tus acciones de forma divertida e intuitiva.",
+
+        # Strings que main.js arma por JS (no pasan por una plantilla Django) — ver window.DSMS_I18N en base.html
+        "js_loading_chart_of": "Cargando gráfica de",
+        "js_loading": "Cargando",
+        "js_chart_error": "No se pudo cargar la gráfica.",
+        "js_indicators_error": "No se pudieron cargar los indicadores.",
 
         # Disclaimer banner
         "tool_disclaimer_prefix": "⚠ Herramienta con fines educativos e informativos — no es asesoría de inversión ni una recomendación de compra o venta. Invertir implica riesgo de pérdida de capital. Lee el",
@@ -75,6 +81,96 @@ T = {
         "panel_chart": "Gráfica",
         "panel_indicators": "Indicadores Inteligentes",
         "panel_indices": "Índices & alertas",
+
+        # Sistema solar (vista 3D del scanner, reemplaza la tabla)
+        "solar_group_penny": "Penny",
+        "solar_group_penny_desc": "Acciones por debajo de $2 USD.",
+        "solar_group_monster": "Monster",
+        "solar_group_monster_desc": "Las acciones más valiosas del mercado, por capitalización.",
+        "solar_group_standard": "Standard",
+        "solar_group_standard_desc": "El resto: ni penny ni monster.",
+        "solar_tab_aria_label": "Elegir grupo de acciones",
+        "solar_legend_best": "Mejores",
+        "solar_legend_mid": "Medias",
+        "solar_legend_worst": "Últimas",
+        "solar_filter_breakout": "Solo rupturas",
+        "solar_filter_relvol": "Volumen relativo mín.",
+        "solar_filter_mcap": "Market cap mín.",
+        "solar_filter_upside": "Upside mín.",
+        "solar_filter_tier": "Ranking",
+        "solar_selected_label": "Seleccionado:",
+        "solar_selected_none": "ninguno todavía — hacé click en un planeta",
+        "solar_summary_title": "Resumen operativo del día",
+        "solar_summary_empty": "Todavía no hay datos del scan de hoy para este grupo.",
+        "solar_summary_breadth_high": "Amplitud saludable: {bullish} de {total} están por encima de su media móvil de 200 días, tendencia de fondo mayormente alcista en el grupo.",
+        "solar_summary_breadth_low": "Amplitud débil: solo {bullish} de {total} están por encima de su media móvil de 200 días, señal de cautela en el grupo.",
+        "solar_summary_breadth_mixed": "Panorama mixto: {bullish} de {total} están sobre su media de 200 días, sin tendencia dominante clara.",
+        "solar_summary_rsi_high": "RSI promedio ({rsi}) en zona alta, cerca de sobrecompra técnica.",
+        "solar_summary_rsi_low": "RSI promedio ({rsi}) bajo, poco impulso comprador en el grupo.",
+        "solar_summary_rsi_neutral": "RSI promedio ({rsi}) en zona neutral.",
+        "solar_summary_upside": "Upside promedio al precio objetivo de analistas: {upside}%, la lectura fundamental del grupo hoy.",
+        "solar_summary_breakout": "{pct}% del grupo muestra ruptura de rango de 20 días — actividad técnica notable.",
+        "solar_summary_relvol": "Volumen relativo promedio {relvol}x.",
+        "solar_filter_search_placeholder": "Buscar símbolo…",
+        "solar_filter_sort_by": "Ordenar por",
+        "solar_sort_rank": "Ranking",
+        "solar_sort_market_cap": "Market cap",
+        "solar_sort_upside": "Upside %",
+        "solar_sort_relvol": "Vol. relativo",
+        "solar_planet_rank_label": "Puesto",
+        "solar_planet_price_label": "Precio",
+        "solar_planet_upside_label": "Upside objetivo",
+        "solar_planet_relvol_label": "Vol. relativo",
+        "solar_planet_mcap_label": "Market cap",
+        "solar_reason_line": "{upside}% de upside con volumen relativo {relvol}x",
+        "solar_reason_line_no_upside": "Volumen relativo {relvol}x, sin cobertura de analistas",
+        "solar_reason_line_no_data": "Datos insuficientes para este ticker todavía",
+        "solar_no_data": "Todavía no hay datos para este grupo — vuelve pronto.",
+        "solar_webgl_unsupported": "Tu navegador no soporta la vista 3D — mostrando la lista en su lugar.",
+        "solar_loading": "Cargando sistema solar…",
+        "solar_fallback_caption_penny": "Top penny stocks (precio menor a $2)",
+        "solar_fallback_caption_monster": "Top acciones monster (mega-cap)",
+        "solar_fallback_caption_standard": "Top acciones standard",
+        "solar_fallback_th_rank": "Puesto",
+        "solar_fallback_th_ticker": "Ticker",
+        "solar_fallback_th_price": "Precio",
+        "solar_fallback_th_upside": "Upside",
+        "solar_fallback_th_relvol": "Vol. rel.",
+        "solar_view_ticker": "Ver ficha completa",
+        "methodology_momentum_label": "Ranking por momentum:",
+        "methodology_momentum_text": "El sistema solar rankea cada grupo (penny/monster/standard) combinando el % de upside al precio objetivo de analistas y el volumen relativo, por percentil dentro de cada grupo — independiente del score técnico que usan las gráficas individuales.",
+
+        # Tutorial de 4 pasos arriba del sistema solar
+        "tutorial_title": "Cómo usar el scanner",
+        "tutorial_step1_label": "Elegí el grupo",
+        "tutorial_step1_text": "Una acción es una pequeña parte de una empresa que se compra y se vende en bolsa — tener una acción es ser dueño de un pedacito de esa empresa. Acá las separamos en tres grupos por precio y tamaño: Penny (acciones baratas, por debajo de $2), Monster (las empresas más grandes y valiosas del mercado) y Standard (todas las demás). Elegí un grupo arriba para ver sus acciones.",
+        "tutorial_step2_label": "Interpretá el gráfico",
+        "tutorial_step2_text": "Cada esfera es una acción orbitando el sol amarillo de su grupo — mientras más cerca del sol, mejor está posicionada hoy. El tamaño de la esfera muestra qué tan grande es la empresa. El color muestra su nivel dentro del grupo: verde son las mejores, tomate las del medio, rojo las últimas.",
+        "tutorial_step3_label": "Interactuá",
+        "tutorial_step3_text": "Hacé click en cualquier esfera para elegirla — se va a \"prender\". Al instante, toda la información de esa acción (su gráfica de precio, indicadores técnicos y balances) aparece más abajo, en la misma página, sin recargar nada.",
+        "tutorial_step4_label": "Filtrá",
+        "tutorial_step4_text": "Volumen relativo compara cuánto se está negociando la acción hoy contra lo normal — arriba de 1x significa más interés de lo habitual, una señal de que algo está pasando. Market cap mínimo esconde las empresas más chicas del grupo. Upside mínimo esconde las acciones cuyo precio objetivo está muy cerca del precio actual. Y los botones Mejores/Medias/Últimas prenden o apagan esferas según su nivel dentro del grupo.",
+
+        # Comentario técnico/fundamental por ticker (ver scanner/commentary.py) —
+        # agrega texto genuinamente distinto por acción a cada ficha individual.
+        "commentary_trend_up_rsi_room": "Está en tendencia alcista de fondo (por encima de su media de 200 días), y un RSI de {rsi} sugiere que todavía no está sobrecomprada — hay margen antes de que el impulso se agote.",
+        "commentary_trend_up_rsi_hot": "Está en tendencia alcista de fondo, pero un RSI de {rsi} ya la ubica en zona de sobrecompra técnica — el próximo tramo podría venir con más volatilidad.",
+        "commentary_trend_up_rsi_neutral": "Está en tendencia alcista de fondo (por encima de su media de 200 días), con un RSI de {rsi} en zona neutral.",
+        "commentary_trend_down_rsi_oversold": "Cotiza por debajo de su media de 200 días, con un RSI de {rsi} en zona de sobreventa — técnicamente débil, aunque eso también puede señalar que el pesimismo ya está muy incorporado en el precio.",
+        "commentary_trend_down_rsi_neutral": "Cotiza por debajo de su media de 200 días (tendencia de fondo débil), con un RSI de {rsi}.",
+        "commentary_macd_breakout_both": "El MACD diario confirma momentum alcista, y el precio acaba de romper el máximo de los últimos 20 días — dos señales técnicas de corto plazo alineadas.",
+        "commentary_macd_only": "El MACD diario confirma momentum alcista de corto plazo.",
+        "commentary_breakout_only": "El precio acaba de romper el máximo de los últimos 20 días, aunque el MACD todavía no confirma el movimiento.",
+        "commentary_no_technical_signal": "Ni el MACD ni una ruptura de rango dan señal de entrada técnica en este momento.",
+        "commentary_relvol_high": "El volumen de hoy es {relvol}x el promedio — actividad muy por encima de lo normal, señal de interés real.",
+        "commentary_relvol_above": "El volumen relativo de {relvol}x está algo por encima de lo normal.",
+        "commentary_relvol_low": "El volumen relativo de {relvol}x está por debajo de lo normal — poco interés hoy.",
+        "commentary_upside_strong": "El precio objetivo promedio de los analistas implica +{upside}% de upside — una de las señales más fuertes del score.",
+        "commentary_upside_modest": "El precio objetivo promedio de los analistas implica un upside modesto, +{upside}%.",
+        "commentary_upside_negative": "El precio actual ya está por encima del objetivo promedio de los analistas ({upside}%) — el mercado le exige más de lo que ellos esperan.",
+        "commentary_peg_cheap": "Con un PEG de {peg}, el precio luce barato en relación a cuánto se espera que crezcan sus utilidades.",
+        "commentary_peg_expensive": "Con un PEG de {peg}, el precio ya incorpora expectativas de crecimiento altas.",
+        "commentary_group_rank": "Hoy ocupa el puesto #{rank} del grupo {group} en el ranking de Smart Scanner por upside y volumen relativo.",
 
         # Scan date / note
         "scan_stocks_word": "acciones",
@@ -122,24 +218,28 @@ T = {
         "empty_no_filter_match": "Ningún resultado coincide con los filtros aplicados. Prueba ajustarlos o",
         "empty_clear_link": "límpialos",
         "empty_no_scan": "No hay resultados guardados todavía. Corre",
-        "select_stock_for_chart": "Selecciona una acción en la tabla para ver su gráfica.",
-        "select_stock_for_indicators": "Selecciona una acción en la tabla para ver sus indicadores.",
+        "select_stock_for_chart": "Elegí una acción en el sistema solar para ver su gráfica.",
+        "select_stock_for_indicators": "Elegí una acción en el sistema solar para ver sus indicadores.",
 
         # Methodology
-        "methodology_title": "Cómo funciona el score",
+        "methodology_title": "Cómo funciona Smart Scanner IA",
         "methodology_p1": (
-            "El score de DSMarketLearning es un número de 0 a 100 que prioriza "
-            "cinco criterios de oportunidad: que el precio objetivo promedio de "
-            "los analistas esté un 25% o más por encima del precio actual, que "
-            "el RSI esté en zona de compra, que el MACD diario confirme una "
+            "Smart Scanner IA agrupa el universo de acciones en tres categorías "
+            "(penny, monster, standard) y, dentro de cada una, las rankea "
+            "combinando dos señales — el upside al precio objetivo promedio de "
+            "los analistas y el volumen relativo de hoy — así las mejores de "
+            "cada grupo orbitan más cerca del sol. Además de ese ranking, cada "
+            "acción tiene su propia página individual (hacé click en cualquier "
+            "esfera) con un score técnico de 0 a 100 que prioriza cinco "
+            "criterios de oportunidad: que el precio objetivo promedio de los "
+            "analistas esté un 25% o más por encima del precio actual, que el "
+            "RSI esté en zona de compra, que el MACD diario confirme una "
             "tendencia alcista, que la empresa no esté sobreendeudada y que "
-            "tenga liquidez suficiente. Esos cinco criterios pesan el 70% del "
-            "score; el 30% restante lo completan señales técnicas "
+            "tenga liquidez suficiente. Esos cinco criterios pesan el 70% de "
+            "ese score; el 30% restante lo completan señales técnicas "
             "complementarias (tendencia respecto a su media de 200 días, "
             "fuerza relativa frente al S&P 500, ruptura de rango y volumen "
-            "relativo). Si quieres ver el detalle completo de cada una de esas "
-            'señales para una acción en particular, entra a su página '
-            'individual desde la columna "Gráfica".'
+            "relativo)."
         ),
         "methodology_target_label": "Precio objetivo (25% o más de upside):",
         "methodology_target_text": "cuánto más arriba está el precio objetivo promedio de los analistas frente al precio actual — a partir de +25% de upside obtiene la puntuación máxima en este criterio del score.",
@@ -164,7 +264,7 @@ T = {
         "about_h2_what": "Qué es DSMarketLearning",
         "about_what_text": "Es un scanner diario de acciones que calcula señales técnicas (RSI, volumen relativo, ruptura de rango, tendencia respecto a la media móvil de 200 días, fuerza relativa frente al S&P 500) y datos fundamentales (P/E, PEG, deuda/patrimonio, recomendaciones de analistas) para un grupo amplio de acciones de NYSE y NASDAQ. Todo se actualiza automáticamente cada día hábil. El sitio también incluye noticias de mercado, un calendario económico semanal y artículos educativos que explican cómo interpretar cada indicador.",
         "about_h2_methodology": "Metodología, de forma transparente",
-        "about_methodology_text": "No hay caja negra: cada indicador que usa el scanner está documentado en la propia página de resultados y en el detalle de cada acción, incluyendo cómo se calcula el puntaje (score) y qué significa cada semáforo. Los datos de mercado provienen de Yahoo Finance a través de la librería pública yfinance; pueden tener errores, retrasos o estar incompletos, y lo dejamos explícito donde corresponde.",
+        "about_methodology_text": "No hay caja negra: cada indicador que usa el scanner está documentado en la propia página de resultados y en el detalle de cada acción, incluyendo cómo se calcula el puntaje (score) y qué significa cada semáforo. Los datos de mercado provienen de proveedores de datos de terceros; pueden tener errores, retrasos o estar incompletos, y lo dejamos explícito donde corresponde.",
         "about_h2_not_advice": "No es asesoría financiera",
         "about_not_advice_prefix": "No somos asesores de inversión registrados, y nada en este sitio — el scanner, las noticias, los artículos del blog — constituye una recomendación de compra o venta. Es contenido informativo y educativo, pensado para que investigues por tu cuenta, no para reemplazar el criterio propio ni el consejo de un profesional autorizado. Antes de invertir, lee el",
         "about_not_advice_link": "aviso legal completo",
@@ -212,7 +312,7 @@ T = {
         "ticker_rsi_text": "línea inferior con referencias en 70 (sobrecompra) y 30 (sobreventa) — el mismo indicador que usa el scanner diario.",
         "ticker_dotted_line_label": "Línea punteada superior:",
         "ticker_dotted_line_text": "máximo de los últimos 20 periodos, la misma referencia que usa el scanner para detectar rupturas.",
-        "ticker_data_disclaimer": "Datos de mercado vía Yahoo Finance, con fines informativos. No es asesoría de inversión — lee el",
+        "ticker_data_disclaimer": "Datos de mercado de terceros, con fines informativos. No es asesoría de inversión — lee el",
 
         # Indicators panel (fundamentals)
         "fund_score": "puntaje",
@@ -238,7 +338,7 @@ T = {
         "fund_net_margin": "Margen neto",
         "fund_dividend": "Dividendo",
         "fund_beta": "Beta (riesgo)",
-        "fund_disclaimer": "Rangos generales de referencia, no varían por sector. Datos vía Yahoo Finance; pueden estar incompletos. No es asesoría de inversión.",
+        "fund_disclaimer": "Rangos generales de referencia, no varían por sector. Datos de terceros; pueden estar incompletos. No es asesoría de inversión.",
         "fund_no_data_available": "No hay datos fundamentales disponibles para",
         "fund_na": "N/D",
 
@@ -324,8 +424,7 @@ T = {
         "disclaimer_h2_risk": "Riesgo de pérdida",
         "disclaimer_risk_text": "Invertir en acciones y otros instrumentos financieros implica riesgo, incluida la posible pérdida total del capital invertido. El rendimiento pasado de un instrumento, indicador o estrategia no garantiza resultados futuros.",
         "disclaimer_h2_data": "Sobre los datos e indicadores",
-        "disclaimer_data_text_prefix": "Los precios, volúmenes e indicadores (RSI, volumen relativo, rupturas de rango) provienen de fuentes de terceros (como Yahoo Finance vía la librería",
-        "disclaimer_data_text_suffix": ") y pueden tener retrasos, errores o interrupciones. No garantizamos su exactitud, integridad o disponibilidad en todo momento.",
+        "disclaimer_data_text": "Los precios, volúmenes e indicadores (RSI, volumen relativo, rupturas de rango) provienen de fuentes de datos de mercado de terceros, y pueden tener retrasos, errores o interrupciones. No garantizamos su exactitud, integridad o disponibilidad en todo momento.",
         "disclaimer_h2_consult": "Consulta a un profesional",
         "disclaimer_consult_text": "Antes de tomar cualquier decisión financiera, consulta a un asesor de inversión registrado y autorizado en tu jurisdicción, que pueda evaluar tu situación particular.",
         "disclaimer_h2_liability": "Limitación de responsabilidad",
@@ -490,8 +589,14 @@ T = {
 
         # Scanner header
         "header_subtitle_text": "Smart AI stock screening",
-        "header_subtitle_title": "Every day we scan a group of stocks and calculate short-term technical signals (RSI, relative volume, range breakouts) and longer-term ones (trend vs. 200-day moving average, relative strength vs. the S&P 500). Select a stock in the table to see its chart and indicators.",
-        "scan_intro": "Select the stock you're interested in from the table, check out the indicators on the page, and discover many more surprises.",
+        "header_subtitle_title": "Every day we sort stocks into three groups (penny, monster, standard) and calculate short-term technical signals (RSI, relative volume, range breakouts) and longer-term ones (trend vs. 200-day moving average, upside to analyst target price). Pick a group and a sphere to see its chart and indicators.",
+        "scan_intro": "Forget complicated, boring tables — Smart Scanner now lets you learn and pick your stocks in a fun, intuitive way.",
+
+        # Strings main.js builds via JS (don't go through a Django template) — see window.DSMS_I18N in base.html
+        "js_loading_chart_of": "Loading chart for",
+        "js_loading": "Loading",
+        "js_chart_error": "Couldn't load the chart.",
+        "js_indicators_error": "Couldn't load the indicators.",
 
         # Disclaimer banner
         "tool_disclaimer_prefix": "⚠ Tool for educational and informational purposes only — not investment advice or a recommendation to buy or sell. Investing carries risk of capital loss. Read the",
@@ -523,6 +628,96 @@ T = {
         "panel_chart": "Chart",
         "panel_indicators": "Smart Indicators",
         "panel_indices": "Indices & alerts",
+
+        # Solar system (3D scanner view, replaces the table)
+        "solar_group_penny": "Penny",
+        "solar_group_penny_desc": "Stocks priced under $2 USD.",
+        "solar_group_monster": "Monster",
+        "solar_group_monster_desc": "The most valuable stocks in the market, by market cap.",
+        "solar_group_standard": "Standard",
+        "solar_group_standard_desc": "Everything else: neither penny nor monster.",
+        "solar_tab_aria_label": "Choose a stock group",
+        "solar_legend_best": "Best",
+        "solar_legend_mid": "Mid",
+        "solar_legend_worst": "Worst",
+        "solar_filter_breakout": "Breakouts only",
+        "solar_filter_relvol": "Min. relative volume",
+        "solar_filter_mcap": "Min. market cap",
+        "solar_filter_upside": "Min. upside",
+        "solar_filter_tier": "Ranking",
+        "solar_selected_label": "Selected:",
+        "solar_selected_none": "none yet — click a planet",
+        "solar_summary_title": "Today's operating summary",
+        "solar_summary_empty": "No data from today's scan for this group yet.",
+        "solar_summary_breadth_high": "Healthy breadth: {bullish} of {total} are above their 200-day moving average, a mostly bullish underlying trend for the group.",
+        "solar_summary_breadth_low": "Weak breadth: only {bullish} of {total} are above their 200-day moving average, a note of caution for the group.",
+        "solar_summary_breadth_mixed": "Mixed picture: {bullish} of {total} are above their 200-day average, no clear dominant trend.",
+        "solar_summary_rsi_high": "Average RSI ({rsi}) is in the high zone, close to technically overbought.",
+        "solar_summary_rsi_low": "Average RSI ({rsi}) is low, little buying momentum in the group.",
+        "solar_summary_rsi_neutral": "Average RSI ({rsi}) is in a neutral zone.",
+        "solar_summary_upside": "Average upside to analyst target price: {upside}% — the group's fundamental read today.",
+        "solar_summary_breakout": "{pct}% of the group shows a 20-day range breakout — notable technical activity.",
+        "solar_summary_relvol": "Average relative volume {relvol}x.",
+        "solar_filter_search_placeholder": "Search symbol…",
+        "solar_filter_sort_by": "Sort by",
+        "solar_sort_rank": "Rank",
+        "solar_sort_market_cap": "Market cap",
+        "solar_sort_upside": "Upside %",
+        "solar_sort_relvol": "Rel. volume",
+        "solar_planet_rank_label": "Rank",
+        "solar_planet_price_label": "Price",
+        "solar_planet_upside_label": "Target upside",
+        "solar_planet_relvol_label": "Rel. volume",
+        "solar_planet_mcap_label": "Market cap",
+        "solar_reason_line": "{upside}% upside with {relvol}x relative volume",
+        "solar_reason_line_no_upside": "{relvol}x relative volume, no analyst coverage",
+        "solar_reason_line_no_data": "Not enough data for this ticker yet",
+        "solar_no_data": "No data for this group yet — check back soon.",
+        "solar_webgl_unsupported": "Your browser doesn't support the 3D view — showing the list instead.",
+        "solar_loading": "Loading solar system…",
+        "solar_fallback_caption_penny": "Top penny stocks (price under $2)",
+        "solar_fallback_caption_monster": "Top monster stocks (mega-cap)",
+        "solar_fallback_caption_standard": "Top standard stocks",
+        "solar_fallback_th_rank": "Rank",
+        "solar_fallback_th_ticker": "Ticker",
+        "solar_fallback_th_price": "Price",
+        "solar_fallback_th_upside": "Upside",
+        "solar_fallback_th_relvol": "Rel. vol.",
+        "solar_view_ticker": "View full page",
+        "methodology_momentum_label": "Momentum ranking:",
+        "methodology_momentum_text": "The solar system ranks each group (penny/monster/standard) by combining analyst target-price upside % and relative volume, percentile-ranked within each group — independent of the technical score used by the individual charts.",
+
+        # 4-step tutorial above the solar system
+        "tutorial_title": "How to use the scanner",
+        "tutorial_step1_label": "Pick a group",
+        "tutorial_step1_text": "A stock is a small piece of a company that's bought and sold on the market — owning a stock means owning a tiny slice of that company. We sort them into three groups by price and size: Penny (cheap stocks, under $2), Monster (the biggest, most valuable companies in the market), and Standard (everything else). Pick a group above to see its stocks.",
+        "tutorial_step2_label": "Read the chart",
+        "tutorial_step2_text": "Each sphere is a stock orbiting its group's yellow sun — the closer to the sun, the better it's ranked today. The sphere's size shows how big the company is. Its color shows where it stands in the group: green is the best tier, tomato is the middle, red is the last.",
+        "tutorial_step3_label": "Interact",
+        "tutorial_step3_text": "Click any sphere to pick it — it lights up. Instantly, all of that stock's info (price chart, technical indicators, and financials) appears further down this same page, no reload needed.",
+        "tutorial_step4_label": "Filter",
+        "tutorial_step4_text": "Relative volume compares how much the stock is trading today against normal — above 1x means more interest than usual, a sign something's happening. Min. market cap hides the smaller companies in the group. Min. upside hides stocks whose target price is very close to the current one. And the Best/Mid/Worst buttons turn spheres on or off by their tier in the group.",
+
+        # Per-ticker technical/fundamental commentary (see scanner/commentary.py) —
+        # adds genuinely distinct text per stock to each individual page.
+        "commentary_trend_up_rsi_room": "It's in a bullish underlying trend (above its 200-day average), and an RSI of {rsi} suggests it isn't overbought yet — there's room before the momentum runs out.",
+        "commentary_trend_up_rsi_hot": "It's in a bullish underlying trend, but an RSI of {rsi} already puts it in technically overbought territory — the next leg could come with more volatility.",
+        "commentary_trend_up_rsi_neutral": "It's in a bullish underlying trend (above its 200-day average), with an RSI of {rsi} in a neutral zone.",
+        "commentary_trend_down_rsi_oversold": "It's trading below its 200-day average, with an RSI of {rsi} in oversold territory — technically weak, though that can also signal the pessimism is already priced in.",
+        "commentary_trend_down_rsi_neutral": "It's trading below its 200-day average (weak underlying trend), with an RSI of {rsi}.",
+        "commentary_macd_breakout_both": "The daily MACD confirms bullish momentum, and the price just broke its 20-day high — two short-term technical signals lining up.",
+        "commentary_macd_only": "The daily MACD confirms short-term bullish momentum.",
+        "commentary_breakout_only": "The price just broke its 20-day high, though the MACD doesn't confirm the move yet.",
+        "commentary_no_technical_signal": "Neither the MACD nor a range breakout gives a technical entry signal right now.",
+        "commentary_relvol_high": "Today's volume is {relvol}x average — well above normal activity, a sign of real interest.",
+        "commentary_relvol_above": "Relative volume of {relvol}x is somewhat above normal.",
+        "commentary_relvol_low": "Relative volume of {relvol}x is below normal — little interest today.",
+        "commentary_upside_strong": "The analysts' average target price implies +{upside}% upside — one of the score's strongest signals.",
+        "commentary_upside_modest": "The analysts' average target price implies a modest +{upside}% upside.",
+        "commentary_upside_negative": "The current price is already above the analysts' average target ({upside}%) — the market is pricing in more than they expect.",
+        "commentary_peg_cheap": "With a PEG of {peg}, the price looks cheap relative to how fast earnings are expected to grow.",
+        "commentary_peg_expensive": "With a PEG of {peg}, the price already bakes in high growth expectations.",
+        "commentary_group_rank": "Today it holds rank #{rank} in the {group} group on Smart Scanner's upside + relative volume ranking.",
 
         # Scan date / note
         "scan_stocks_word": "stocks",
@@ -570,23 +765,26 @@ T = {
         "empty_no_filter_match": "No results match the applied filters. Try adjusting them or",
         "empty_clear_link": "clear them",
         "empty_no_scan": "No saved results yet. Run",
-        "select_stock_for_chart": "Select a stock in the table to see its chart.",
-        "select_stock_for_indicators": "Select a stock in the table to see its indicators.",
+        "select_stock_for_chart": "Pick a stock in the solar system to see its chart.",
+        "select_stock_for_indicators": "Pick a stock in the solar system to see its indicators.",
 
         # Methodology
-        "methodology_title": "How the score works",
+        "methodology_title": "How Smart Scanner AI works",
         "methodology_p1": (
-            "The DSMarketLearning score is a number from 0 to 100 that "
-            "prioritizes five opportunity criteria: the analysts' average "
-            "target price sitting 25% or more above the current price, RSI in "
-            "the buy zone, a confirmed bullish daily MACD trend, the company "
-            "not being over-leveraged, and it having enough liquidity. Those "
-            "five criteria make up 70% of the score; the remaining 30% comes "
-            "from complementary technical signals (trend vs. its 200-day "
-            "moving average, relative strength vs. the S&P 500, range "
-            "breakout, and relative volume). If you want the full detail "
-            "behind each of those signals for a particular stock, open its "
-            'individual page from the "Chart" column.'
+            "Smart Scanner AI sorts the stock universe into three categories "
+            "(penny, monster, standard) and, within each one, ranks them by "
+            "combining two signals — upside to the analysts' average target "
+            "price and today's relative volume — so the best in each group "
+            "orbit closest to the sun. Beyond that ranking, every stock also "
+            "has its own individual page (click any sphere) with a 0-100 "
+            "technical score that prioritizes five opportunity criteria: the "
+            "analysts' average target price sitting 25% or more above the "
+            "current price, RSI in the buy zone, a confirmed bullish daily "
+            "MACD trend, the company not being over-leveraged, and it having "
+            "enough liquidity. Those five criteria make up 70% of that score; "
+            "the remaining 30% comes from complementary technical signals "
+            "(trend vs. its 200-day moving average, relative strength vs. the "
+            "S&P 500, range breakout, and relative volume)."
         ),
         "methodology_target_label": "Target price (25%+ upside):",
         "methodology_target_text": "how far above the current price the analysts' average target sits — from +25% upside onward it gets the maximum score in this criterion.",
@@ -611,7 +809,7 @@ T = {
         "about_h2_what": "What DSMarketLearning is",
         "about_what_text": "It's a daily stock scanner that calculates technical signals (RSI, relative volume, range breakout, trend vs. the 200-day moving average, relative strength vs. the S&P 500) and fundamental data (P/E, PEG, debt/equity, analyst recommendations) for a broad group of NYSE and NASDAQ stocks. Everything updates automatically every business day. The site also includes market news, a weekly economic calendar, and educational articles explaining how to read each indicator.",
         "about_h2_methodology": "Methodology, made transparent",
-        "about_methodology_text": "There's no black box: every indicator the scanner uses is documented right on the results page and on each stock's detail page, including how the score is calculated and what each traffic-light color means. Market data comes from Yahoo Finance via the public yfinance library; it can have errors, delays, or be incomplete, and we say so explicitly where relevant.",
+        "about_methodology_text": "There's no black box: every indicator the scanner uses is documented right on the results page and on each stock's detail page, including how the score is calculated and what each traffic-light color means. Market data comes from third-party data providers; it can have errors, delays, or be incomplete, and we say so explicitly where relevant.",
         "about_h2_not_advice": "This is not financial advice",
         "about_not_advice_prefix": "We're not registered investment advisors, and nothing on this site — the scanner, the news, the blog articles — is a recommendation to buy or sell. It's informational and educational content, meant for you to research on your own, not to replace your own judgment or the advice of a licensed professional. Before investing, read the",
         "about_not_advice_link": "full disclaimer",
@@ -656,7 +854,7 @@ T = {
         "ticker_rsi_text": "bottom line with reference levels at 70 (overbought) and 30 (oversold) — the same indicator the daily scanner uses.",
         "ticker_dotted_line_label": "Dotted line on top:",
         "ticker_dotted_line_text": "the high of the last 20 periods, the same reference the scanner uses to detect breakouts.",
-        "ticker_data_disclaimer": "Market data via Yahoo Finance, for informational purposes. Not investment advice — read the",
+        "ticker_data_disclaimer": "Third-party market data, for informational purposes. Not investment advice — read the",
 
         # Indicators panel (fundamentals)
         "fund_score": "score",
@@ -682,7 +880,7 @@ T = {
         "fund_net_margin": "Net margin",
         "fund_dividend": "Dividend",
         "fund_beta": "Beta (risk)",
-        "fund_disclaimer": "General reference ranges, do not vary by sector. Data via Yahoo Finance; may be incomplete. Not investment advice.",
+        "fund_disclaimer": "General reference ranges, do not vary by sector. Third-party data; may be incomplete. Not investment advice.",
         "fund_no_data_available": "No fundamental data available for",
         "fund_na": "N/A",
 
@@ -768,8 +966,7 @@ T = {
         "disclaimer_h2_risk": "Risk of loss",
         "disclaimer_risk_text": "Investing in stocks and other financial instruments carries risk, including possible total loss of the invested capital. Past performance of an instrument, indicator, or strategy does not guarantee future results.",
         "disclaimer_h2_data": "About the data and indicators",
-        "disclaimer_data_text_prefix": "Prices, volumes, and indicators (RSI, relative volume, range breakouts) come from third-party sources (such as Yahoo Finance via the",
-        "disclaimer_data_text_suffix": " library) and may be delayed, contain errors, or be interrupted. We do not guarantee their accuracy, completeness, or availability at all times.",
+        "disclaimer_data_text": "Prices, volumes, and indicators (RSI, relative volume, range breakouts) come from third-party market data sources, and may be delayed, contain errors, or be interrupted. We do not guarantee their accuracy, completeness, or availability at all times.",
         "disclaimer_h2_consult": "Consult a professional",
         "disclaimer_consult_text": "Before making any financial decision, consult a registered investment advisor authorized in your jurisdiction, who can evaluate your particular situation.",
         "disclaimer_h2_liability": "Limitation of liability",

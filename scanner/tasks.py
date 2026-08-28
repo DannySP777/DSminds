@@ -48,6 +48,13 @@ def run_dsprofeta_daily_jobs():
         logger.exception("train_predictors (dsprofeta) falló")
 
 
+def run_universe_scan():
+    try:
+        call_command("scan_universe")
+    except Exception:
+        logger.exception("scan_universe falló")
+
+
 def run_daily_jobs():
     try:
         call_command("run_scan")
@@ -77,6 +84,15 @@ def start_scheduler():
 
     scheduler = BackgroundScheduler(timezone="UTC")
     scheduler.add_job(
+        run_universe_scan,
+        # Antes del scan legacy (07:30) para no competir por rate
+        # limits del screener de yfinance en el mismo minuto.
+        trigger=CronTrigger(day_of_week="mon-fri", hour=7, minute=0, timezone="UTC"),
+        id="universe_scan",
+        replace_existing=True,
+        misfire_grace_time=3600,
+    )
+    scheduler.add_job(
         run_daily_jobs,
         trigger=CronTrigger(day_of_week="mon-fri", hour=7, minute=30, timezone="UTC"),
         id="daily_scan_and_news",
@@ -100,7 +116,8 @@ def start_scheduler():
     scheduler.start()
     _scheduler = scheduler
     logger.info(
-        "Scheduler iniciado: run_scan + fetch_news + fetch_calendar + generate_daily_summary "
+        "Scheduler iniciado: scan_universe (lun-vie 07:00 UTC), "
+        "run_scan + fetch_news + fetch_calendar + generate_daily_summary "
         "(lun-vie 07:30 UTC), dsprofeta run_hourly_cycle (cada hora), "
         "dsprofeta sync_economic_calendar + sync_market_news + train_predictors (diario 06:00 UTC)."
     )

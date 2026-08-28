@@ -12,10 +12,13 @@
         <h1>{{ symbol }}{% if company_name and company_name != symbol %} — {{ company_name }}{% endif %}</h1>
         {% if latest_result %}
             <p>{{ T.ticker_last_scan }} ({{ latest_result.date }}): {{ T.ticker_price_word }} ${{ latest_result.price }}, RSI {{ latest_result.rsi }}, {{ T.ticker_rel_vol_word }} {{ latest_result.relative_volume }}x, MACD {% if latest_result.macd_bullish %}&#128994; {{ T.yes }}{% else %}&#9898; {{ T.no }}{% endif %}, {{ T.ticker_score_word }} {{ latest_result.score }}.</p>
+            {% if commentary %}
+                <p class="ticker-commentary">{{ commentary }}</p>
+            {% endif %}
         {% else %}
             <p>{{ T.ticker_no_results }}</p>
         {% endif %}
-        <p><a href="/noticias/?ticker={{ symbol }}">{{ T.ticker_see_news }} {{ symbol }}</a> &middot; <a href="/">{{ T.ticker_back_to_scanner }}</a></p>
+        <p><a href="/">{{ T.ticker_back_to_scanner }}</a></p>
     </section>
 
     <form action="/buscar/" method="get" class="ticker-search">

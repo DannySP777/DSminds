@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load dsms_extras %}
+{% load dsms_extras static %}
 
 {% block title %}{{ T.home_title }}{% endblock %}
 {% block meta_description %}{{ T.home_meta_description }}{% endblock %}
@@ -47,175 +47,30 @@ mismo orden de ejecución síncrona, pero ya no bloquea lo de arriba.
 
     {% include "partials/ad_slot.html" %}
 
-    <div class="add-ticker-widget">
-        <label for="add-ticker-input" class="add-ticker-label">{{ T.add_ticker_title }}</label>
-        <div class="add-ticker-row">
-            <div class="add-ticker-combo">
-                <input
-                    type="text"
-                    id="add-ticker-input"
-                    class="add-ticker-input"
-                    placeholder="{{ T.add_ticker_placeholder }}"
-                    autocomplete="off"
-                    aria-label="{{ T.add_ticker_label }}"
-                >
-                <ul
-                    id="add-ticker-suggestions"
-                    class="add-ticker-suggestions"
-                    hidden
-                    data-autocomplete-url="{% url 'ticker-autocomplete' %}"
-                    data-searching-text="{{ T.add_ticker_searching }}"
-                    data-no-results-text="{{ T.add_ticker_no_results }}"
-                ></ul>
-            </div>
-            <button type="button" id="add-ticker-submit" class="add-ticker-submit-btn">{{ T.add_ticker_button }}</button>
-        </div>
-        <form method="post" action="{% url 'add-ticker' %}" id="add-ticker-form">
-            {% csrf_token %}
-            <input type="hidden" name="symbol" id="add-ticker-symbol">
-        </form>
-    </div>
-
-    <details class="advanced-filters" id="filtros-avanzados"{% if filters_active %} open{% endif %}>
-        <summary>{{ T.filters_toggle }}{% if filters_active %} <span class="filter-badge">{{ T.filters_active_badge }}</span>{% endif %}</summary>
-        <form method="get" class="filter-form">
-            <fieldset>
-                <legend>{{ T.filter_legend_price_market }}</legend>
-                <label>{{ T.filter_price }}
-                    <select name="price_range">
-                        <option value="">{{ T.filter_any }}</option>
-                        {% for value, lo, hi, label in price_range_options %}
-                            <option value="{{ value }}" {% if filters.price_range == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label>{{ T.filter_exchange }}
-                    <select name="exchange">
-                        <option value="">{{ T.filter_any }}</option>
-                        {% for value, label in exchange_options %}
-                            <option value="{{ value }}" {% if filters.exchange == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label>{{ T.filter_rel_vol_min }} <input type="number" step="0.1" name="rel_vol_min" value="{{ filters.rel_vol_min }}" placeholder="ej: 1.5"></label>
-            </fieldset>
-
-            <fieldset>
-                <legend>{{ T.filter_legend_key_indicators }}</legend>
-                <label>{{ T.filter_score_min }} <input type="number" step="1" name="score_min" value="{{ filters.score_min }}" placeholder="ej: 50"></label>
-                <label>{{ T.filter_pe_min }} <input type="number" step="0.1" name="pe_min" value="{{ filters.pe_min }}" placeholder="ej: 1"></label>
-                <label>{{ T.filter_pe_max }} <input type="number" step="0.1" name="pe_max" value="{{ filters.pe_max }}"></label>
-                <label>{{ T.filter_peg_min }} <input type="number" step="0.1" name="peg_min" value="{{ filters.peg_min }}"></label>
-                <label>{{ T.filter_peg_max }} <input type="number" step="0.1" name="peg_max" value="{{ filters.peg_max }}"></label>
-                <label>{{ T.filter_cap_min }} <input type="number" step="1" name="cap_min" value="{{ filters.cap_min }}"></label>
-                <label>{{ T.filter_cap_max }} <input type="number" step="1" name="cap_max" value="{{ filters.cap_max }}" placeholder="ej: 10"></label>
-                <label>{{ T.filter_target_min }} <input type="number" step="0.01" name="target_min" value="{{ filters.target_min }}" placeholder="ej: 100"></label>
-                <label>{{ T.filter_target_max }} <input type="number" step="0.01" name="target_max" value="{{ filters.target_max }}"></label>
-            </fieldset>
-
-            <div class="filter-actions">
-                <button type="submit" class="price-filter__btn price-filter__btn--high">{{ T.filter_apply }}</button>
-                <a href="?" class="filter-clear">{{ T.filter_clear }}</a>
-            </div>
-        </form>
-    </details>
-
     <p class="scan-intro">{{ T.scan_intro }}</p>
 
     <div class="dashboard">
         <div class="dashboard-col dashboard-col--main">
-            <section class="dashboard-panel dashboard-panel--table">
+            <section class="dashboard-panel dashboard-panel--solar">
                 <header class="dashboard-panel__header"><h2>{{ T.panel_screening }}</h2></header>
                 <div class="dashboard-panel__body">
-                    {% if resultados %}
-                        <p class="scan-date">
-                            {% if truncated %}
-                                {{ T.scan_top }} {{ resultados|length }} {{ T.scan_best_score_of }} {{ matched_count }} {% if filters_active %}{{ T.scan_matching_filters }}{% else %}{{ T.scan_analyzed }}{% endif %} &middot; {{ T.scan_from }} {{ resultados.0.date }}
-                            {% else %}
-                                {{ resultados|length }} {{ T.scan_stocks_word }} &middot; {{ T.scan_from }} {{ resultados.0.date }}
-                            {% endif %}
-                        </p>
-                        {% if truncated %}
-                            <p class="scan-note">{{ T.scan_note_prefix }} {{ default_result_limit }} {{ T.scan_note_mid_short }} <a href="?{{ show_all_qs }}">{{ T.scan_note_show_all_link }} ({{ matched_count }})</a></p>
-                        {% elif show_all and matched_count > default_result_limit %}
-                            <p class="scan-note"><a href="?{{ show_less_qs }}">{{ T.scan_note_show_less_link }}</a></p>
-                        {% endif %}
-                        <div class="table-wrap table-wrap--hero">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_ver }}">{{ T.th_ver }}</span></th>
-                                        <th class="sticky-col"><span class="th-tip" data-tooltip="{{ T.tip_ticker }}">{{ T.th_ticker }}</span></th>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_score }}">{{ T.th_score }}</span></th>
-                                        <th class="th-price-current"><span class="th-tip" data-tooltip="{{ T.tip_price }}">{{ T.th_price }}</span></th>
-                                        <th class="th-price-target"><span class="th-tip" data-tooltip="{{ T.tip_target }}">{{ T.th_target }}</span></th>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_pe }}">{{ T.th_pe }}</span></th>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_peg }}">{{ T.th_peg }}</span></th>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_market_cap }}">{{ T.th_market_cap }}</span></th>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_volume }}">{{ T.th_volume }}</span></th>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_market }}">{{ T.th_market }}</span></th>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_chart }}">{{ T.th_chart }}</span></th>
-                                        <th><span class="th-tip" data-tooltip="{{ T.tip_news }}">{{ T.th_news }}</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for r in resultados %}
-                                    <tr class="scan-row{% if r.ticker.symbol == selected_symbol %} is-selected{% endif %}{% if r.is_added_row %} scan-row--added{% endif %}" data-symbol="{{ r.ticker.symbol }}">
-                                        <td class="scan-row__select-cell" data-label="{{ T.th_ver }}">
-                                            <input
-                                                type="radio"
-                                                name="ticker-select"
-                                                class="ticker-select"
-                                                data-symbol="{{ r.ticker.symbol }}"
-                                                aria-label="{{ T.th_ver }} {{ r.ticker.symbol }}"
-                                                {% if r.ticker.symbol == selected_symbol %}checked{% endif %}
-                                            >
-                                        </td>
-                                        <td class="sticky-col" data-label="{{ T.th_ticker }}">
-                                            <a href="/accion/{{ r.ticker.symbol }}/" class="ticker-link ticker-link--table" data-symbol="{{ r.ticker.symbol }}">{{ r.ticker.symbol }}</a>
-                                            {% if r.is_added_row %}
-                                                <span class="added-badge" title="{{ T.row_added_badge_title }}">{{ T.row_added_badge }}</span>
-                                                <form method="post" action="{% url 'remove-ticker' r.ticker.symbol %}" class="remove-ticker-form">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="remove-ticker-btn" title="{{ T.remove_ticker_title }}" aria-label="{{ T.remove_ticker_button }} {{ r.ticker.symbol }}">&times;</button>
-                                                </form>
-                                            {% endif %}
-                                        </td>
-                                        <td data-label="{{ T.th_score }}">
-                                            <span class="score-badge score-badge--lg {% if r.score >= 70 %}score-badge--strong{% elif r.score >= 40 %}score-badge--moderate{% else %}score-badge--weak{% endif %}">{{ r.score }}</span>
-                                        </td>
-                                        <td class="td-price-current" data-label="{{ T.th_price }}">${{ r.price }}</td>
-                                        <td class="td-price-target" data-label="{{ T.th_target }}">
-                                            {% if r.target_price %}
-                                                <span class="target-price-value">${{ r.target_price }}</span>
-                                                {% if r.target_upside_pct != None %}
-                                                    <span class="target-upside {% if r.target_upside_pct >= 0 %}target-upside--up{% else %}target-upside--down{% endif %}">{% if r.target_upside_pct >= 0 %}+{% endif %}{{ r.target_upside_pct }}%</span>
-                                                {% endif %}
-                                            {% else %}
-                                                N/D
-                                            {% endif %}
-                                        </td>
-                                        <td data-label="{{ T.th_pe }}">{{ r.trailing_pe|default:"N/D" }}</td>
-                                        <td data-label="{{ T.th_peg }}">{{ r.peg_ratio|default:"N/D" }}</td>
-                                        <td data-label="{{ T.th_market_cap }}">{{ r.market_cap_display|default:"N/D" }}</td>
-                                        <td data-label="{{ T.th_volume }}">{{ r.relative_volume }}x</td>
-                                        <td data-label="{{ T.th_market }}">{{ r.exchange|default:"N/D" }}</td>
-                                        <td data-label="{{ T.th_chart }}"><a href="/accion/{{ r.ticker.symbol }}/">{{ T.link_ver }}</a></td>
-                                        <td data-label="{{ T.th_news }}"><a href="/noticias/?ticker={{ r.ticker.symbol }}">{{ T.link_ver }}</a></td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p class="empty-state">
-                            {% if filters_active %}
-                                {{ T.empty_no_filter_match }} <a href="?">{{ T.empty_clear_link }}</a>.
-                            {% else %}
-                                {{ T.empty_no_scan }} <code>python manage.py run_scan</code>.
-                            {% endif %}
-                        </p>
-                    {% endif %}
+                    {% include "scanner/partials/solar_tutorial.html" %}
+                    {% comment %}
+                    Three.js (~600KB) sigue el mismo criterio que Plotly más
+                    abajo: se carga inline, justo antes de donde se usa, no en
+                    extra_head — así no bloquea el primer paint del header ni
+                    del disclaimer/agregar-acción de arriba.
+                    {% endcomment %}
+                    {% comment %}
+                    three@0.160.0: la última versión que todavía publica el build UMD
+                    clásico (build/three.min.js, window.THREE global) — versiones más
+                    nuevas del paquete de npm solo distribuyen three.module.js (ES
+                    module), que exigiría un script type="module" + import maps, algo
+                    que este repo no usa en ningún otro lado (ver nota en solar-system.js).
+                    {% endcomment %}
+                    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+                    <script src="{% static 'js/solar-system.js' %}?v={% now 'U' %}"></script>
+                    {% include "scanner/partials/solar_system.html" with selected_symbol=selected_symbol group_summaries=group_summaries %}
                 </div>
             </section>
 
@@ -257,6 +112,7 @@ mismo orden de ejecución síncrona, pero ya no bloquea lo de arriba.
             <li><strong>{{ T.methodology_market_cap_label }}</strong> {{ T.methodology_market_cap_text }}</li>
             <li><strong>{{ T.methodology_volume_label }}</strong> {{ T.methodology_volume_text }}</li>
             <li><strong>{{ T.methodology_market_label }}</strong> {{ T.methodology_market_text }}</li>
+            <li><strong>{{ T.methodology_momentum_label }}</strong> {{ T.methodology_momentum_text }}</li>
         </ul>
         <p class="disclaimer-note">{{ T.methodology_disclaimer }} <a href="/disclaimer/">{{ T.disclaimer_link_text }}</a>.</p>
     </section>
