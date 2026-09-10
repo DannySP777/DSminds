@@ -4,7 +4,6 @@ from . import views
 
 urlpatterns = [
     path("", views.home, name="scanner-home"),
-    path("sistema-solar/<str:group>/", views.solar_system_data, name="solar-system-data"),
     path("buscar/", views.ticker_search, name="ticker-search"),
     path("accion/<str:symbol>/mini/", views.ticker_mini_chart, name="ticker-mini-chart"),
     path("accion/<str:symbol>/panel-grafica/", views.ticker_chart_panel, name="ticker-chart-panel"),

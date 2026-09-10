@@ -92,12 +92,10 @@ function initHoverPreview() {
     tooltip.addEventListener("mouseleave", scheduleHide);
 }
 
-// Compartido entre el click de fila de la tabla vieja (ya no existe en
-// home.html, pero ticker_detail.html no la necesitaba) y el click de
-// planeta del sistema solar (solar-system.js) — un solo lugar que sabe
-// pedir los paneles AJAX de gráfica/indicadores y ejecutar su <script>
-// embebido (Plotly no corre si solo se hace innerHTML, ver
-// runInlineScripts arriba).
+// Usado por el click de cada fila del Top 10 en home.html — un solo
+// lugar que sabe pedir los paneles AJAX de gráfica/indicadores y
+// ejecutar su <script> embebido (Plotly no corre si solo se hace
+// innerHTML, ver runInlineScripts arriba).
 var dsmsCurrentSymbol = null;
 
 function dsmsSetLoading(el) {

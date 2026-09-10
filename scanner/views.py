@@ -1,15 +1,24 @@
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 
 from config.translations import DEFAULT_LANG, SUPPORTED_LANGS, get_translations
 
-from .charts import DEFAULT_INTERVAL, INTERVALS, build_financials_chart, build_mini_chart, build_price_chart
+from .charts import (
+    DEFAULT_INTERVAL,
+    INTERVALS,
+    build_financials_chart,
+    build_mini_chart,
+    build_price_chart,
+    build_top10_overview_chart,
+)
 from .commentary import build_ticker_commentary
 from .fundamentals import get_fundamentals
 from .indices import get_market_indices
 from .models import ScanResult
 from .search import resolve_symbol
 from .services import build_all_group_summaries
+
+TOP10_SIZE = 10
 
 
 def _get_lang(request):
@@ -24,17 +33,24 @@ def home(request):
     lang = _get_lang(request)
     T = get_translations(lang)
 
-    # El símbolo inicial (para el primer paint sin JS) es el planeta #1
-    # (mejor momentum_score) del grupo "standard" — ver
-    # scanner/universe.py. Si todavía no corrió ningún scan_universe
-    # (instalación nueva), no hay nada que seleccionar por defecto.
-    default_planet = (
-        ScanResult.objects.select_related("ticker")
-        .filter(group=ScanResult.GROUP_STANDARD)
-        .order_by("momentum_rank")
-        .first()
-    )
-    selected_symbol = default_planet.ticker.symbol if default_planet else None
+    # Top 10 del día: un solo ranking global por `score` (comparable entre
+    # penny/monster/standard porque se calcula igual en ambos pipelines,
+    # a diferencia de momentum_rank, que es un percentil solo comparable
+    # dentro de su propio grupo — ver scanner/universe.py). is_active=True
+    # respeta el opt-out ya usado para desactivar duplicados (ej. NOK).
+    latest_date = ScanResult.objects.order_by("-date").values_list("date", flat=True).first()
+    top10 = []
+    if latest_date:
+        top10 = list(
+            ScanResult.objects.select_related("ticker")
+            .filter(date=latest_date, ticker__is_active=True)
+            .order_by("-score")[:TOP10_SIZE]
+        )
+    for r in top10:
+        r.commentary = build_ticker_commentary(r, lang)
+
+    top10_chart = build_top10_overview_chart(top10, lang) if top10 else None
+    selected_symbol = top10[0].ticker.symbol if top10 else None
     selected_chart = build_price_chart(selected_symbol, DEFAULT_INTERVAL, lang) if selected_symbol else None
     selected_fundamentals = get_fundamentals(selected_symbol, lang) if selected_symbol else None
     selected_financials_chart = build_financials_chart(selected_symbol, lang) if selected_symbol else None
@@ -43,6 +59,8 @@ def home(request):
     return render(request, "scanner/home.html", {
         "indices": get_market_indices(),
         "intervals": INTERVALS,
+        "top10": top10,
+        "top10_chart": top10_chart,
         "selected_symbol": selected_symbol,
         "selected_chart": selected_chart,
         "selected_interval": DEFAULT_INTERVAL,
@@ -161,52 +179,3 @@ def ticker_mini_chart(request, symbol):
     return HttpResponse(chart["html"])
 
 
-def solar_system_data(request, group):
-    """
-    JSON con el top-N rankeado (ScanResult.momentum_rank) del grupo
-    pedido, para la vista 'sistema solar' — ver scanner/universe.py y
-    services.py::save_universe_results. El cliente pide los 3 grupos
-    una sola vez al cargar la página y los cachea en memoria, así los
-    filtros secundarios no vuelven a pegarle al servidor.
-    """
-    if group not in (ScanResult.GROUP_PENNY, ScanResult.GROUP_MONSTER, ScanResult.GROUP_STANDARD):
-        raise Http404(f"Grupo desconocido: '{group}'.")
-
-    latest_date = (
-        ScanResult.objects.filter(group=group).order_by("-date").values_list("date", flat=True).first()
-    )
-    if not latest_date:
-        return JsonResponse({"group": group, "date": None, "planets": []})
-
-    qs = (
-        ScanResult.objects.select_related("ticker")
-        .filter(group=group, date=latest_date)
-        .order_by("momentum_rank")
-    )
-
-    planets = []
-    for r in qs:
-        if r.above_ma200 and r.macd_bullish:
-            trend = "up"
-        elif not r.above_ma200 and r.rsi is not None and r.rsi > 70:
-            trend = "down"
-        else:
-            trend = "neutral"
-
-        planets.append({
-            "symbol": r.ticker.symbol,
-            "name": r.ticker.name,
-            "rank": r.momentum_rank,
-            "momentum_score": float(r.momentum_score) if r.momentum_score is not None else None,
-            "price": float(r.price),
-            "market_cap": float(r.market_cap) if r.market_cap is not None else None,
-            "market_cap_display": r.market_cap_display,
-            "target_upside_pct": r.target_upside_pct,
-            "relative_volume": float(r.relative_volume) if r.relative_volume is not None else None,
-            "breakout": r.breakout,
-            "above_ma200": r.above_ma200,
-            "trend": trend,
-            "exchange": r.exchange,
-        })
-
-    return JsonResponse({"group": group, "date": str(latest_date), "planets": planets})

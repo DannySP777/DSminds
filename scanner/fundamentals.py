@@ -138,6 +138,7 @@ def get_fundamentals(symbol: str, lang: str = "es", include_summary: bool = True
         "dividend_yield_pct": _round(info.get("dividendYield")),
         "beta": _round(info.get("beta")),
     }
+    result["definitions"] = _define(lang)
     result["interpretations"] = _interpret(result, lang)
     result["gauges"] = _build_gauges(result)
     result["analyst_breakdown"] = _get_recommendation_breakdown(ticker_obj)
@@ -231,6 +232,34 @@ def _build_gauge(spec: dict, value) -> dict:
     position = round((clamped - vmin) / span * 100, 1)
 
     return {"level": level, "position": position, "zones": zones}
+
+
+# Qué ES cada métrica (fijo, no depende del valor) — complementa
+# _interpret(), que dice qué significa ESE valor puntual para esta
+# acción. Juntas arman el patrón "explicación + conclusión" que pide
+# cada KPI del panel de fundamentales.
+_DEFINITIONS_ES = {
+    "trailing_pe": "P/E (trailing): compara el precio de la acción con su utilidad por acción de los últimos 12 meses — cuántas veces se está pagando esa utilidad.",
+    "forward_pe": "P/E (forward): igual que el P/E, pero usando la utilidad por acción que los analistas estiman para el próximo año.",
+    "peg_ratio": "PEG: el P/E dividido entre la tasa de crecimiento esperado de las utilidades — relaciona qué tan cara está la acción con qué tan rápido se espera que crezca.",
+    "debt_to_equity": "Deuda/Patrimonio: cuánta deuda tiene la empresa por cada dólar de patrimonio de los accionistas — mide qué tan apalancado está el balance.",
+    "profit_margin_pct": "Margen neto: qué porcentaje de cada dólar de ingresos termina siendo utilidad neta, después de todos los costos.",
+    "dividend_yield_pct": "Dividendo: qué porcentaje del precio de la acción se reparte cada año en efectivo a los accionistas.",
+    "beta": "Beta: qué tan volátil es la acción comparada con el mercado en general (S&P 500 = 1.0).",
+}
+_DEFINITIONS_EN = {
+    "trailing_pe": "P/E (trailing): compares the stock's price with its earnings per share over the last 12 months — how many times that earning is being paid for.",
+    "forward_pe": "P/E (forward): same as P/E, but using analysts' estimated earnings per share for the next year.",
+    "peg_ratio": "PEG: the P/E divided by the expected earnings growth rate — relates how expensive the stock is to how fast it's expected to grow.",
+    "debt_to_equity": "Debt/Equity: how much debt the company carries per dollar of shareholder equity — measures how leveraged the balance sheet is.",
+    "profit_margin_pct": "Net margin: what percentage of each dollar of revenue ends up as net profit, after all costs.",
+    "dividend_yield_pct": "Dividend: what percentage of the stock's price is paid out in cash to shareholders each year.",
+    "beta": "Beta: how volatile the stock is compared to the overall market (S&P 500 = 1.0).",
+}
+
+
+def _define(lang: str = "es") -> dict:
+    return _DEFINITIONS_EN if lang == "en" else _DEFINITIONS_ES
 
 
 def _interpret(data: dict, lang: str = "es") -> dict:

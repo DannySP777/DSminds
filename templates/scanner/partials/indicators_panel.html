@@ -68,41 +68,48 @@ Contexto esperado: symbol, fundamentals.
         <div class="fundamentals-item">
             <span class="fundamentals-label">{{ T.fund_pe_trailing }}</span>
             <span class="fundamentals-value">{{ fundamentals.trailing_pe|default:T.fund_na }}</span>
+            <p class="fundamentals-def">{{ fundamentals.definitions.trailing_pe }}</p>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.trailing_pe }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.trailing_pe %}
         </div>
         <div class="fundamentals-item">
             <span class="fundamentals-label">{{ T.fund_pe_forward }}</span>
             <span class="fundamentals-value">{{ fundamentals.forward_pe|default:T.fund_na }}</span>
+            <p class="fundamentals-def">{{ fundamentals.definitions.forward_pe }}</p>
             <p class="fundamentals-desc">{{ T.fund_pe_forward_desc }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.forward_pe %}
         </div>
         <div class="fundamentals-item">
             <span class="fundamentals-label">PEG</span>
             <span class="fundamentals-value">{{ fundamentals.peg_ratio|default:T.fund_na }}</span>
+            <p class="fundamentals-def">{{ fundamentals.definitions.peg_ratio }}</p>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.peg_ratio }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.peg_ratio %}
         </div>
         <div class="fundamentals-item">
             <span class="fundamentals-label">{{ T.fund_debt_equity }}</span>
             <span class="fundamentals-value">{% if fundamentals.debt_to_equity != None %}{{ fundamentals.debt_to_equity }}%{% else %}{{ T.fund_na }}{% endif %}</span>
+            <p class="fundamentals-def">{{ fundamentals.definitions.debt_to_equity }}</p>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.debt_to_equity }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.debt_to_equity %}
         </div>
         <div class="fundamentals-item">
             <span class="fundamentals-label">{{ T.fund_net_margin }}</span>
             <span class="fundamentals-value">{% if fundamentals.profit_margin_pct != None %}{{ fundamentals.profit_margin_pct }}%{% else %}{{ T.fund_na }}{% endif %}</span>
+            <p class="fundamentals-def">{{ fundamentals.definitions.profit_margin_pct }}</p>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.profit_margin_pct }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.profit_margin_pct %}
         </div>
         <div class="fundamentals-item">
             <span class="fundamentals-label">{{ T.fund_dividend }}</span>
             <span class="fundamentals-value">{% if fundamentals.dividend_yield_pct != None %}{{ fundamentals.dividend_yield_pct }}%{% else %}{{ T.fund_na }}{% endif %}</span>
+            <p class="fundamentals-def">{{ fundamentals.definitions.dividend_yield_pct }}</p>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.dividend_yield_pct }}</p>
         </div>
         <div class="fundamentals-item">
             <span class="fundamentals-label">{{ T.fund_beta }}</span>
             <span class="fundamentals-value">{{ fundamentals.beta|default:T.fund_na }}</span>
+            <p class="fundamentals-def">{{ fundamentals.definitions.beta }}</p>
             <p class="fundamentals-desc">{{ fundamentals.interpretations.beta }}</p>
             {% include "partials/gauge.html" with gauge=fundamentals.gauges.beta %}
         </div>

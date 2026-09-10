@@ -42,13 +42,19 @@ CACHE_TTL = {
 MINI_CHART_TTL = 300
 
 COLORS = {
-    "bg": "#121820",
-    "grid": "#232b35",
-    "text": "#edeff2",
-    "up": "#3fbf7f",
-    "down": "#e5484d",
-    "accent": "#8bc78a",
-    "warning": "#f2994a",
+    "bg": "#ffffff",
+    "grid": "#ded6c6",
+    "text": "#23241f",
+    "up": "#1f8a5f",
+    "down": "#c23b34",
+    "accent": "#2f7d52",
+    "warning": "#a3711b",
+}
+
+GROUP_COLORS = {
+    "penny": "#a3711b",
+    "monster": "#2f5fa8",
+    "standard": "#2f7d52",
 }
 
 CHART_LABELS = {
@@ -264,6 +270,66 @@ def _compute_price_chart(symbol: str, interval_key: str, lang: str = "es") -> di
     }
 
 
+TOP10_CHART_LABELS = {
+    "es": {"score_axis": "Score (0-100)", "price": "Precio", "upside": "Upside"},
+    "en": {"score_axis": "Score (0-100)", "price": "Price", "upside": "Upside"},
+}
+
+
+def build_top10_overview_chart(results, lang: str = "es") -> dict:
+    """
+    Barra horizontal con el score (0-100) de las 10 acciones del día,
+    ordenadas de mayor a menor, coloreadas por grupo (penny/monster/
+    standard) — reemplaza el rol de "descubrimiento visual" que tenía
+    el sistema solar 3D, en un formato 2D simple de leer: barra más
+    larga = mejor score. `results` son ScanResult (con .ticker, .score,
+    .price, .group, .target_upside_pct).
+    """
+    labels = TOP10_CHART_LABELS.get(lang, TOP10_CHART_LABELS["es"])
+    ordered = sorted(results, key=lambda r: float(r.score), reverse=True)
+    if not ordered:
+        return {"html": None, "error": None}
+
+    symbols = [r.ticker.symbol for r in ordered]
+    scores = [float(r.score) for r in ordered]
+    colors = [GROUP_COLORS.get(r.group, COLORS["accent"]) for r in ordered]
+    hover_text = [
+        f"{r.ticker.symbol}<br>{labels['price']}: ${r.price}<br>"
+        f"{labels['upside']}: {r.target_upside_pct if r.target_upside_pct is not None else '—'}%"
+        for r in ordered
+    ]
+
+    fig = go.Figure(go.Bar(
+        x=scores, y=symbols, orientation="h",
+        marker_color=colors,
+        text=[f"{s:.0f}" for s in scores], textposition="outside",
+        hovertext=hover_text, hoverinfo="text",
+    ))
+    fig.update_layout(
+        paper_bgcolor=COLORS["bg"],
+        plot_bgcolor=COLORS["bg"],
+        font=dict(color=COLORS["text"]),
+        showlegend=False,
+        margin=dict(l=70, r=40, t=10, b=40),
+        height=360,
+    )
+    fig.update_xaxes(title=labels["score_axis"], range=[0, 108], gridcolor=COLORS["grid"])
+    # Plotly ubica el primer elemento de `y` ABAJO del todo por defecto en
+    # un eje categórico — con `ordered` ya de mayor a menor score,
+    # `autorange="reversed"` es lo que deja la mejor acción arriba
+    # (confirmado visualmente; el orden del texto en el DOM del SVG no
+    # refleja el orden visual final de Plotly, así que no sirve para
+    # verificar esto sin mirar un screenshot real).
+    fig.update_yaxes(autorange="reversed", gridcolor=COLORS["grid"])
+
+    html = fig.to_html(
+        full_html=False,
+        include_plotlyjs=False,
+        config={"displaylogo": False, "responsive": True},
+    )
+    return {"html": html, "error": None}
+
+
 def build_mini_chart(symbol: str, lang: str = "es") -> dict:
     """Velas diarias de los últimos ~3 meses, sin subplots, para el preview en hover."""
     lang = lang if lang in CHART_LABELS else "es"
@@ -351,9 +417,8 @@ def build_financials_chart(symbol: str, lang: str = "es") -> dict:
 
     El toggle entre las dos vistas se arma con botones HTML normales del
     sitio (ver templates), no con el "updatemenus" nativo de Plotly: ese
-    widget resalta el botón activo con un fondo claro fijo que Plotly no
-    deja recolorear del todo, y se ve como un cuadro blanco roto sobre el
-    tema oscuro del sitio.
+    widget resalta el botón activo con un fondo fijo que Plotly no deja
+    recolorear del todo, y no matchea el resto de los controles del sitio.
     """
     lang = lang if lang in FINANCIALS_CHART_LABELS else "es"
     cache_key = f"scanner:financialschart:{symbol}:{lang}"

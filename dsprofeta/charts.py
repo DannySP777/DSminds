@@ -28,17 +28,17 @@ COLORS = {
     # Sincronizado con las variables --surface/--border/--text/--bull/--bear/
     # --accent de static/css/style.css. Python no puede leer custom
     # properties CSS, así que estos valores se mantienen a mano.
-    "bg": "#121218",
-    "grid": "#232b35",
-    "text": "#f2f1ee",
-    "up": "#3fbf7f",
-    "down": "#e5484d",
-    "predicted": "#8bc78a",
+    "bg": "#ffffff",
+    "grid": "#ded6c6",
+    "text": "#23241f",
+    "up": "#1f8a5f",
+    "down": "#c23b34",
+    "predicted": "#2f7d52",
     # Antes iba en el mismo verde que "up" (subida de vela): el sistema de
     # color nuevo reserva verde/rojo exclusivamente para dirección de
     # precio, así que "real ya resuelto" pasa a texto neutro para no
     # duplicar el significado de ese verde.
-    "actual": "#f2f1ee",
+    "actual": "#23241f",
 }
 
 CACHE_TTL = 60
@@ -260,7 +260,7 @@ def build_rsi_chart(asset, timeframe, history_bars=DEFAULT_HISTORY_BARS, lang="e
     last_rsi = float(rsi.iloc[-1]) if pd.notna(rsi.iloc[-1]) else None
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=rsi, mode="lines", name=T["dsp_trace_rsi"], line=dict(color="#f2994a", width=1.5)))
+    fig.add_trace(go.Scatter(x=x, y=rsi, mode="lines", name=T["dsp_trace_rsi"], line=dict(color="#a3711b", width=1.5)))
     fig.add_hline(y=70, line_dash="dash", line_color=COLORS["down"], opacity=0.5)
     fig.add_hline(y=30, line_dash="dash", line_color=COLORS["up"], opacity=0.5)
     fig.add_vline(x=series["t_now"], line_dash="dash", line_color=COLORS["text"], opacity=0.4)
@@ -299,7 +299,7 @@ def build_macd_chart(asset, timeframe, history_bars=DEFAULT_HISTORY_BARS, lang="
     fig = go.Figure()
     fig.add_trace(go.Bar(x=x, y=macd_hist, name=T["dsp_trace_histogram"], marker_color=macd_hist_colors, opacity=0.5))
     fig.add_trace(go.Scatter(x=x, y=macd_line, mode="lines", name=T["dsp_trace_macd"], line=dict(color=COLORS["text"], width=1.5)))
-    fig.add_trace(go.Scatter(x=x, y=macd_signal, mode="lines", name=T["dsp_trace_signal"], line=dict(color="#f2994a", width=1.5)))
+    fig.add_trace(go.Scatter(x=x, y=macd_signal, mode="lines", name=T["dsp_trace_signal"], line=dict(color="#a3711b", width=1.5)))
     fig.add_hline(y=0, line_dash="dot", line_color=COLORS["text"], opacity=0.4)
     fig.add_vline(x=series["t_now"], line_dash="dash", line_color=COLORS["text"], opacity=0.4)
     fig.update_layout(**_base_layout(300))

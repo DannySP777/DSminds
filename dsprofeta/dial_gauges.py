@@ -18,11 +18,11 @@ from config.translations import get_translations
 # Sincronizado con las variables --surface/--text/--bull/--warning/--bear
 # de static/css/style.css; Python no lee custom properties CSS, así que
 # estos valores se mantienen a mano.
-BG = "#121218"
-TEXT = "#f2f1ee"
-GREEN = "#3fbf7f"
-YELLOW = "#f2994a"
-RED = "#e5484d"
+BG = "#ffffff"
+TEXT = "#23241f"
+GREEN = "#1f8a5f"
+YELLOW = "#a3711b"
+RED = "#c23b34"
 
 _LEVEL_SCORE = {"bullish": 1, "bearish": -1, "neutral": 0}
 

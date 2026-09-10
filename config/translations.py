@@ -42,9 +42,9 @@ T = {
 
         # Scanner header
         "header_subtitle_text": "Screening smart de acciones con IA",
-        "header_subtitle_title": "Cada día clasificamos acciones en tres grupos (penny, monster, standard) y calculamos señales técnicas de corto plazo (RSI, volumen relativo, rupturas de rango) y de fondo (tendencia vs. su media de 200 días, upside al precio objetivo de analistas). Elegí un grupo y una esfera para ver su gráfica e indicadores.",
-        "scan_intro": "Olvidate de tablas complicadas y aburridas — ahora Smart Scanner te permite aprender y escoger tus acciones de forma divertida e intuitiva.",
-        "scan_intro_cta": "Seguí nuestro tutorial",
+        "header_subtitle_title": "Cada día clasificamos acciones en tres grupos (penny, monster, standard) y calculamos señales técnicas de corto plazo (RSI, volumen relativo, rupturas de rango) y de fondo (tendencia vs. su media de 200 días, upside al precio objetivo de analistas). Elegí una acción del Top 10 para ver su gráfica e indicadores.",
+        "scan_intro": "Análisis diario, simple y educativo: cada mañana elegimos el Top 10 de acciones del día y te explicamos qué significa cada número, no solo te lo mostramos.",
+        "scan_intro_cta": "Ver el Top 10 de hoy",
 
         # Strings que main.js arma por JS (no pasan por una plantilla Django) — ver window.DSMS_I18N en base.html
         "js_loading_chart_of": "Cargando gráfica de",
@@ -82,6 +82,11 @@ T = {
         "panel_chart": "Gráfica",
         "panel_indicators": "Indicadores Inteligentes",
         "panel_indices": "Índices & alertas",
+
+        # Top 10 diario (reemplaza la vista 3D del scanner)
+        "market_pulse_title": "Panorama del día",
+        "top10_title": "Top 10 de hoy",
+        "top10_intro": "Estas son las 10 acciones con mejor score técnico hoy, combinando los grupos penny, monster y standard. Hacé click en cualquiera para ver su gráfica de velas, sus indicadores y una lectura en palabras simples de qué significan sus números.",
 
         # Sistema solar (vista 3D del scanner, reemplaza la tabla)
         "solar_group_penny": "Penny",
@@ -224,28 +229,25 @@ T = {
         "empty_no_filter_match": "Ningún resultado coincide con los filtros aplicados. Prueba ajustarlos o",
         "empty_clear_link": "límpialos",
         "empty_no_scan": "No hay resultados guardados todavía. Corre",
-        "select_stock_for_chart": "Elegí una acción en el sistema solar para ver su gráfica.",
-        "select_stock_for_indicators": "Elegí una acción en el sistema solar para ver sus indicadores.",
+        "select_stock_for_chart": "Elegí una acción del Top 10 para ver su gráfica.",
+        "select_stock_for_indicators": "Elegí una acción del Top 10 para ver sus indicadores.",
 
         # Methodology
         "methodology_title": "Cómo funciona Smart Scanner IA",
         "methodology_p1": (
-            "Smart Scanner IA agrupa el universo de acciones en tres categorías "
-            "(penny, monster, standard) y, dentro de cada una, las rankea "
-            "combinando dos señales — el upside al precio objetivo promedio de "
-            "los analistas y el volumen relativo de hoy — así las mejores de "
-            "cada grupo orbitan más cerca del sol. Además de ese ranking, cada "
-            "acción tiene su propia página individual (hacé click en cualquier "
-            "esfera) con un score técnico de 0 a 100 que prioriza cinco "
-            "criterios de oportunidad: que el precio objetivo promedio de los "
-            "analistas esté un 25% o más por encima del precio actual, que el "
-            "RSI esté en zona de compra, que el MACD diario confirme una "
-            "tendencia alcista, que la empresa no esté sobreendeudada y que "
-            "tenga liquidez suficiente. Esos cinco criterios pesan el 70% de "
-            "ese score; el 30% restante lo completan señales técnicas "
-            "complementarias (tendencia respecto a su media de 200 días, "
-            "fuerza relativa frente al S&P 500, ruptura de rango y volumen "
-            "relativo)."
+            "Cada día, Smart Scanner IA agrupa el universo de acciones en tres "
+            "categorías (penny, monster, standard) y arma un Top 10 con las "
+            "mejores de las tres, rankeadas por un score técnico de 0 a 100 "
+            "que prioriza cinco criterios de oportunidad: que el precio "
+            "objetivo promedio de los analistas esté un 25% o más por encima "
+            "del precio actual, que el RSI esté en zona de compra, que el "
+            "MACD diario confirme una tendencia alcista, que la empresa no "
+            "esté sobreendeudada y que tenga liquidez suficiente. Esos cinco "
+            "criterios pesan el 70% de ese score; el 30% restante lo completan "
+            "señales técnicas complementarias (tendencia respecto a su media "
+            "de 200 días, fuerza relativa frente al S&P 500, ruptura de rango "
+            "y volumen relativo). Hacé click en cualquier acción del Top 10 "
+            "para ver su análisis completo más abajo."
         ),
         "methodology_target_label": "Precio objetivo (25% o más de upside):",
         "methodology_target_text": "cuánto más arriba está el precio objetivo promedio de los analistas frente al precio actual — a partir de +25% de upside obtiene la puntuación máxima en este criterio del score.",
@@ -595,9 +597,9 @@ T = {
 
         # Scanner header
         "header_subtitle_text": "Smart AI stock screening",
-        "header_subtitle_title": "Every day we sort stocks into three groups (penny, monster, standard) and calculate short-term technical signals (RSI, relative volume, range breakouts) and longer-term ones (trend vs. 200-day moving average, upside to analyst target price). Pick a group and a sphere to see its chart and indicators.",
-        "scan_intro": "Forget complicated, boring tables — Smart Scanner now lets you learn and pick your stocks in a fun, intuitive way.",
-        "scan_intro_cta": "Follow our tutorial",
+        "header_subtitle_title": "Every day we sort stocks into three groups (penny, monster, standard) and calculate short-term technical signals (RSI, relative volume, range breakouts) and longer-term ones (trend vs. 200-day moving average, upside to analyst target price). Pick a stock from the Top 10 to see its chart and indicators.",
+        "scan_intro": "Daily analysis, simple and educational: every morning we pick the day's Top 10 stocks and explain what every number means, not just show it to you.",
+        "scan_intro_cta": "See today's Top 10",
 
         # Strings main.js builds via JS (don't go through a Django template) — see window.DSMS_I18N in base.html
         "js_loading_chart_of": "Loading chart for",
@@ -635,6 +637,11 @@ T = {
         "panel_chart": "Chart",
         "panel_indicators": "Smart Indicators",
         "panel_indices": "Indices & alerts",
+
+        # Daily Top 10 (replaces the 3D scanner view)
+        "market_pulse_title": "Today's market pulse",
+        "top10_title": "Today's Top 10",
+        "top10_intro": "These are the 10 stocks with the best technical score today, combining the penny, monster, and standard groups. Click any of them to see its candlestick chart, its indicators, and a plain-language read of what its numbers mean.",
 
         # Solar system (3D scanner view, replaces the table)
         "solar_group_penny": "Penny",
@@ -777,26 +784,24 @@ T = {
         "empty_no_filter_match": "No results match the applied filters. Try adjusting them or",
         "empty_clear_link": "clear them",
         "empty_no_scan": "No saved results yet. Run",
-        "select_stock_for_chart": "Pick a stock in the solar system to see its chart.",
-        "select_stock_for_indicators": "Pick a stock in the solar system to see its indicators.",
+        "select_stock_for_chart": "Pick a stock from the Top 10 to see its chart.",
+        "select_stock_for_indicators": "Pick a stock from the Top 10 to see its indicators.",
 
         # Methodology
         "methodology_title": "How Smart Scanner AI works",
         "methodology_p1": (
-            "Smart Scanner AI sorts the stock universe into three categories "
-            "(penny, monster, standard) and, within each one, ranks them by "
-            "combining two signals — upside to the analysts' average target "
-            "price and today's relative volume — so the best in each group "
-            "orbit closest to the sun. Beyond that ranking, every stock also "
-            "has its own individual page (click any sphere) with a 0-100 "
-            "technical score that prioritizes five opportunity criteria: the "
-            "analysts' average target price sitting 25% or more above the "
-            "current price, RSI in the buy zone, a confirmed bullish daily "
-            "MACD trend, the company not being over-leveraged, and it having "
-            "enough liquidity. Those five criteria make up 70% of that score; "
-            "the remaining 30% comes from complementary technical signals "
-            "(trend vs. its 200-day moving average, relative strength vs. the "
-            "S&P 500, range breakout, and relative volume)."
+            "Every day, Smart Scanner AI sorts the stock universe into three "
+            "categories (penny, monster, standard) and builds a Top 10 with "
+            "the best of all three, ranked by a 0-100 technical score that "
+            "prioritizes five opportunity criteria: the analysts' average "
+            "target price sitting 25% or more above the current price, RSI "
+            "in the buy zone, a confirmed bullish daily MACD trend, the "
+            "company not being over-leveraged, and it having enough "
+            "liquidity. Those five criteria make up 70% of that score; the "
+            "remaining 30% comes from complementary technical signals (trend "
+            "vs. its 200-day moving average, relative strength vs. the S&P "
+            "500, range breakout, and relative volume). Click any stock in "
+            "the Top 10 to see its full analysis further down the page."
         ),
         "methodology_target_label": "Target price (25%+ upside):",
         "methodology_target_text": "how far above the current price the analysts' average target sits — from +25% upside onward it gets the maximum score in this criterion.",
