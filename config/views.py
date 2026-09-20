@@ -5,6 +5,7 @@ petición (request.build_absolute_uri), así que funcionan igual en
 localhost que en producción sin tocar nada al desplegar.
 """
 from django.conf import settings
+from django.db.models import Max
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from django.http import HttpResponse, HttpResponsePermanentRedirect
@@ -13,26 +14,52 @@ from django.utils.html import escape
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from blog.models import Post
-from scanner.models import Ticker
+from scanner.models import ScanResult, Ticker
 from .translations import SUPPORTED_LANGS
 
-STATIC_SITEMAP_PATHS = [
-    "/",
-    "/?asset=GOLD",
-    "/?asset=EURUSD",
-    "/?asset=BTCUSD",
-    "/estrategias/",
-    "/interes-compuesto/",
-    "/riesgo-beneficio/",
-    "/fair-value-gap/",
-    "/scanner/",
-    "/blog/",
-    "/acerca-de/",
-    "/contacto/",
-    "/privacidad/",
-    "/disclaimer/",
-    "/terminos/",
-]
+# Fecha del último rediseño sitewide (paleta clara + cabecera/pie oscuros
+# con acento neón + portada Trading Análisis): al cambiar el HTML/CSS de
+# TODO el sitio, el contenido servido de cada URL estática cambió de
+# verdad en esta fecha — es el <lastmod> más honesto que se puede dar sin
+# trackear ediciones página por página. Actualizar a mano el día de otro
+# cambio grande de plantillas/diseño que afecte a todo el sitio.
+SITE_REDESIGN_DATE = "2026-09-19"
+
+# path -> (changefreq, priority). No son promesas exactas para Google,
+# son una señal de qué tan seguido cambia el contenido real de cada
+# sección, para que reparta mejor su presupuesto de rastreo: la home y el
+# scanner traen datos de mercado nuevos todos los días, las calculadoras
+# y "Acerca de" casi no cambian, y lo legal cambia menos todavía.
+STATIC_SITEMAP_META = {
+    "/": ("daily", "1.0"),
+    "/?asset=GOLD": ("daily", "0.9"),
+    "/?asset=EURUSD": ("daily", "0.9"),
+    "/?asset=BTCUSD": ("daily", "0.9"),
+    "/estrategias/": ("monthly", "0.6"),
+    "/interes-compuesto/": ("monthly", "0.6"),
+    "/riesgo-beneficio/": ("monthly", "0.6"),
+    "/fair-value-gap/": ("monthly", "0.6"),
+    "/scanner/": ("daily", "0.9"),
+    "/blog/": ("daily", "0.7"),
+    "/acerca-de/": ("yearly", "0.3"),
+    "/contacto/": ("yearly", "0.3"),
+    "/privacidad/": ("yearly", "0.2"),
+    "/disclaimer/": ("yearly", "0.2"),
+    "/terminos/": ("yearly", "0.2"),
+}
+
+STATIC_SITEMAP_PATHS = list(STATIC_SITEMAP_META.keys())
+
+
+def _sitemap_entry(loc, lastmod=None, changefreq=None, priority=None):
+    parts = [f"<loc>{escape(loc)}</loc>"]
+    if lastmod:
+        parts.append(f"<lastmod>{lastmod}</lastmod>")
+    if changefreq:
+        parts.append(f"<changefreq>{changefreq}</changefreq>")
+    if priority:
+        parts.append(f"<priority>{priority}</priority>")
+    return "<url>" + "".join(parts) + "</url>"
 
 
 def robots_txt(request):
@@ -64,19 +91,52 @@ def ads_txt(request):
 
 
 def sitemap_xml(request):
-    urls = [request.build_absolute_uri(path) for path in STATIC_SITEMAP_PATHS]
+    entries = []
 
+    for path in STATIC_SITEMAP_PATHS:
+        changefreq, priority = STATIC_SITEMAP_META[path]
+        entries.append(_sitemap_entry(
+            request.build_absolute_uri(path),
+            lastmod=SITE_REDESIGN_DATE,
+            changefreq=changefreq,
+            priority=priority,
+        ))
+
+    # Fecha real del último dato de cada ticker (última fila de
+    # ScanResult), no una fecha inventada: cada vez que el scan diario
+    # corre, esa página sí cambió de verdad.
     symbols = Ticker.objects.filter(is_active=True).values_list("symbol", flat=True)
-    urls += [request.build_absolute_uri(f"/scanner/accion/{symbol}/") for symbol in symbols]
+    latest_scan_by_symbol = dict(
+        ScanResult.objects.filter(ticker__symbol__in=symbols)
+        .values("ticker__symbol")
+        .annotate(latest=Max("date"))
+        .values_list("ticker__symbol", "latest")
+    )
+    for symbol in symbols:
+        lastmod = latest_scan_by_symbol.get(symbol)
+        entries.append(_sitemap_entry(
+            request.build_absolute_uri(f"/scanner/accion/{symbol}/"),
+            lastmod=lastmod.isoformat() if lastmod else None,
+            changefreq="daily",
+            priority="0.6",
+        ))
 
-    slugs = Post.objects.filter(is_published=True).values_list("slug", flat=True)
-    urls += [request.build_absolute_uri(f"/blog/{slug}/") for slug in slugs]
+    # published_at es lo único que guarda el modelo Post (no hay
+    # updated_at) — se usa como lastmod porque es la fecha real más
+    # cercana a "esta página cambió" que tenemos.
+    posts = Post.objects.filter(is_published=True).values_list("slug", "published_at")
+    for slug, published_at in posts:
+        entries.append(_sitemap_entry(
+            request.build_absolute_uri(f"/blog/{slug}/"),
+            lastmod=published_at.date().isoformat() if published_at else None,
+            changefreq="monthly",
+            priority="0.5",
+        ))
 
-    items = "".join(f"<url><loc>{escape(url)}</loc></url>" for url in urls)
     xml = (
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-        f"{items}"
+        f"{''.join(entries)}"
         "</urlset>"
     )
     return HttpResponse(xml, content_type="application/xml")
