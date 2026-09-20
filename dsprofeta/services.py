@@ -12,7 +12,6 @@ import yfinance as yf
 from django.conf import settings
 from django.utils import timezone as dj_timezone
 
-from .charts import invalidate_prediction_chart
 from .models import EconomicEvent, NewsHeadline, PriceBar, Prediction
 
 logger = logging.getLogger(__name__)
@@ -180,6 +179,5 @@ def resolve_predictions():
         prediction.actual_close = bar.close
         prediction.resolved_at = dj_timezone.now()
         prediction.save(update_fields=["actual_close", "resolved_at"])
-        invalidate_prediction_chart(prediction.asset, prediction.timeframe)
         resolved += 1
     return resolved

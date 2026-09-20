@@ -109,6 +109,7 @@ INSTALLED_APPS = [
     'news',
     'blog',
     'dsprofeta',
+    'tools',
 ]
 
 MIDDLEWARE = [

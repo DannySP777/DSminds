@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ T.tool_compound_h1 }} | DSMarketLearning{% endblock %}
+{% block meta_description %}{{ T.tool_compound_meta_description }}{% endblock %}
+{% block body_class %}page-tools page-tool-compound{% endblock %}
+
+{% block content %}
+    <a href="{% url 'tools-index' %}" class="tool-breadcrumb">{{ T.tool_back_to_tools }}</a>
+
+    <header class="tool-header">
+        <span class="tool-header__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 17c3-1 5-3 6-6s3-5 6-6 4-1 6-1"/>
+                <circle cx="21" cy="4" r="1.4" fill="currentColor" stroke="none"/>
+            </svg>
+        </span>
+        <h1>{{ T.tool_compound_h1 }}</h1>
+        <p>{{ T.tool_compound_intro }}</p>
+    </header>
+
+    {% include "partials/ad_slot.html" %}
+
+    <div class="tool-workspace tool-workspace--compound" data-tool="compound-interest">
+        <div class="tool-inputs">
+            <div class="tool-field">
+                <label for="ci-initial-number">{{ T.tool_compound_label_initial }}</label>
+                <div class="tool-field__row">
+                    <input type="range" id="ci-initial-range" min="0" max="100000" step="100" value="1000">
+                    <input type="number" id="ci-initial-number" min="0" step="100" value="1000" inputmode="decimal">
+                </div>
+            </div>
+            <div class="tool-field">
+                <label for="ci-monthly-number">{{ T.tool_compound_label_monthly }}</label>
+                <div class="tool-field__row">
+                    <input type="range" id="ci-monthly-range" min="0" max="3000" step="10" value="100">
+                    <input type="number" id="ci-monthly-number" min="0" step="10" value="100" inputmode="decimal">
+                </div>
+            </div>
+            <div class="tool-field">
+                <label for="ci-rate-number">{{ T.tool_compound_label_rate }} (%)</label>
+                <div class="tool-field__row">
+                    <input type="range" id="ci-rate-range" min="0" max="30" step="0.1" value="10">
+                    <input type="number" id="ci-rate-number" min="0" step="0.1" value="10" inputmode="decimal">
+                </div>
+            </div>
+            <div class="tool-field">
+                <label for="ci-years-number">{{ T.tool_compound_label_years }}</label>
+                <div class="tool-field__row">
+                    <input type="range" id="ci-years-range" min="1" max="40" step="1" value="10">
+                    <input type="number" id="ci-years-number" min="1" max="60" step="1" value="10">
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-output">
+            <div class="tool-result-hero">
+                <div class="tool-result-hero__label">{{ T.tool_compound_result_label }}</div>
+                <div class="tool-result-hero__value" id="ci-final-value">$0</div>
+            </div>
+            <div class="tool-result-grid">
+                <div class="tool-result-stat">
+                    <div class="tool-result-stat__label">{{ T.tool_compound_result_contributed }}</div>
+                    <div class="tool-result-stat__value" id="ci-contributed-value">$0</div>
+                </div>
+                <div class="tool-result-stat">
+                    <div class="tool-result-stat__label">{{ T.tool_compound_result_interest }}</div>
+                    <div class="tool-result-stat__value" id="ci-interest-value">$0</div>
+                </div>
+            </div>
+            <div class="tool-visual">
+                <svg viewBox="0 0 400 180" id="ci-chart" role="img" aria-label="{{ T.tool_compound_result_label }}">
+                    <polygon id="ci-chart-total" points="" fill="var(--tool-compound)" opacity="0.55"></polygon>
+                    <polygon id="ci-chart-contributed" points="" fill="var(--surface-2)"></polygon>
+                    <line x1="0" y1="179" x2="400" y2="179" stroke="var(--border)" stroke-width="1"></line>
+                </svg>
+                <p class="top10-chart-legend" style="margin-top:0.6rem;">
+                    <span><span class="swatch" style="background: var(--surface-2); border: 1px solid var(--border);"></span>{{ T.tool_compound_chart_contributed }}</span>
+                    <span><span class="swatch" style="background: var(--tool-compound);"></span>{{ T.tool_compound_chart_interest }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <section class="tool-explanation">
+        <h2>{{ T.tool_compound_explanation_title }}</h2>
+        <p>{{ T.tool_compound_explanation_text }}</p>
+    </section>
+
+    <nav class="tool-related" aria-label="{{ T.tool_compound_related_title }}">
+        <h2>{{ T.tool_compound_related_title }}</h2>
+        <ul>
+            <li><a href="/scanner/">{{ T.tool_compound_related_scanner }}</a></li>
+            <li><a href="{% url 'tool-risk-reward' %}">{{ T.tool_compound_related_risk }}</a></li>
+        </ul>
+    </nav>
+
+    <p class="tool-disclaimer">
+        {{ T.tool_disclaimer_prefix }} <a href="/disclaimer/">{{ T.disclaimer_link_text }}</a>.
+    </p>
+{% endblock %}
+
+{% block extra_head %}
+<script>
+    window.DSMS_TOOLS_I18N = window.DSMS_TOOLS_I18N || {};
+    window.DSMS_TOOLS_I18N.lang = "{{ LANG }}";
+</script>
+<script src="{% static 'js/tools.js' %}?v={% now 'U' %}"></script>
+{% endblock %}

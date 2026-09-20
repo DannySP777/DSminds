@@ -135,6 +135,8 @@ def get_fundamentals(symbol: str, lang: str = "es", include_summary: bool = True
         "debt_to_equity": _round(info.get("debtToEquity")),
         "current_ratio": _round(info.get("currentRatio")),
         "profit_margin_pct": _round((info.get("profitMargins") or 0) * 100) if info.get("profitMargins") is not None else None,
+        "eps_growth_pct": _eps_growth_pct(info),
+        "roe_pct": _round(info["returnOnEquity"] * 100) if info.get("returnOnEquity") is not None else None,
         "dividend_yield_pct": _round(info.get("dividendYield")),
         "beta": _round(info.get("beta")),
     }
@@ -428,6 +430,26 @@ def _truncate_summary(text: str, max_len: int = BUSINESS_SUMMARY_MAX_LEN) -> str
         return text
     truncated = text[:max_len].rsplit(" ", 1)[0]
     return truncated + "…"
+
+
+def _eps_growth_pct(info: dict):
+    """
+    Crecimiento de beneficios por acción (%) — estimado a futuro cuando se
+    puede (EPS proyectado vs. EPS de los últimos 12 meses, solo con EPS
+    actual positivo: sobre una base negativa el cociente no significa
+    nada) y, si no, el crecimiento interanual del último trimestre que
+    reporta Yahoo. Acotado a ±1000 % para que un EPS casi cero no
+    convierta a una acción en un valor atípico imposible de graficar.
+    """
+    trailing, forward = info.get("trailingEps"), info.get("forwardEps")
+    growth = None
+    if trailing and forward is not None and trailing > 0:
+        growth = (forward / trailing - 1) * 100
+    elif info.get("earningsGrowth") is not None:
+        growth = info["earningsGrowth"] * 100
+    if growth is None:
+        return None
+    return _round(max(-1000.0, min(1000.0, growth)))
 
 
 def _round(value, digits: int = 2):

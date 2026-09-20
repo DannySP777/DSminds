@@ -1,0 +1,540 @@
+/* =====================================================================
+   Trading Análisis (portada) — identidad propia, más "terminal moderna"
+   que el resto del sitio: tinta azul-noche, verde/coral de mercado,
+   tipografía display Bricolage Grotesque + JetBrains Mono para cifras.
+
+   Hoja aparte (se carga solo en esta página, después de style.css) y todo
+   cuelga de body.page-analysis para no tocar las demás páginas. Las
+   variables --ta-* también las lee static/js/analysis.js para pintar la
+   gráfica Plotly con la misma paleta (no hay que sincronizar a mano).
+   ===================================================================== */
+.page-analysis {
+    /* Antes esta pagina forzaba cabecera/pie a tinta oscura para sentirse
+       "un solo objeto" — pero eso la volvia un cuarto lenguaje visual
+       distinto al resto del sitio (que ya es claro). Ahora usa la MISMA
+       cabecera clara que todas las demas paginas (sin overrides abajo) y
+       reserva el contraste oscuro para acentos puntuales (fila activa de
+       la tabla, boton activo), no para bloques completos. */
+    --ta-ink: #14171c;
+    --ta-ink-2: #262b35;
+    --ta-ground: #f7f8f9;
+    --ta-card: #ffffff;
+    --ta-line: #e2e5ea;
+    --ta-text: #14171c;
+    --ta-muted: #667085;
+    --ta-bull: #14895e;
+    --ta-bull-bright: #0f9d63;
+    --ta-bear: #dc3545;
+    --ta-bear-bright: #dc3545;
+    --ta-amber: #b45309;
+    --ta-blue: #2f6df6;
+    --ta-accent: #6d4aff;
+    --ta-lime: #c8f560;
+    --ta-sma20: #12a5b8;
+    --ta-sma50: #e2703a;
+    --ta-sma200: #14171c;
+    --ta-font-display: "Bricolage Grotesque", "Space Grotesk", "Segoe UI", sans-serif;
+    --ta-font-mono: "JetBrains Mono", "IBM Plex Mono", Consolas, monospace;
+    background: var(--ta-ground);
+    color: var(--ta-text);
+}
+
+.page-analysis .container { max-width: 1240px; }
+
+.ta { padding: 1.5rem 0 0; }
+.ta h1, .ta h2, .ta h3 { font-family: var(--ta-font-display); }
+.ta h2 { padding-left: 0; margin: 0 0 0.35rem; font-size: 1.35rem; letter-spacing: -0.01em; }
+.ta h2::before { display: none; }
+.ta .is-up { color: var(--ta-bull); }
+.ta .is-down { color: var(--ta-bear); }
+.ta .ad-slot { margin: 1.25rem 0; }
+
+/* ---- Hero: resumen compacto — el protagonismo es de la gráfica, no del
+   hero (ver .ta-chart más abajo). Ficha clara y discreta, no un bloque
+   oscuro a toda pantalla. ---- */
+.ta-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 1.35rem 1.6rem;
+    border-radius: 18px;
+    color: var(--ta-text);
+    background:
+        radial-gradient(560px 220px at 6% -25%, rgba(var(--ta-glow, 20, 137, 94), 0.1), transparent 65%),
+        var(--ta-card);
+    border: 1px solid var(--ta-line);
+    box-shadow: var(--shadow-sm, 0 1px 2px rgba(35, 36, 31, 0.06));
+    overflow: hidden;
+}
+.ta-hero--bull { --ta-glow: 20, 137, 94; }
+.ta-hero--bear { --ta-glow: 220, 53, 69; }
+.ta-hero--empty { display: block; }
+
+.ta-kicker { display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; align-items: center; margin: 0 0 0.5rem; font-size: 0.78rem; }
+.ta-kicker__tag {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: var(--ta-ink);
+    color: var(--ta-lime);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+}
+.ta-kicker__date { color: var(--ta-muted); font-family: var(--ta-font-mono); }
+
+.ta-h1 {
+    margin: 0 0 0.8rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--ta-muted);
+}
+
+.ta-verdict { display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-start; }
+.ta-verdict__label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ta-muted); }
+.ta-verdict__word {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--ta-font-display);
+    font-weight: 800;
+    font-size: clamp(2rem, 4.2vw, 2.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+}
+.ta-hero--bull .ta-verdict__word { color: var(--ta-bull-bright); }
+.ta-hero--bear .ta-verdict__word { color: var(--ta-bear-bright); }
+.ta-verdict__arrow { width: 0.72em; height: 0.72em; flex-shrink: 0; }
+.ta-verdict__meta { font-size: 0.9rem; color: var(--ta-muted); }
+
+.ta-meter { display: flex; gap: 5px; margin-top: 0.4rem; }
+.ta-meter__seg { display: block; width: 30px; height: 8px; border-radius: 3px; background: var(--ta-line); }
+.ta-meter__seg.is-bull { background: var(--ta-bull-bright); }
+.ta-meter__seg.is-bear { background: var(--ta-bear); }
+
+.ta-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.8rem; margin: 1.1rem 0 0; }
+.ta-price__value { font-family: var(--ta-font-mono); font-size: 1.6rem; font-weight: 600; color: var(--ta-text); }
+.ta-price__change { font-family: var(--ta-font-mono); font-size: 0.95rem; font-weight: 600; }
+.ta-hero .ta-price__change.is-up { color: var(--ta-bull-bright); }
+.ta-hero .ta-price__change.is-down { color: var(--ta-bear-bright); }
+.ta-price__label { font-size: 0.76rem; color: var(--ta-muted); }
+
+.ta-hero__side { display: flex; flex-direction: column; justify-content: center; gap: 0.8rem; }
+.ta-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 0; }
+.ta-kpi {
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--ta-line);
+    border-radius: 12px;
+    background: var(--ta-ground);
+}
+.ta-kpi dt { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ta-muted); margin: 0 0 0.25rem; }
+.ta-kpi dd { margin: 0; font-family: var(--ta-font-mono); font-size: 1.1rem; font-weight: 600; color: var(--ta-text); }
+.ta-kpi dd small { font-size: 0.76rem; font-weight: 600; }
+.ta-hero .ta-kpi .is-up { color: var(--ta-bull-bright); }
+.ta-hero .ta-kpi .is-down { color: var(--ta-bear-bright); }
+
+.ta-next-event {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem 0.75rem;
+    margin: 0;
+    padding: 0.65rem 0.85rem;
+    border-radius: 12px;
+    border: 1px dashed rgba(var(--ta-glow, 20, 137, 94), 0.45);
+    background: rgba(var(--ta-glow, 20, 137, 94), 0.06);
+}
+.ta-next-event__label { grid-column: 1 / -1; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ta-bull); }
+.ta-next-event__name { font-weight: 600; color: var(--ta-text); }
+.ta-next-event__when { font-family: var(--ta-font-mono); color: var(--ta-bull); font-size: 0.86rem; }
+
+/* ---- Tarjetas ---- */
+.ta-card {
+    margin-top: 1.25rem;
+    padding: 1.4rem 1.5rem 1.5rem;
+    background: var(--ta-card);
+    border: 1px solid var(--ta-line);
+    border-radius: 20px;
+    box-shadow: 0 1px 0 rgba(10, 16, 32, 0.03), 0 14px 34px -22px rgba(10, 16, 32, 0.22);
+}
+.ta-card__head { margin-bottom: 1rem; }
+.ta-card__head p { margin: 0; color: var(--ta-muted); font-size: 0.92rem; max-width: 72ch; }
+.ta-subhead { margin: 1.6rem 0 0.3rem; font-size: 1.05rem; }
+.ta-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+.ta-empty { color: var(--ta-muted); margin: 0.5rem 0 0; }
+.ta-fineprint { margin: 0.9rem 0 0; font-size: 0.8rem; color: var(--ta-muted); }
+.ta-muted { color: var(--ta-muted); }
+
+/* ---- Barra de herramientas de la gráfica ---- */
+.ta-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.6rem 1rem; margin-bottom: 0.7rem; }
+.ta-group { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.ta-btn {
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--ta-line);
+    background: #f5f7fb;
+    color: var(--ta-text);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.ta-btn:hover { border-color: var(--ta-ink); }
+.ta-btn.is-active { background: var(--ta-ink); border-color: var(--ta-ink); color: var(--ta-lime); }
+.ta-btn:focus-visible, .ta-chip input:focus-visible + span { outline: 2px solid var(--ta-blue); outline-offset: 2px; }
+
+.ta-layers { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.5rem; margin-bottom: 0.8rem; }
+.ta-layers__label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ta-muted); margin-right: 0.2rem; }
+.ta-chip { position: relative; cursor: pointer; }
+.ta-chip[hidden] { display: none; }
+.ta-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.ta-chip span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.28rem 0.7rem 0.28rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--ta-line);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ta-muted);
+    background: #fff;
+}
+.ta-chip span::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--chip, var(--ta-muted)); opacity: 0.35; }
+.ta-chip input:checked + span { color: var(--ta-text); border-color: var(--chip, var(--ta-ink)); background: #f8faff; }
+.ta-chip input:checked + span::before { opacity: 1; }
+.ta-chip--sma20 { --chip: var(--ta-sma20); }
+.ta-chip--sma50 { --chip: var(--ta-sma50); }
+.ta-chip--sma200 { --chip: var(--ta-sma200); }
+.ta-chip--levels { --chip: var(--ta-blue); }
+.ta-chip--forecast { --chip: var(--ta-accent); }
+.ta-chip--volume { --chip: var(--ta-muted); }
+
+.ta-readout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.9rem;
+    min-height: 1.6rem;
+    margin: 0 0 0.3rem;
+    font-family: var(--ta-font-mono);
+    font-size: 0.78rem;
+    color: var(--ta-muted);
+}
+.ta-readout strong { color: var(--ta-text); }
+.ta-readout__tag {
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    background: var(--ta-accent);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+}
+/* ---- La gráfica es la protagonista de la página: tarjeta más grande,
+   más aire y una franja de color en el borde superior para que destaque
+   sobre el resto de tarjetas (hero incluido). ---- */
+.ta-chart {
+    position: relative;
+    margin-top: 1.5rem;
+    padding-top: 1.6rem;
+    box-shadow: var(--shadow-md, 0 8px 20px rgba(35, 36, 31, 0.09));
+    border-color: var(--ta-line);
+}
+.ta-chart::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(90deg, var(--ta-bull-bright), var(--ta-blue) 55%, var(--ta-accent));
+}
+.ta-chart__plot { width: 100%; min-height: 540px; }
+.ta-chart__hint { margin: 0.4rem 0 0; font-size: 0.78rem; color: var(--ta-muted); }
+
+/* ---- Tablas ---- */
+.ta-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.ta-table { width: 100%; border-collapse: collapse; background: transparent; font-family: var(--font-body); font-size: 0.88rem; }
+.ta-table th {
+    padding: 0.55rem 0.7rem;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ta-muted);
+    border-bottom: 2px solid var(--ta-line);
+    background: transparent;
+}
+.ta-table td { padding: 0.6rem 0.7rem; border-bottom: 1px solid var(--ta-line); white-space: nowrap; }
+.ta-table .ta-num { text-align: right; font-family: var(--ta-font-mono); font-variant-numeric: tabular-nums; }
+.ta-ladder__row--res td:nth-child(2) { color: var(--ta-amber); font-weight: 600; }
+.ta-ladder__row--sup td:nth-child(2) { color: var(--ta-blue); font-weight: 600; }
+.ta-ladder__now td { background: var(--ta-ink); color: #fff; border-bottom: 0; }
+.ta-ladder__now .ta-num { font-weight: 600; color: var(--ta-lime); }
+.ta-ladder__now td:first-child { border-radius: 10px 0 0 10px; }
+.ta-ladder__now td:last-child { border-radius: 0 10px 10px 0; }
+.ta-tag { display: inline-block; padding: 0.12rem 0.55rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em; }
+.ta-tag--res { background: rgba(217, 132, 0, 0.14); color: var(--ta-amber); }
+.ta-tag--sup { background: rgba(47, 109, 246, 0.12); color: var(--ta-blue); }
+.ta-tag--now { background: rgba(200, 245, 96, 0.18); color: var(--ta-lime); }
+.ta-dots { display: inline-flex; gap: 3px; margin-right: 0.4rem; vertical-align: middle; }
+.ta-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--ta-line); }
+.ta-dots--strong i, .ta-dots--medium i:nth-child(-n+2), .ta-dots--light i:first-child { background: var(--ta-ink); }
+.ta-model-facts { margin: 0.9rem 0 0; padding-left: 1.1rem; font-size: 0.85rem; color: var(--ta-text); }
+.ta-model-facts li { margin-bottom: 0.3rem; }
+
+/* ---- Lectura + señales ---- */
+.ta-reading__text { margin: 0; font-size: 1.08rem; line-height: 1.65; max-width: 78ch; }
+.ta-signals { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+.ta-signal { display: flex; gap: 0.75rem; padding: 0.85rem 1rem; border: 1px solid var(--ta-line); border-radius: 14px; background: #fafbfe; }
+.ta-signal__mark { flex-shrink: 0; width: 1.6rem; height: 1.6rem; border-radius: 8px; display: grid; place-items: center; font-size: 0.7rem; color: #fff; }
+.ta-signal.is-bull .ta-signal__mark { background: var(--ta-bull); }
+.ta-signal.is-bear .ta-signal__mark { background: var(--ta-bear); }
+.ta-signal__label { margin: 0 0 0.15rem; font-weight: 700; font-size: 0.9rem; }
+.ta-signal__value { margin-left: 0.4rem; font-family: var(--ta-font-mono); font-weight: 400; font-size: 0.78rem; color: var(--ta-muted); }
+.ta-signal__why { margin: 0; font-size: 0.84rem; color: var(--ta-muted); }
+
+/* ---- Calendario ---- */
+.ta-cal__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem 1rem; margin-bottom: 0.7rem; }
+.ta-cal__count { font-family: var(--ta-font-mono); font-size: 0.78rem; color: var(--ta-muted); }
+.ta-cal__table { min-width: 760px; }
+.ta-cal__event[hidden] { display: none; }
+.ta-cal__main td { border-bottom: 0; padding-top: 0.75rem; padding-bottom: 0.3rem; vertical-align: top; }
+.ta-cal__main--past { opacity: 0.7; }
+.ta-cal__date { font-weight: 600; }
+.ta-cal__time { font-family: var(--ta-font-mono); font-size: 0.82rem; color: var(--ta-muted); }
+.ta-cal__name { white-space: normal; min-width: 240px; }
+.ta-cal__orig { display: block; font-size: 0.74rem; color: var(--ta-muted); font-weight: 400; }
+.ta-cal__meaning td { white-space: normal; padding: 0.1rem 0.7rem 0.9rem; }
+.ta-cal__meaning p { margin: 0 0 0.25rem; max-width: 96ch; font-size: 0.84rem; color: var(--ta-muted); }
+.ta-cal__meaning strong { color: var(--ta-text); }
+.ta-impact { display: inline-block; padding: 0.12rem 0.6rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
+.ta-impact--high { background: rgba(229, 64, 90, 0.13); color: var(--ta-bear); }
+.ta-impact--medium { background: rgba(217, 132, 0, 0.14); color: var(--ta-amber); }
+.ta-state { margin-left: 0.4rem; padding: 0.08rem 0.45rem; border-radius: 6px; background: var(--ta-lime); color: var(--ta-ink); font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+.ta-cal__event { border-top: 1px solid var(--ta-line); }
+
+/* ---- Seguir aprendiendo ---- */
+.ta-more { margin-top: 2rem; }
+.ta-more h2 { margin-bottom: 0.8rem; }
+.ta-more__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; }
+.ta-more__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: 16px;
+    border: 1px solid var(--ta-line);
+    background: var(--ta-card);
+    color: var(--ta-text);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm, 0 1px 2px rgba(35, 36, 31, 0.06));
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.ta-more__card:hover { transform: translateY(-3px); border-color: var(--ta-ink); box-shadow: var(--shadow-md, 0 8px 20px rgba(35, 36, 31, 0.09)); }
+.ta-more__card strong { font-family: var(--ta-font-display); font-size: 1.05rem; color: var(--ta-bull); }
+.ta-more__card span { font-size: 0.84rem; color: var(--ta-muted); }
+.ta-disclaimer { margin: 1.5rem 0 0; font-size: 0.8rem; color: var(--ta-muted); }
+
+@media (max-width: 980px) {
+    .ta-hero { grid-template-columns: minmax(0, 1fr); padding: 1.5rem; }
+    .ta-split { grid-template-columns: minmax(0, 1fr); }
+    .ta-more__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+    .ta { padding-top: 1rem; }
+    .ta-hero { padding: 1.25rem 1.1rem; border-radius: 18px; }
+    .ta-card { padding: 1.1rem 1rem 1.2rem; border-radius: 16px; }
+    .ta-signals { grid-template-columns: minmax(0, 1fr); }
+    .ta-more__grid { grid-template-columns: minmax(0, 1fr); }
+    .ta-meter__seg { width: 24px; }
+    .ta-chart { padding-top: 1.4rem; }
+    .ta-chart__plot { min-height: 420px; }
+    .ta-table th, .ta-table td { font-size: 0.82rem; padding: 0.5rem 0.55rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ta-more__card, .ta-btn { transition: none; }
+}
+
+/* En pantallas táctiles el deslizamiento vertical sobre la gráfica debe
+   seguir desplazando la página; solo el horizontal mueve las velas. */
+@media (pointer: coarse) {
+    .ta-chart__plot .nsewdrag { touch-action: pan-y; }
+}
+
+/* ---- Selector de activo (NASDAQ / Oro / EUR/USD / Bitcoin) ---- */
+.ta-assets { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; margin: 0 0 1rem; }
+.ta-asset {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.1rem;
+    min-height: 3.2rem;
+    padding: 0.65rem 0.95rem;
+    border: 1px solid var(--ta-line);
+    border-radius: 14px;
+    background: var(--ta-card);
+    color: var(--ta-text);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm, 0 1px 2px rgba(35, 36, 31, 0.06));
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.ta-asset:hover { border-color: var(--ta-ink); }
+.ta-asset:focus-visible { outline: 2px solid var(--ta-blue); outline-offset: 2px; }
+.ta-asset__name { font-family: var(--ta-font-display); font-weight: 700; font-size: 1.02rem; letter-spacing: -0.01em; }
+.ta-asset__kind { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ta-muted); }
+.ta-asset--active { background: var(--ta-ink); border-color: var(--ta-ink); color: #fff; }
+.ta-asset--active .ta-asset__kind { color: var(--ta-lime); }
+
+/* ---- Celulares: barras de herramientas en una fila deslizable, calendario en fichas ---- */
+@media (max-width: 640px) {
+    .ta-assets { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-bottom: 0.8rem; }
+    .ta-asset { padding: 0.55rem 0.75rem; min-height: 3rem; }
+    .ta-asset__name { font-size: 0.95rem; }
+
+    .ta-toolbar { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 0.5rem; }
+    .ta-group, .ta-layers {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
+    }
+    .ta-group::-webkit-scrollbar, .ta-layers::-webkit-scrollbar { display: none; }
+    .ta-btn, .ta-chip, .ta-layers__label { flex: 0 0 auto; white-space: nowrap; }
+    .ta-readout { font-size: 0.72rem; gap: 0.15rem 0.6rem; }
+
+    .ta-hero__side { gap: 0.6rem; }
+    .ta-kpi { padding: 0.6rem 0.7rem; }
+    .ta-kpi dd { font-size: 1rem; }
+
+    /* Calendario: cada evento pasa de fila ancha a una ficha apilada. */
+    .ta-cal__table { min-width: 0; display: block; }
+    .ta-cal__table thead {
+        position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+    }
+    .ta-cal__table tbody.ta-cal__event { display: block; padding: 0.85rem 0; }
+    .ta-cal__table tr { display: block; }
+    .ta-cal__table tr.ta-cal__main {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.4rem 0.6rem;
+        align-items: start;
+    }
+    .ta-cal__main td { display: block; padding: 0; border: 0; text-align: left; white-space: normal; }
+    .ta-cal__date { order: 1; }
+    .ta-cal__time { order: 2; }
+    .ta-cal__impact { order: 3; text-align: right; }
+    .ta-cal__name { order: 4; grid-column: 1 / -1; min-width: 0; }
+    .ta-cal__main td.ta-num { order: 5; text-align: left; font-size: 0.85rem; }
+    .ta-cal__main td.ta-num::before {
+        content: attr(data-label);
+        display: block;
+        font-family: var(--font-body);
+        font-size: 0.64rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--ta-muted);
+    }
+    .ta-cal__table tr.ta-cal__meaning td { display: block; padding: 0.55rem 0 0; }
+}
+
+/* Dedos: botones y chips con área táctil de 40 px como mínimo. */
+@media (pointer: coarse) {
+    .ta-btn { min-height: 40px; padding: 0.45rem 0.95rem; }
+    .ta-chip span { min-height: 36px; }
+    .ta-cal__bar .ta-btn { min-height: 38px; }
+}
+
+/* ---- Temporalidad y fechas de la proyección ---- */
+.ta-card__titlerow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.8rem; margin-bottom: 0.35rem; }
+.ta-card__titlerow h2 { margin: 0; }
+.ta-tf {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: var(--ta-ink);
+    color: #fff;
+    font-family: var(--ta-font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+}
+.ta-tf strong { color: var(--ta-lime); font-weight: 600; }
+.ta-readout__tf {
+    padding: 0.05rem 0.45rem;
+    border-radius: 6px;
+    background: var(--ta-ink);
+    color: var(--ta-lime);
+    font-weight: 600;
+    font-size: 0.68rem;
+}
+.ta-kpi__date { display: block; margin-top: 0.15rem; font-size: 0.7rem; font-weight: 400; color: var(--ta-muted); }
+
+/* ---- Calendario: periodos (mes / esta semana / próxima semana) ---- */
+.ta-btn__n {
+    display: inline-block;
+    min-width: 1.35rem;
+    margin-left: 0.25rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background: rgba(20, 23, 28, 0.08);
+    font-family: var(--ta-font-mono);
+    font-size: 0.7rem;
+    text-align: center;
+}
+.ta-btn.is-active .ta-btn__n { background: rgba(200, 245, 96, 0.22); }
+.ta-chip--high { --chip: var(--ta-bear); }
+.ta-cal__range { margin: 0 0 0.6rem; font-size: 0.8rem; font-weight: 600; color: var(--ta-muted); }
+.ta-cal__range::before { content: "▸ "; color: var(--ta-accent); }
+.ta-cal__empty { padding: 0.9rem 1rem; border: 1px dashed var(--ta-line); border-radius: 12px; background: var(--ta-ground); max-width: 78ch; }
+.ta-cal__empty[hidden], .ta-cal__table[hidden], .ta-cal__count[hidden] { display: none; }
+.ta-cal__count { margin: 0 0 0.4rem; }
+.ta-cal__empty { font-size: 0.9rem; }
+@media (max-width: 640px) {
+    /* Los tres periodos caben con salto de línea: así el activo nunca queda fuera de vista. */
+    .ta-cal__bar { align-items: flex-start; }
+    .ta-cal__bar .ta-group { flex-wrap: wrap; overflow: visible; }
+}
+
+/* ---- Introducción por activo, aviso superior y preguntas frecuentes ---- */
+.ta-intro { margin: 1rem 0 0; font-size: 0.95rem; line-height: 1.6; color: var(--ta-muted); max-width: 90ch; }
+.ta-top-disclaimer { margin: 0.8rem 0 0; }
+.ta-faq__list { display: flex; flex-direction: column; gap: 0.5rem; }
+.ta-faq__item { border: 1px solid var(--ta-line); border-radius: 12px; background: var(--ta-ground); }
+.ta-faq__item summary { cursor: pointer; padding: 0.8rem 1rem; font-weight: 600; font-size: 0.95rem; }
+.ta-faq__item summary:focus-visible { outline: 2px solid var(--ta-blue); outline-offset: 2px; border-radius: 12px; }
+.ta-faq__item p { margin: 0; padding: 0 1rem 0.9rem; font-size: 0.9rem; line-height: 1.6; color: var(--ta-muted); max-width: 90ch; }
+
+/* ---- Lectura semanal junto al veredicto diario ---- */
+.ta-weekly {
+    display: inline-block;
+    padding: 0.22rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: 1px solid currentColor;
+}
+.ta-weekly--bull { color: var(--ta-bull); background: rgba(20, 137, 94, 0.08); }
+.ta-weekly--bear { color: var(--ta-bear); background: rgba(220, 53, 69, 0.08); }
+
+/* ---- MACD por hora ---- */
+.ta-macd__plot { width: 100%; min-height: 300px; }
+.ta-macd__state {
+    margin: 0 0 0.8rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-left: 4px solid currentColor;
+}
+.ta-macd__state--bull { color: var(--ta-bull); background: rgba(20, 137, 94, 0.08); }
+.ta-macd__state--bear { color: var(--ta-bear); background: rgba(220, 53, 69, 0.08); }
+.ta-macd__how { margin-top: 0.8rem; border: 1px solid var(--ta-line); border-radius: 12px; background: var(--ta-ground); }
+.ta-macd__how summary { cursor: pointer; padding: 0.7rem 1rem; font-weight: 600; font-size: 0.92rem; }
+.ta-macd__how ul { margin: 0; padding: 0 1rem 0.9rem 2.2rem; font-size: 0.88rem; line-height: 1.6; color: var(--ta-muted); }
+@media (max-width: 640px) { .ta-macd__plot { min-height: 300px; } }

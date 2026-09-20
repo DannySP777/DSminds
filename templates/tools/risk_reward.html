@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ T.tool_risk_h1 }} | DSMarketLearning{% endblock %}
+{% block meta_description %}{{ T.tool_risk_meta_description }}{% endblock %}
+{% block body_class %}page-tools page-tool-risk{% endblock %}
+
+{% block content %}
+    <a href="{% url 'tools-index' %}" class="tool-breadcrumb">{{ T.tool_back_to_tools }}</a>
+
+    <header class="tool-header">
+        <span class="tool-header__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v16"/>
+                <path d="M6 21h12"/>
+                <path d="M4 7h6M14 7h6"/>
+                <path d="M4 7l-2.5 5a2.5 2.5 0 0 0 5 0z"/>
+                <path d="M20 7l-2.5 5a2.5 2.5 0 0 0 5 0z"/>
+            </svg>
+        </span>
+        <h1>{{ T.tool_risk_h1 }}</h1>
+        <p>{{ T.tool_risk_intro }}</p>
+    </header>
+
+    {% include "partials/ad_slot.html" %}
+
+    <div class="tool-workspace tool-workspace--risk" data-tool="risk-reward">
+        <div class="tool-inputs">
+            <div class="tool-field">
+                <label for="rr-capital-number">{{ T.tool_risk_label_capital }}</label>
+                <div class="tool-field__row">
+                    <input type="range" id="rr-capital-range" min="100" max="200000" step="100" value="10000">
+                    <input type="number" id="rr-capital-number" min="0" step="100" value="10000" inputmode="decimal">
+                </div>
+            </div>
+            <div class="tool-field">
+                <label for="rr-risk-pct-number">{{ T.tool_risk_label_risk_pct }} (%)</label>
+                <div class="tool-field__row">
+                    <input type="range" id="rr-risk-pct-range" min="0.1" max="10" step="0.1" value="1">
+                    <input type="number" id="rr-risk-pct-number" min="0.1" max="100" step="0.1" value="1" inputmode="decimal">
+                </div>
+            </div>
+            <div class="tool-field">
+                <label for="rr-entry-number">{{ T.tool_risk_label_entry }}</label>
+                <div class="tool-field__row">
+                    <input type="number" id="rr-entry-number" step="0.01" value="100" inputmode="decimal">
+                </div>
+            </div>
+            <div class="tool-field">
+                <label for="rr-stop-number">{{ T.tool_risk_label_stop }}</label>
+                <div class="tool-field__row">
+                    <input type="number" id="rr-stop-number" step="0.01" value="95" inputmode="decimal">
+                </div>
+            </div>
+            <div class="tool-field">
+                <label for="rr-target-number">{{ T.tool_risk_label_target }}</label>
+                <div class="tool-field__row">
+                    <input type="number" id="rr-target-number" step="0.01" value="112.5" inputmode="decimal">
+                </div>
+            </div>
+            <p class="tool-disclaimer" id="rr-warning" hidden style="margin-top:0;">{{ T.tool_risk_warning_invalid }}</p>
+        </div>
+
+        <div class="tool-output">
+            <div class="tool-result-hero">
+                <div class="tool-result-hero__label">{{ T.tool_risk_result_size }}</div>
+                <div class="tool-result-hero__value" id="rr-size-value">0</div>
+            </div>
+            <div class="tool-result-grid">
+                <div class="tool-result-stat">
+                    <div class="tool-result-stat__label">{{ T.tool_risk_result_amount }}</div>
+                    <div class="tool-result-stat__value" id="rr-amount-value">$0</div>
+                </div>
+                <div class="tool-result-stat">
+                    <div class="tool-result-stat__label">{{ T.tool_risk_result_rr }}</div>
+                    <div class="tool-result-stat__value" id="rr-ratio-value">&mdash;</div>
+                </div>
+                <div class="tool-result-stat" style="grid-column: 1 / -1;">
+                    <div class="tool-result-stat__label">{{ T.tool_risk_result_gain }}</div>
+                    <div class="tool-result-stat__value" id="rr-gain-value">$0</div>
+                </div>
+            </div>
+            <div class="tool-visual">
+                <div class="tool-rr-bars">
+                    <div class="tool-rr-bar-row">
+                        <span class="tool-rr-bar-row__label">{{ T.tool_risk_bar_risk }}</span>
+                        <span class="tool-rr-bar-track"><span class="tool-rr-bar-fill tool-rr-bar-fill--risk" id="rr-bar-risk-fill" style="width:0%;"></span></span>
+                        <span class="tool-rr-bar-row__value" id="rr-bar-risk-value">$0</span>
+                    </div>
+                    <div class="tool-rr-bar-row">
+                        <span class="tool-rr-bar-row__label">{{ T.tool_risk_bar_reward }}</span>
+                        <span class="tool-rr-bar-track"><span class="tool-rr-bar-fill tool-rr-bar-fill--reward" id="rr-bar-reward-fill" style="width:0%;"></span></span>
+                        <span class="tool-rr-bar-row__value" id="rr-bar-reward-value">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="tool-explanation">
+        <h2>{{ T.tool_risk_explanation_title }}</h2>
+        <p>{{ T.tool_risk_explanation_text }}</p>
+    </section>
+
+    <nav class="tool-related" aria-label="{{ T.tool_risk_related_title }}">
+        <h2>{{ T.tool_risk_related_title }}</h2>
+        <ul>
+            <li><a href="/scanner/">{{ T.tool_risk_related_scanner }}</a></li>
+            <li><a href="{% url 'tool-fair-value-gap' %}">{{ T.tool_risk_related_fvg }}</a></li>
+        </ul>
+    </nav>
+
+    <p class="tool-disclaimer">
+        {{ T.tool_disclaimer_prefix }} <a href="/disclaimer/">{{ T.disclaimer_link_text }}</a>.
+    </p>
+{% endblock %}
+
+{% block extra_head %}
+<script>
+    window.DSMS_TOOLS_I18N = window.DSMS_TOOLS_I18N || {};
+    window.DSMS_TOOLS_I18N.lang = "{{ LANG }}";
+</script>
+<script src="{% static 'js/tools.js' %}?v={% now 'U' %}"></script>
+{% endblock %}

@@ -53,7 +53,7 @@ function initHoverPreview() {
         var i18n = window.DSMS_I18N || {};
         tooltip.innerHTML = '<p class="mini-chart-loading">' + (i18n.loadingChartOf || "Cargando gráfica de") + " " + symbol + "&hellip;</p>";
 
-        fetch("/accion/" + encodeURIComponent(symbol) + "/mini/")
+        fetch("/scanner/accion/" + encodeURIComponent(symbol) + "/mini/")
             .then(function (response) {
                 return response.text();
             })
@@ -108,7 +108,7 @@ function loadChart(symbol, interval) {
         return;
     }
     dsmsSetLoading(chartBody);
-    fetch("/accion/" + encodeURIComponent(symbol) + "/panel-grafica/?interval=" + encodeURIComponent(interval))
+    fetch("/scanner/accion/" + encodeURIComponent(symbol) + "/panel-grafica/?interval=" + encodeURIComponent(interval))
         .then(function (r) { return r.text(); })
         .then(function (html) {
             chartBody.innerHTML = html;
@@ -125,7 +125,7 @@ function loadIndicators(symbol) {
         return;
     }
     dsmsSetLoading(indicatorsBody);
-    fetch("/accion/" + encodeURIComponent(symbol) + "/panel-indicadores/")
+    fetch("/scanner/accion/" + encodeURIComponent(symbol) + "/panel-indicadores/")
         .then(function (r) { return r.text(); })
         .then(function (html) {
             indicatorsBody.innerHTML = html;
@@ -215,8 +215,45 @@ function initCookieBanner() {
     });
 }
 
+function initMobileNav() {
+    // Con 7 enlaces, el menu principal no entra en una fila en pantallas
+    // angostas y antes simplemente se envolvia en varias lineas (feo y
+    // dificil de escanear). Este toggle lo colapsa detras de un boton
+    // hamburguesa por debajo de 900px (ver el breakpoint en style.css);
+    // en escritorio el boton queda oculto y el nav se ve como siempre.
+    var toggle = document.getElementById("nav-toggle");
+    var nav = document.getElementById("main-nav");
+    if (!toggle || !nav) {
+        return;
+    }
+
+    toggle.addEventListener("click", function () {
+        var isOpen = nav.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        document.body.classList.toggle("nav-open", isOpen);
+    });
+
+    nav.querySelectorAll(".main-nav__link").forEach(function (link) {
+        link.addEventListener("click", function () {
+            nav.classList.remove("is-open");
+            toggle.setAttribute("aria-expanded", "false");
+            document.body.classList.remove("nav-open");
+        });
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && nav.classList.contains("is-open")) {
+            nav.classList.remove("is-open");
+            toggle.setAttribute("aria-expanded", "false");
+            document.body.classList.remove("nav-open");
+            toggle.focus();
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     initHoverPreview();
     initScannerDashboard();
+    initMobileNav();
     initCookieBanner();
 });

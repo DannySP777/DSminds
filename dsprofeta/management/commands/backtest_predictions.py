@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone as dj_timezone
 
-from dsprofeta.charts import invalidate_prediction_chart
 from dsprofeta.features import build_backtest_samples
 from dsprofeta.ml import predict_from_features
 from dsprofeta.models import Asset, Prediction
@@ -59,5 +58,4 @@ class Command(BaseCommand):
                 )
                 created += 1
 
-            invalidate_prediction_chart(asset, timeframe)
             self.stdout.write(self.style.SUCCESS(f"{asset.symbol} ({timeframe}): {created} predicciones de backtest creadas y resueltas."))

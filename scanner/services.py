@@ -68,6 +68,25 @@ def _period_return(close, lookback: int):
     return float((end / start - 1) * 100)
 
 
+SHARPE_LOOKBACK_DAYS = 126  # ~6 meses de trading
+
+
+def _sharpe_ratio(close, lookback: int = SHARPE_LOOKBACK_DAYS):
+    """
+    Sharpe anualizado sobre los últimos `lookback` días (tasa libre de
+    riesgo = 0, simplificación habitual en un scanner): cuánto rinde la
+    acción por cada unidad de volatilidad asumida. None si no hay
+    historial suficiente o la volatilidad es cero.
+    """
+    returns = close.pct_change().dropna().iloc[-lookback:]
+    if len(returns) < lookback // 2:
+        return None
+    std = returns.std()
+    if not std or pd.isna(std):
+        return None
+    return round(float(returns.mean() / std * (252 ** 0.5)), 2)
+
+
 def run_daily_scan(tickers: list[str]) -> list[dict]:
     benchmark_data = _download(BENCHMARK)
     benchmark_return = None
@@ -100,6 +119,7 @@ def run_daily_scan(tickers: list[str]) -> list[dict]:
         stop_loss = round(float(close.iloc[-1] - 1.5 * atr), 2) if atr_valid else None
 
         stock_return = _period_return(close, RS_LOOKBACK_DAYS)
+        sharpe_ratio = _sharpe_ratio(close)
         relative_strength = None
         if stock_return is not None and benchmark_return is not None:
             relative_strength = round(stock_return - benchmark_return, 2)
@@ -148,6 +168,11 @@ def run_daily_scan(tickers: list[str]) -> list[dict]:
             "atr": round(float(atr), 2) if atr_valid else None,
             "stop_loss": stop_loss,
             "relative_strength": relative_strength,
+            "name": fundamentals.get("company_name") or "",
+            "return_3m": round(stock_return, 2) if stock_return is not None else None,
+            "sharpe_ratio": sharpe_ratio,
+            "eps_growth": fundamentals.get("eps_growth_pct"),
+            "roe": fundamentals.get("roe_pct"),
             "macd": round(float(macd_line), 4) if macd_valid else None,
             "macd_signal": round(float(macd_signal_line), 4) if macd_valid else None,
             "macd_bullish": macd_bullish,
@@ -225,6 +250,15 @@ def _score(
     return round(max(min(score, 100), 0), 2)
 
 
+def _remember_name(ticker, name):
+    """Guarda el nombre de la empresa (Ticker.name venía vacío en toda la
+    base): la lista del scanner muestra símbolo + nombre. get_fundamentals
+    cae al propio símbolo cuando Yahoo no trae nombre — eso no se guarda."""
+    if name and name != ticker.symbol and ticker.name != name:
+        ticker.name = name[:120]
+        ticker.save(update_fields=["name"])
+
+
 def save_scan_results(symbols: list[str]) -> int:
     """
     Corre el scan sobre `symbols` y guarda un ScanResult por cada uno
@@ -240,6 +274,7 @@ def save_scan_results(symbols: list[str]) -> int:
     saved = 0
     for r in results:
         ticker, _ = Ticker.objects.get_or_create(symbol=r["symbol"])
+        _remember_name(ticker, r.get("name"))
         ScanResult.objects.update_or_create(
             ticker=ticker,
             date=today,
@@ -253,6 +288,10 @@ def save_scan_results(symbols: list[str]) -> int:
                 "atr": r["atr"],
                 "stop_loss": r["stop_loss"],
                 "relative_strength": r["relative_strength"],
+                "return_3m": r["return_3m"],
+                "sharpe_ratio": r["sharpe_ratio"],
+                "eps_growth": r["eps_growth"],
+                "roe": r["roe"],
                 "macd": r["macd"],
                 "macd_signal": r["macd_signal"],
                 "macd_bullish": r["macd_bullish"],
@@ -311,6 +350,7 @@ def save_universe_results(lang: str = "es") -> int:
         for symbol, tech in technicals.items():
             entry = rank_by_symbol[symbol]
             ticker, _ = Ticker.objects.get_or_create(symbol=symbol)
+            _remember_name(ticker, tech.get("name"))
             ScanResult.objects.update_or_create(
                 ticker=ticker,
                 date=today,
@@ -324,6 +364,10 @@ def save_universe_results(lang: str = "es") -> int:
                     "atr": tech["atr"],
                     "stop_loss": tech["stop_loss"],
                     "relative_strength": tech["relative_strength"],
+                    "return_3m": tech["return_3m"],
+                    "sharpe_ratio": tech["sharpe_ratio"],
+                    "eps_growth": tech["eps_growth"],
+                    "roe": tech["roe"],
                     "macd": tech["macd"],
                     "macd_signal": tech["macd_signal"],
                     "macd_bullish": tech["macd_bullish"],

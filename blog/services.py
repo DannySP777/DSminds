@@ -57,7 +57,7 @@ DISCLOSURE_HTML = {
     "es": """
 <p class="disclaimer-note">
     Este resumen se genera automáticamente combinando los resultados del
-    <a href="/">scanner diario</a>, el calendario económico e indicadores
+    <a href="/scanner/">scanner diario</a>, el calendario económico e indicadores
     técnicos y fundamentales de mercado. Es contenido informativo y
     educativo &mdash; no es una recomendación de compra o venta, ni
     asesoría financiera, legal o fiscal personalizada. Invertir implica
@@ -72,7 +72,7 @@ DISCLOSURE_HTML = {
     "en": """
 <p class="disclaimer-note">
     This summary is generated automatically by combining the results of
-    the <a href="/">daily scanner</a>, the economic calendar, and
+    the <a href="/scanner/">daily scanner</a>, the economic calendar, and
     technical and fundamental market indicators. It's informational and
     educational content &mdash; not a buy or sell recommendation, nor
     personalized financial, legal, or tax advice. Investing carries
@@ -306,7 +306,7 @@ def _render_body(lang, scan_date, top_results, events, conclusion, total, bullis
 
     rows = "".join(
         f"""<tr>
-            <td><a href="/accion/{r.ticker.symbol}/">{r.ticker.symbol}</a></td>
+            <td><a href="/scanner/accion/{r.ticker.symbol}/">{r.ticker.symbol}</a></td>
             <td>${r.price}</td>
             <td><span class="score-badge {_score_class(r.score)}">{r.score}</span></td>
             <td><span class="trend-badge {'trend-badge--up' if r.above_ma200 else 'trend-badge--down'}">{trend_up if r.above_ma200 else trend_down}</span></td>

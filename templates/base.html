@@ -36,7 +36,7 @@
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ GOOGLE_ADSENSE_CLIENT_ID }}" crossorigin="anonymous"></script>
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{% block meta_description %}Scanner diario de acciones, noticias de mercado y análisis técnico. Contenido informativo, no asesoría financiera.{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{{ T.site_default_description }}{% endblock %}">
     <title>{% block title %}DSMarketLearning{% endblock %}</title>
     {% comment %}
     dsminds.com (sin www) y www.dsminds.com sirven el mismo sitio (el
@@ -70,7 +70,7 @@
     Vista previa al compartir en redes/chat (WhatsApp, Slack, X, etc.) — sin
     esto el link sale pelado, sin título ni imagen. og_title/og_description
     son variables de contexto OPCIONALES que una vista puede pasar (ver
-    scanner.views.home y dsprofeta.views.predictor_home); si no las pasa,
+    scanner.views.home y tools.views.trading_analysis); si no las pasa,
     cae al texto genérico del sitio. No se reutilizan los bloques title/
     meta_description aquí — Django no permite repetir un mismo nombre de
     {% templatetag openblock %}block{% templatetag closeblock %} dos veces en un mismo template padre.
@@ -78,12 +78,12 @@
     <meta property="og:site_name" content="DSMarketLearning">
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ og_title|default:'DSMarketLearning' }}">
-    <meta property="og:description" content="{{ og_description|default:'Scanner diario de acciones, noticias de mercado y análisis técnico. Contenido informativo, no asesoría financiera.' }}">
+    <meta property="og:description" content="{{ og_description|default:T.site_default_description }}">
     <meta property="og:url" content="https://www.dsminds.com{{ request.path }}">
     <meta property="og:image" content="https://www.dsminds.com{% static 'img/logo-icon.png' %}">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{{ og_title|default:'DSMarketLearning' }}">
-    <meta name="twitter:description" content="{{ og_description|default:'Scanner diario de acciones, noticias de mercado y análisis técnico. Contenido informativo, no asesoría financiera.' }}">
+    <meta name="twitter:description" content="{{ og_description|default:T.site_default_description }}">
     <meta name="twitter:image" content="https://www.dsminds.com{% static 'img/logo-icon.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -107,7 +107,7 @@
         "url": "https://www.dsminds.com/",
         "potentialAction": {
             "@type": "SearchAction",
-            "target": "https://www.dsminds.com/buscar/?q={search_term_string}",
+            "target": "https://www.dsminds.com/scanner/buscar/?q={search_term_string}",
             "query-input": "required name=search_term_string"
         }
     }
@@ -123,14 +123,23 @@
                 </a>
                 {% block header_subtitle %}{% endblock %}
             </div>
-            <nav class="main-nav">
-                <a href="/" class="main-nav__link{% if request.path == '/' or '/accion/' in request.path or '/buscar/' in request.path %} main-nav__link--active{% endif %}">
+            <button type="button" id="nav-toggle" class="nav-toggle" aria-label="{{ T.nav_menu_label }}" aria-expanded="false" aria-controls="main-nav">
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+            </button>
+            <nav class="main-nav" id="main-nav">
+                <a href="/" class="main-nav__link{% if request.path == '/' %} main-nav__link--active{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v3M7 14v4M7 7h0M5 7h4v7H5zM17 6v3M17 16v3M15 9h4v7h-4z"/></svg>
+                    {{ T.nav_tools }}
+                </a>
+                <a href="/estrategias/" class="main-nav__link{% if '/estrategias' in request.path or '/interes-compuesto' in request.path or '/riesgo-beneficio' in request.path or '/fair-value-gap' in request.path %} main-nav__link--active{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h-1M8 15h2M12.5 15h2M17 15h-1M8 19h2M12.5 19h2"/></svg>
+                    {{ T.nav_strategies }}
+                </a>
+                <a href="/scanner/" class="main-nav__link{% if '/scanner' in request.path %} main-nav__link--active{% endif %}">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
                     {{ T.nav_scanner }}
-                </a>
-                <a href="/prediccion/" class="main-nav__link{% if '/prediccion' in request.path %} main-nav__link--active{% endif %}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-5 4 3 7-8"/><path d="M15 6h5v5"/></svg>
-                    {{ T.nav_dsprofeta }}
                 </a>
                 <a href="/blog/" class="main-nav__link{% if '/blog' in request.path %} main-nav__link--active{% endif %}">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6"/></svg>

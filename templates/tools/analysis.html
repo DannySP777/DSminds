@@ -1,0 +1,408 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_description %}{{ page_meta_description }}{% endblock %}
+{% block canonical_url %}https://www.dsminds.com/{% if selected_symbol != "NDX100" %}?asset={{ selected_symbol }}{% if request.GET.lang %}&lang={{ request.GET.lang }}{% endif %}{% elif request.GET.lang %}?lang={{ request.GET.lang }}{% endif %}{% endblock %}
+{% block body_class %}page-analysis{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+    <link rel="stylesheet" href="{% static 'css/analysis.css' %}?v={% now 'U' %}">
+    {% autoescape off %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "{{ T.ta_h1|escapejs }} — {{ asset_name|escapejs }}",
+        "description": "{{ page_meta_description|escapejs }}",
+        "url": "https://www.dsminds.com/{% if selected_symbol != "NDX100" %}?asset={{ selected_symbol }}{% endif %}",
+        "inLanguage": "{{ LANG }}",
+        "keywords": "{{ keywords|escapejs }}"{% if date_modified %},
+        "dateModified": "{{ date_modified }}"{% endif %}
+    }
+    </script>
+    {% if faq_jsonld %}<script type="application/ld+json">{{ faq_jsonld|safe }}</script>{% endif %}
+    {% endautoescape %}
+{% endblock %}
+
+{% block content %}
+<div class="ta" data-lang="{{ LANG }}">
+    <nav class="ta-assets" aria-label="{{ T.ta_assets_label }}">
+        {% for tab in asset_tabs %}
+            <a href="?asset={{ tab.symbol }}{% if request.GET.lang %}&lang={{ request.GET.lang }}{% endif %}"
+               class="ta-asset{% if tab.active %} ta-asset--active{% endif %}"
+               {% if tab.active %}aria-current="page"{% endif %}>
+                <span class="ta-asset__name">{{ tab.name }}</span>
+                <span class="ta-asset__kind">{{ tab.kind }}</span>
+            </a>
+        {% endfor %}
+    </nav>
+{% if not ta %}
+    <section class="ta-hero ta-hero--empty">
+        <p class="ta-kicker">{{ kicker }}</p>
+        <h1 class="ta-h1">{{ h1 }}</h1>
+        <p class="ta-empty">{{ empty_text }}</p>
+    </section>
+{% else %}
+
+    <section class="ta-hero ta-hero--{% if ta.verdict.bullish %}bull{% else %}bear{% endif %}">
+        <div class="ta-hero__main">
+            <p class="ta-kicker">
+                <span class="ta-kicker__tag">{{ kicker }}</span>
+                <span class="ta-kicker__date">{{ T.ta_as_of }} {{ ta.as_of|date:"d/m/Y" }}</span>
+            </p>
+            <h1 class="ta-h1">{{ h1 }}</h1>
+
+            <div class="ta-verdict">
+                <span class="ta-verdict__label">{{ T.ta_verdict_label }}</span>
+                <span class="ta-verdict__word">
+                    {{ ta.verdict_word }}
+                    <svg class="ta-verdict__arrow" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        {% if ta.verdict.bullish %}<path d="M8 36L20 22l8 8 14-18"/><path d="M30 12h12v12"/>{% else %}<path d="M8 12l12 14 8-8 14 18"/><path d="M30 36h12V24"/>{% endif %}
+                    </svg>
+                </span>
+                <span class="ta-verdict__meta">{{ ta.agree_text }} · {{ ta.strength_text }}</span>
+                {% if ta.weekly_chip %}<span class="ta-weekly ta-weekly--{% if ta.weekly.bullish %}bull{% else %}bear{% endif %}">{{ ta.weekly_chip }}</span>{% endif %}
+                <span class="ta-meter" role="img" aria-label="{{ ta.agree_text }}">
+                    {% for s in ta.signals %}<i class="ta-meter__seg {% if s.bullish %}is-bull{% else %}is-bear{% endif %}" title="{{ s.label }}"></i>{% endfor %}
+                </span>
+            </div>
+
+            <p class="ta-price">
+                <span class="ta-price__value">{{ ta.price|floatformat:ta.digits.price }}</span>
+                <span class="ta-price__change {% if ta.change_pct >= 0 %}is-up{% else %}is-down{% endif %}">{% if ta.change_pct >= 0 %}+{% endif %}{{ ta.change_pct }}%</span>
+                <span class="ta-price__label">{{ T.ta_price_now }}</span>
+            </p>
+        </div>
+
+        <div class="ta-hero__side">
+            <dl class="ta-kpis">
+                <div class="ta-kpi">
+                    <dt>{{ T.ta_kpi_rsi }}</dt>
+                    <dd>{{ ta.rsi }}</dd>
+                </div>
+                <div class="ta-kpi">
+                    <dt>{{ T.ta_kpi_sma50 }}</dt>
+                    <dd class="{% if ta.sma50_gap_pct >= 0 %}is-up{% else %}is-down{% endif %}">{% if ta.sma50_gap_pct >= 0 %}+{% endif %}{{ ta.sma50_gap_pct }}%</dd>
+                </div>
+                <div class="ta-kpi">
+                    <dt>{{ T.ta_kpi_forecast }}</dt>
+                    <dd>{% if ta.forecast_close %}{{ ta.forecast_close|floatformat:ta.digits.level }} <small class="{% if ta.forecast_change_pct >= 0 %}is-up{% else %}is-down{% endif %}">{% if ta.forecast_change_pct >= 0 %}+{% endif %}{{ ta.forecast_change_pct }}%</small>
+                        {% with last_fc=ta.forecast|last %}<small class="ta-kpi__date"><time datetime="{{ last_fc.x }}" data-fmt="day">{{ last_fc.x }}</time></small>{% endwith %}{% else %}—{% endif %}</dd>
+                </div>
+                <div class="ta-kpi">
+                    <dt>{{ T.ta_kpi_atr }}</dt>
+                    <dd>{{ ta.atr_pct }}%</dd>
+                </div>
+            </dl>
+            {% if ta.calendar.upcoming_high %}
+                <p class="ta-next-event">
+                    <span class="ta-next-event__label">{{ T.ta_next_event }}</span>
+                    <span class="ta-next-event__name">{{ ta.calendar.upcoming_high.name }}</span>
+                    <span class="ta-next-event__when">{{ ta.next_event_when }}</span>
+                </p>
+            {% endif %}
+        </div>
+    </section>
+
+    <p class="ta-intro">{{ intro }}</p>
+    <p class="tool-disclaimer ta-top-disclaimer">{{ T.ta_top_disclaimer }} <a href="/disclaimer/">{{ T.disclaimer_link_text }}</a>.</p>
+
+    {% include "partials/ad_slot.html" %}
+
+    {# ------------------------------------------------------------ chart #}
+    <section class="ta-card ta-chart" id="ta-chart-section">
+        <header class="ta-card__head">
+            <div class="ta-card__titlerow">
+                <h2>{{ h2_chart }}</h2>
+                <span class="ta-tf">{{ T.ta_timeframe_label }}: <strong>{{ T.ta_timeframe_daily }}</strong></span>
+            </div>
+            <p>{{ T.ta_chart_intro }}</p>
+        </header>
+
+        <div class="ta-toolbar" role="toolbar" aria-label="{{ T.ta_chart_title }}">
+            <div class="ta-group" role="group" aria-label="{{ T.ta_range_label }}">
+                <button type="button" class="ta-btn" data-range="21">{{ T.ta_range_1m }}</button>
+                <button type="button" class="ta-btn is-active" data-range="63">{{ T.ta_range_3m }}</button>
+                <button type="button" class="ta-btn" data-range="126">{{ T.ta_range_6m }}</button>
+                <button type="button" class="ta-btn" data-range="252">{{ T.ta_range_1y }}</button>
+                <button type="button" class="ta-btn" data-range="0">{{ T.ta_range_all }}</button>
+            </div>
+            <div class="ta-group" role="group" aria-label="{{ T.ta_tools_label }}">
+                <button type="button" class="ta-btn ta-btn--tool is-active" data-tool="pan" aria-pressed="true">{{ T.ta_tool_pan }}</button>
+                <button type="button" class="ta-btn ta-btn--tool" data-tool="zoom" aria-pressed="false">{{ T.ta_tool_zoom }}</button>
+                <button type="button" class="ta-btn ta-btn--tool" data-tool="drawline" aria-pressed="false">{{ T.ta_tool_line }}</button>
+                <button type="button" class="ta-btn ta-btn--tool" data-tool="drawrect" aria-pressed="false">{{ T.ta_tool_box }}</button>
+                <button type="button" class="ta-btn" data-action="clear">{{ T.ta_tool_clear }}</button>
+                <button type="button" class="ta-btn" data-action="reset">{{ T.ta_tool_reset }}</button>
+            </div>
+        </div>
+        <div class="ta-layers" role="group" aria-label="{{ T.ta_layers_label }}">
+            <span class="ta-layers__label">{{ T.ta_layers_label }}</span>
+            <label class="ta-chip ta-chip--sma20"><input type="checkbox" data-layer="sma20" checked><span>{{ T.ta_layer_sma20 }}</span></label>
+            <label class="ta-chip ta-chip--sma50"><input type="checkbox" data-layer="sma50" checked><span>{{ T.ta_layer_sma50 }}</span></label>
+            <label class="ta-chip ta-chip--sma200"><input type="checkbox" data-layer="sma200"><span>{{ T.ta_layer_sma200 }}</span></label>
+            <label class="ta-chip ta-chip--levels"><input type="checkbox" data-layer="levels" checked><span>{{ T.ta_layer_levels }}</span></label>
+            <label class="ta-chip ta-chip--forecast"><input type="checkbox" data-layer="forecast" checked><span>{{ T.ta_layer_forecast }}</span></label>
+            <label class="ta-chip ta-chip--volume"><input type="checkbox" data-layer="volume"><span>{{ T.ta_layer_volume }}</span></label>
+        </div>
+
+        <p class="ta-readout" id="ta-readout" aria-live="off"></p>
+        <div id="ta-chart" class="ta-chart__plot" role="img" aria-label="{{ T.ta_chart_title }} {{ ta.asset_name }}"></div>
+        <p class="ta-chart__hint">{{ T.ta_chart_hint }}</p>
+        <noscript><p class="ta-chart__hint">{{ T.ta_chart_intro }}</p></noscript>
+    </section>
+
+    {# ------------------------------------------------------- MACD por hora #}
+    <section class="ta-card ta-macd" id="ta-macd-section" data-x-title="{{ T.ta_macdh_x_title }}">
+        <header class="ta-card__head">
+            <div class="ta-card__titlerow">
+                <h2>{{ h2_macd }}</h2>
+                <span class="ta-tf">{{ T.ta_timeframe_label }}: <strong>{{ T.ta_timeframe_hourly }}</strong></span>
+            </div>
+            <p>{{ T.ta_macdh_intro }}</p>
+        </header>
+        {% if ta.macd1h %}
+            <p class="ta-macd__state ta-macd__state--{% if ta.macd1h.bullish %}bull{% else %}bear{% endif %}">{{ ta.macd1h.state_text }}</p>
+            <div class="ta-toolbar" role="toolbar" aria-label="{{ h2_macd }}">
+                <div class="ta-group" role="group">
+                    <button type="button" class="ta-btn" data-macd-range="24">24 h</button>
+                    <button type="button" class="ta-btn is-active" data-macd-range="72">72 h</button>
+                    <button type="button" class="ta-btn" data-macd-range="150">150 h</button>
+                </div>
+            </div>
+            <p class="ta-readout" id="ta-macd-readout" aria-live="off"></p>
+            <div id="ta-macd" class="ta-macd__plot" role="img" aria-label="{{ h2_macd }}"></div>
+            <details class="ta-macd__how" open>
+                <summary>{{ T.ta_macdh_read_title }}</summary>
+                <ul>
+                    <li>{{ T.ta_macdh_read_1 }}</li>
+                    <li>{{ T.ta_macdh_read_2 }}</li>
+                    <li>{{ T.ta_macdh_read_3 }}</li>
+                </ul>
+            </details>
+            <p class="ta-fineprint">{{ T.ta_macdh_note }}</p>
+        {% else %}
+            <p class="ta-empty">{{ T.ta_macdh_empty }}</p>
+        {% endif %}
+    </section>
+
+    {# ------------------------------------------------ levels + forecast #}
+    <div class="ta-split">
+        <section class="ta-card">
+            <header class="ta-card__head">
+                <h2>{{ h2_levels }}</h2>
+                <p>{{ T.ta_levels_intro }}</p>
+            </header>
+            {% if ta.supports or ta.resistances %}
+            <div class="ta-scroll">
+                <table class="ta-table ta-ladder">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ T.ta_col_level }}</th>
+                            <th scope="col" class="ta-num">{{ T.ta_col_price }}</th>
+                            <th scope="col" class="ta-num">{{ T.ta_col_distance }}</th>
+                            <th scope="col" class="ta-num">{{ T.ta_col_touches }}</th>
+                            <th scope="col">{{ T.ta_col_strength }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lv in ta.resistances_desc %}
+                        <tr class="ta-ladder__row ta-ladder__row--res">
+                            <td><span class="ta-tag ta-tag--res">{{ T.ta_resistance_short }}</span></td>
+                            <td class="ta-num">{{ lv.price|floatformat:ta.digits.level }}</td>
+                            <td class="ta-num">+{{ lv.distance_pct }}%</td>
+                            <td class="ta-num">{{ lv.touches }}</td>
+                            <td><span class="ta-dots ta-dots--{{ lv.strength }}" aria-hidden="true"><i></i><i></i><i></i></span>
+                                {% if lv.strength == "strong" %}{{ T.ta_strength_lvl_strong }}{% elif lv.strength == "medium" %}{{ T.ta_strength_lvl_medium }}{% else %}{{ T.ta_strength_lvl_light }}{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="ta-ladder__now">
+                            <td colspan="2"><span class="ta-tag ta-tag--now">{{ T.ta_price_now }}</span></td>
+                            <td colspan="3" class="ta-num">{{ ta.price|floatformat:ta.digits.price }}</td>
+                        </tr>
+                        {% for lv in ta.supports %}
+                        <tr class="ta-ladder__row ta-ladder__row--sup">
+                            <td><span class="ta-tag ta-tag--sup">{{ T.ta_support_short }}</span></td>
+                            <td class="ta-num">{{ lv.price|floatformat:ta.digits.level }}</td>
+                            <td class="ta-num">{{ lv.distance_pct }}%</td>
+                            <td class="ta-num">{{ lv.touches }}</td>
+                            <td><span class="ta-dots ta-dots--{{ lv.strength }}" aria-hidden="true"><i></i><i></i><i></i></span>
+                                {% if lv.strength == "strong" %}{{ T.ta_strength_lvl_strong }}{% elif lv.strength == "medium" %}{{ T.ta_strength_lvl_medium }}{% else %}{{ T.ta_strength_lvl_light }}{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="ta-empty">{{ T.ta_levels_none }}</p>
+            {% endif %}
+        </section>
+
+        <section class="ta-card">
+            <header class="ta-card__head">
+                <h2>{{ h2_forecast }}</h2>
+                <p>{{ T.ta_forecast_intro }}</p>
+            </header>
+            {% if ta.forecast %}
+            <div class="ta-scroll">
+                <table class="ta-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ T.ta_col_date }}</th>
+                            <th scope="col" class="ta-num">{{ T.ta_col_close }}</th>
+                            <th scope="col" class="ta-num">{{ T.ta_col_change }}</th>
+                            <th scope="col" class="ta-num">{{ T.ta_col_range }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in ta.forecast %}
+                        <tr>
+                            <td><time datetime="{{ f.x }}" data-fmt="day">{{ f.x }}</time></td>
+                            <td class="ta-num"><strong>{{ f.c|floatformat:ta.digits.level }}</strong></td>
+                            <td class="ta-num {% if f.change_from_now >= 0 %}is-up{% else %}is-down{% endif %}">{% if f.change_from_now >= 0 %}+{% endif %}{{ f.change_from_now }}%</td>
+                            <td class="ta-num ta-muted">{{ f.band_lo|floatformat:ta.digits.level }} – {{ f.band_hi|floatformat:ta.digits.level }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <ul class="ta-model-facts">
+                {% if ta.direction_test %}
+                    <li>{{ T.ta_forecast_accuracy }} {{ ta.direction_test.n }} {{ T.ta_sessions_tested }}: <strong>{{ ta.direction_test.accuracy }}%</strong>. {{ T.ta_coin_flip_note }}</li>
+                {% endif %}
+                {% if ta.model_mae %}
+                    <li>{{ T.ta_forecast_error }} <strong>±{{ ta.model_mae|floatformat:ta.digits.level }}</strong></li>
+                {% endif %}
+            </ul>
+            <p class="ta-fineprint">{{ T.ta_forecast_disclaimer }}</p>
+            {% else %}
+                <p class="ta-empty">{{ T.ta_forecast_none }}</p>
+            {% endif %}
+        </section>
+    </div>
+
+    {# ----------------------------------------------- reading + signals #}
+    <section class="ta-card ta-reading">
+        <header class="ta-card__head">
+            <h2>{{ h2_reading }}</h2>
+        </header>
+        <p class="ta-reading__text">{{ ta.narrative }}</p>
+
+        <h3 class="ta-subhead">{{ T.ta_signals_title }}</h3>
+        <p class="ta-fineprint">{{ T.ta_signals_intro }}</p>
+        <ul class="ta-signals">
+            {% for s in ta.signals %}
+            <li class="ta-signal {% if s.bullish %}is-bull{% else %}is-bear{% endif %}">
+                <span class="ta-signal__mark" aria-hidden="true">{% if s.bullish %}▲{% else %}▼{% endif %}</span>
+                <div>
+                    <p class="ta-signal__label">{{ s.label }}{% if s.value %} <span class="ta-signal__value">{{ s.value }}</span>{% endif %}</p>
+                    <p class="ta-signal__why">{{ s.why }}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    {# ---------------------------------------------------------- calendar #}
+    <section class="ta-card ta-cal" id="ta-calendar">
+        <header class="ta-card__head">
+            <h2>{{ ta.cal_title }}</h2>
+            <p>{{ ta.cal_intro }}</p>
+        </header>
+
+        <div class="ta-cal__bar">
+            <div class="ta-group" role="group" aria-label="{{ T.ta_cal_period_label }}">
+                <button type="button" class="ta-btn is-active" data-cal-period="month" data-range-text="{{ ta.calendar.ranges.month }}">{{ T.ta_cal_period_month }} <span class="ta-btn__n">{{ ta.calendar.counts.month }}</span></button>
+                <button type="button" class="ta-btn" data-cal-period="this" data-range-text="{{ ta.calendar.ranges.this }}">{{ T.ta_cal_period_this }} <span class="ta-btn__n">{{ ta.calendar.counts.this }}</span></button>
+                <button type="button" class="ta-btn" data-cal-period="next" data-range-text="{{ ta.calendar.ranges.next }}">{{ T.ta_cal_period_next }} <span class="ta-btn__n">{{ ta.calendar.counts.next }}</span></button>
+            </div>
+            <label class="ta-chip ta-chip--high"><input type="checkbox" data-cal-high><span>{{ T.ta_cal_filter_high }}</span></label>
+        </div>
+        <p class="ta-cal__count" id="ta-cal-count" data-template="{{ T.ta_cal_count_dynamic }}">{{ ta.cal_count }}</p>
+        <p class="ta-cal__range" id="ta-cal-range" hidden></p>
+        <p class="ta-empty ta-cal__empty" data-cal-empty="next" hidden>{{ T.ta_cal_next_empty }}</p>
+        <p class="ta-empty ta-cal__empty" data-cal-empty="this" hidden>{{ T.ta_cal_this_empty }}</p>
+        <p class="ta-empty ta-cal__empty" data-cal-empty="month" {% if ta.calendar.month_count %}hidden{% endif %}>{{ T.ta_cal_empty }}</p>
+        <p class="ta-empty ta-cal__empty" data-cal-empty="high" hidden>{{ T.ta_cal_high_empty }}</p>
+        <div class="ta-scroll">
+            <table class="ta-table ta-cal__table">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ T.ta_cal_col_date }}</th>
+                        <th scope="col">{{ T.ta_cal_col_time }}</th>
+                        <th scope="col">{{ T.ta_cal_col_event }}</th>
+                        <th scope="col">{{ T.ta_cal_col_impact }}</th>
+                        <th scope="col" class="ta-num">{{ T.ta_cal_col_forecast }}</th>
+                        <th scope="col" class="ta-num">{{ T.ta_cal_col_previous }}</th>
+                        <th scope="col" class="ta-num">{{ T.ta_cal_col_actual }}</th>
+                    </tr>
+                </thead>
+                {% for r in ta.calendar.rows %}
+                <tbody class="ta-cal__event" data-impact="{{ r.impact }}" data-when="{{ r.when }}" data-week="{{ r.week }}" data-month="{{ r.in_month|yesno:"1,0" }}">
+                    <tr class="ta-cal__main ta-cal__main--{{ r.when }}">
+                        <td class="ta-cal__date" data-label="{{ T.ta_cal_col_date }}"><time datetime="{{ r.iso }}" data-fmt="date">{{ r.time|date:"d/m" }}</time>
+                            {% if r.when == "today" %}<span class="ta-state ta-state--today">{{ T.ta_cal_state_today }}</span>{% endif %}</td>
+                        <td class="ta-cal__time" data-label="{{ T.ta_cal_col_time }}"><time datetime="{{ r.iso }}" data-fmt="time">{{ r.time|date:"H:i" }} UTC</time></td>
+                        <td class="ta-cal__name" data-label="{{ T.ta_cal_col_event }}"><strong>{{ r.name }}</strong>{% if r.name != r.title %}<span class="ta-cal__orig">{{ r.title }}</span>{% endif %}</td>
+                        <td class="ta-cal__impact" data-label="{{ T.ta_cal_col_impact }}"><span class="ta-impact ta-impact--{{ r.impact }}">{% if r.impact == "high" %}{{ T.ta_cal_impact_high }}{% else %}{{ T.ta_cal_impact_medium }}{% endif %}</span></td>
+                        <td class="ta-num" data-label="{{ T.ta_cal_col_forecast }}">{{ r.forecast|default:"—" }}</td>
+                        <td class="ta-num" data-label="{{ T.ta_cal_col_previous }}">{{ r.previous|default:"—" }}</td>
+                        <td class="ta-num" data-label="{{ T.ta_cal_col_actual }}">{{ r.actual|default:"—" }}</td>
+                    </tr>
+                    <tr class="ta-cal__meaning">
+                        <td colspan="7">
+                            <p><strong>{{ T.ta_cal_what }}:</strong> {{ r.what }}</p>
+                            <p><strong>{{ ta.effect_label }}:</strong> {{ r.effect }}</p>
+                        </td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+        <p class="ta-fineprint">{{ T.ta_cal_note }}</p>
+    </section>
+
+    {# ------------------------------------------------------------------ FAQ #}
+    {% if faq %}
+    <section class="ta-card ta-faq" id="ta-faq">
+        <header class="ta-card__head"><h2>{{ faq_title }}</h2></header>
+        <div class="ta-faq__list">
+            {% for item in faq %}
+            <details class="ta-faq__item"{% if forloop.first %} open{% endif %}>
+                <summary>{{ item.q }}</summary>
+                <p>{{ item.a }}</p>
+            </details>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {# ------------------------------------------------------ keep learning #}
+    <section class="ta-more">
+        <h2>{{ T.ta_more_title }}</h2>
+        <div class="ta-more__grid">
+            <a class="ta-more__card" href="{% url 'tools-index' %}">
+                <strong>{{ T.ta_more_strategies_title }}</strong>
+                <span>{{ T.ta_more_strategies_desc }}</span>
+            </a>
+            <a class="ta-more__card" href="{% url 'tool-risk-reward' %}">
+                <strong>{{ T.ta_more_calc_title }}</strong>
+                <span>{{ T.ta_more_calc_desc }}</span>
+            </a>
+            <a class="ta-more__card" href="/scanner/">
+                <strong>{{ T.ta_more_scanner_title }}</strong>
+                <span>{{ T.ta_more_scanner_desc }}</span>
+            </a>
+        </div>
+    </section>
+
+    <p class="ta-disclaimer">{{ T.ta_disclaimer }}</p>
+
+    {{ chart_payload|json_script:"ta-data" }}
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script src="{% static 'js/analysis.js' %}?v={% now 'U' %}"></script>
+{% endif %}
+</div>
+{% endblock %}

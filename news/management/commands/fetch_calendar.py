@@ -11,7 +11,11 @@ class Command(BaseCommand):
     help = "Descarga el calendario económico semanal de EE.UU. (impacto medio/alto) y lo guarda."
 
     def handle(self, *args, **options):
-        cutoff = timezone.now() - timedelta(days=7)
+        # 45 días (no 7): el feed gratuito solo trae la semana en curso, así
+        # que el calendario "del mes" de Trading Análisis se arma
+        # acumulando cada semana que se descarga — si se borraran a los 7
+        # días, nunca habría más que una semana para mostrar.
+        cutoff = timezone.now() - timedelta(days=45)
         deleted, _ = EconomicEvent.objects.filter(event_time__lt=cutoff).delete()
         if deleted:
             self.stdout.write(f"Eliminados {deleted} eventos vencidos.")

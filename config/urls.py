@@ -15,10 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from blog.urls import pages_urlpatterns
-from config.views import ads_txt, robots_txt, set_language, sitemap_xml
+from config.views import ads_txt, legacy_prediction_redirect, robots_txt, set_language, sitemap_xml
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,8 +26,11 @@ urlpatterns = [
     path('sitemap.xml', sitemap_xml, name='sitemap-xml'),
     path('ads.txt', ads_txt, name='ads-txt'),
     path('idioma/<str:lang>/', set_language, name='set-language'),
-    path('', include('scanner.urls')),
+    path('', include('tools.urls')),
+    path('scanner/', include('scanner.urls')),
     path('blog/', include('blog.urls')),
-    path('prediccion/', include('dsprofeta.urls')),
+    # La antigua página "Trading con IA" se integró en Trading Análisis (/):
+    # cualquier enlace viejo a /prediccion/... redirige allá.
+    re_path(r'^prediccion/', legacy_prediction_redirect),
     path('', include(pages_urlpatterns)),
 ]

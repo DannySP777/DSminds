@@ -6,6 +6,7 @@ class Asset(models.Model):
         INDEX = "index", "Índice"
         FOREX = "forex", "Forex"
         COMMODITY = "commodity", "Materia prima"
+        CRYPTO = "crypto", "Cripto"
 
     symbol = models.CharField(max_length=20, unique=True)
     display_name = models.CharField(max_length=80)

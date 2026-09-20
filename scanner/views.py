@@ -1,3 +1,5 @@
+import json
+
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 
@@ -9,16 +11,15 @@ from .charts import (
     build_financials_chart,
     build_mini_chart,
     build_price_chart,
-    build_top10_overview_chart,
 )
 from .commentary import build_ticker_commentary
 from .fundamentals import get_fundamentals
 from .indices import get_market_indices
 from .models import ScanResult
+from .scatter import (
+    DEFAULT_GROUP, DEFAULT_MODE, GROUP_ORDER, MODE_IDS, build_scanner_groups, scanner_guide, scatter_i18n, scatter_modes,
+)
 from .search import resolve_symbol
-from .services import build_all_group_summaries
-
-TOP10_SIZE = 10
 
 
 def _get_lang(request):
@@ -33,40 +34,75 @@ def home(request):
     lang = _get_lang(request)
     T = get_translations(lang)
 
-    # Top 10 del día: un solo ranking global por `score` (comparable entre
-    # penny/monster/standard porque se calcula igual en ambos pipelines,
-    # a diferencia de momentum_rank, que es un percentil solo comparable
-    # dentro de su propio grupo — ver scanner/universe.py). is_active=True
-    # respeta el opt-out ya usado para desactivar duplicados (ej. NOK).
-    latest_date = ScanResult.objects.order_by("-date").values_list("date", flat=True).first()
-    top10 = []
-    if latest_date:
-        top10 = list(
-            ScanResult.objects.select_related("ticker")
-            .filter(date=latest_date, ticker__is_active=True)
-            .order_by("-score")[:TOP10_SIZE]
-        )
-    for r in top10:
-        r.commentary = build_ticker_commentary(r, lang)
+    # Tres grupos (penny < 2 USD, medium de 2 a 100 USD, monster = las mejores
+    # del mercado) y una gráfica de dispersión con tres lentes — ver
+    # scanner/scatter.py. ?group= y ?view= permiten compartir un enlace directo
+    # a una combinación; sin ellos abre en Monster + Momentum.
+    groups = build_scanner_groups(lang)
+    group = request.GET.get("group")
+    if group not in GROUP_ORDER:
+        group = DEFAULT_GROUP
+    if not groups[group]["results"]:
+        # El grupo pedido (o el de por defecto) no tiene datos todavía: se abre
+        # el primero que sí los tenga en vez de una pantalla vacía.
+        group = next((g for g in GROUP_ORDER if groups[g]["results"]), group)
+    mode = request.GET.get("view")
+    if mode not in MODE_IDS:
+        mode = DEFAULT_MODE
 
-    top10_chart = build_top10_overview_chart(top10, lang) if top10 else None
-    selected_symbol = top10[0].ticker.symbol if top10 else None
+    active_results = groups[group]["results"]
+    selected_symbol = active_results[0].ticker.symbol if active_results else None
     selected_chart = build_price_chart(selected_symbol, DEFAULT_INTERVAL, lang) if selected_symbol else None
     selected_fundamentals = get_fundamentals(selected_symbol, lang) if selected_symbol else None
     selected_financials_chart = build_financials_chart(selected_symbol, lang) if selected_symbol else None
-    group_summaries = build_all_group_summaries(lang)
+
+    group_tabs = [
+        {
+            "group": g,
+            "name": T[f"solar_group_{g}"],
+            "range": T[f"scan_group_{g}_range"],
+            "desc": T[f"solar_group_{g}_desc"],
+            "results": groups[g]["results"],
+            "summary": groups[g]["summary"],
+            "date": groups[g]["date"],
+            "active": g == group,
+        }
+        for g in GROUP_ORDER
+    ]
+    scan_payload = {
+        "groups": {g: {"points": groups[g]["points"]} for g in GROUP_ORDER},
+        "modes": scatter_modes(T),
+        "i18n": scatter_i18n(T),
+        "initial": {"group": group, "mode": mode},
+    }
+
+    # Preguntas frecuentes: texto visible + FAQPage (JSON-LD) con las mismas respuestas.
+    faq = [{"q": T[f"scan_faq_q{n}"], "a": T[f"scan_faq_a{n}"]} for n in range(1, 6)]
+    faq_jsonld = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {"@type": "Question", "name": item["q"], "acceptedAnswer": {"@type": "Answer", "text": item["a"]}}
+            for item in faq
+        ],
+    }, ensure_ascii=False).replace("</", "<\\/")
 
     return render(request, "scanner/home.html", {
+        "guide": scanner_guide(T),
+        "faq": faq,
+        "faq_jsonld": faq_jsonld,
         "indices": get_market_indices(),
         "intervals": INTERVALS,
-        "top10": top10,
-        "top10_chart": top10_chart,
+        "group_tabs": group_tabs,
+        "scan_payload": scan_payload,
+        "modes": scan_payload["modes"],
+        "selected_group": group,
+        "selected_mode": mode,
         "selected_symbol": selected_symbol,
         "selected_chart": selected_chart,
         "selected_interval": DEFAULT_INTERVAL,
         "selected_fundamentals": selected_fundamentals,
         "selected_financials_chart": selected_financials_chart,
-        "group_summaries": group_summaries,
         "og_title": T["home_h1"],
         "og_description": T["home_meta_description"],
     })

@@ -45,6 +45,15 @@ class ScanResult(models.Model):
     peg_ratio = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
     debt_to_equity = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     exchange = models.CharField(max_length=40, blank=True)
+    # Métricas de la gráfica de dispersión del scanner (ver scanner/scatter.py):
+    # rendimiento a 3 meses (%), Sharpe anualizado de los últimos ~6 meses,
+    # crecimiento de EPS estimado (%) y ROE (%). Null si Yahoo no las trae
+    # (penny stocks con pérdidas, empresas sin estimaciones) o si la fila es
+    # anterior a estas columnas — la gráfica simplemente omite esos puntos.
+    return_3m = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    sharpe_ratio = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    eps_growth = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    roe = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     notes = models.CharField(max_length=200, blank=True)
 
@@ -72,6 +81,13 @@ class ScanResult(models.Model):
 
     def __str__(self):
         return f"{self.ticker.symbol} — {self.date}"
+
+    @property
+    def distance_ma200_pct(self):
+        """% de distancia del precio a su media de 200 días (+ = por encima)."""
+        if self.ma200 and self.price:
+            return round((float(self.price) / float(self.ma200) - 1) * 100, 2)
+        return None
 
     @property
     def target_upside_pct(self):

@@ -47,6 +47,14 @@ def run_dsprofeta_daily_jobs():
     except Exception:
         logger.exception("train_predictors (dsprofeta) falló")
 
+    # Predicción diaria (1d) por defecto para "Trading con IA" — después de
+    # train_predictors, para correr sobre el modelo recién reentrenado del
+    # día. Ver dsprofeta/management/commands/run_daily_predictions.py.
+    try:
+        call_command("run_daily_predictions")
+    except Exception:
+        logger.exception("run_daily_predictions (dsprofeta) falló")
+
 
 def run_universe_scan():
     try:
@@ -119,6 +127,6 @@ def start_scheduler():
         "Scheduler iniciado: scan_universe (lun-vie 07:00 UTC), "
         "run_scan + fetch_news + fetch_calendar + generate_daily_summary "
         "(lun-vie 07:30 UTC), dsprofeta run_hourly_cycle (cada hora), "
-        "dsprofeta sync_economic_calendar + sync_market_news + train_predictors (diario 06:00 UTC)."
+        "dsprofeta sync_economic_calendar + sync_market_news + train_predictors + run_daily_predictions (diario 06:00 UTC)."
     )
     return scheduler

@@ -12,6 +12,9 @@ import requests
 import yfinance as yf
 
 CALENDAR_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
+# La semana siguiente solo existe cuando el proveedor la publica (suele dar 404
+# el resto del tiempo): se pide aparte y su ausencia no es un error.
+CALENDAR_NEXT_WEEK_URL = "https://nfs.faireconomy.media/ff_calendar_nextweek.json"
 CALENDAR_IMPACT_MAP = {"Low": "low", "Medium": "medium", "High": "high"}
 RELEVANT_IMPACTS = {"Medium", "High"}  # 2 y 3 estrellas
 
@@ -60,17 +63,35 @@ def _parse_pub_date(value) -> datetime:
         return datetime.now(timezone.utc)
 
 
+def _download_calendar(url, required):
+    """Descarga un feed del calendario. La semana en curso (`required`) debe
+    responder: si no, se propaga el error como siempre. La semana siguiente
+    puede no estar publicada todavía (404) o el proveedor limitar las
+    peticiones (429): en ese caso simplemente no hay eventos que sumar."""
+    response = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+    if not required and response.status_code in (404, 429):
+        return []
+    response.raise_for_status()
+    try:
+        return response.json()
+    except ValueError:
+        if required:
+            raise
+        return []
+
+
 def fetch_economic_calendar(country: str = "USD") -> list[dict]:
     """
     Calendario económico semanal (fuente gratuita, sin API key: el feed
-    público que usa el widget de ForexFactory). Solo se devuelven eventos
+    público que usa el widget de ForexFactory): semana en curso y, cuando
+    el proveedor ya la publicó, la siguiente. Solo se devuelven eventos
     de impacto medio y alto (2 y 3 estrellas) para el país indicado.
     """
-    response = requests.get(CALENDAR_URL, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
-    response.raise_for_status()
-    raw_events = response.json()
+    raw_events = _download_calendar(CALENDAR_URL, required=True)
+    raw_events += _download_calendar(CALENDAR_NEXT_WEEK_URL, required=False)
 
     events = []
+    seen = set()
     for item in raw_events:
         if item.get("country") != country:
             continue
@@ -85,6 +106,10 @@ def fetch_economic_calendar(country: str = "USD") -> list[dict]:
         title = (item.get("title") or "").strip()
         if not title:
             continue
+
+        if (title, event_time) in seen:
+            continue
+        seen.add((title, event_time))
 
         events.append({
             "title": title,

@@ -18,10 +18,10 @@
         {% else %}
             <p>{{ T.ticker_no_results }}</p>
         {% endif %}
-        <p><a href="/">{{ T.ticker_back_to_scanner }}</a></p>
+        <p><a href="/scanner/">{{ T.ticker_back_to_scanner }}</a></p>
     </section>
 
-    <form action="/buscar/" method="get" class="ticker-search">
+    <form action="{% url 'ticker-search' %}" method="get" class="ticker-search">
         <input
             type="text"
             name="q"

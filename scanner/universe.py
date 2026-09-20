@@ -1,6 +1,7 @@
 """
-Descubre y clasifica el universo ampliado de acciones para la vista
-"sistema solar" del scanner (tres grupos: penny/monster/standard), en
+Descubre y clasifica el universo ampliado de acciones del scanner (tres
+grupos: penny < 2 USD, medium (código "standard") de 2 a 100 USD y
+monster = las de mayor capitalización, ranqueadas por potencial), en
 pasadas de costo creciente — mismo criterio de tiering que ya usa el
 resto del scanner (indices.py: fast_info barato; fundamentals.py:
 .info medio; services.py: descarga OHLCV cara):
@@ -36,6 +37,7 @@ from .models import ScanResult
 logger = logging.getLogger(__name__)
 
 PENNY_PRICE_MAX = 2.0
+MEDIUM_PRICE_MAX = 100.0  # "Medium" = de 2 a 100 USD por acción
 MONSTER_MARKET_CAP_MIN = 100e9  # 100B — punto de partida; bajar si --dry-run muestra <20 candidatos
 
 PENNY_TARGET_COUNT = 20
@@ -118,6 +120,7 @@ def discover_group_candidates() -> dict[str, list[dict]]:
     try:
         query = yf.EquityQuery("and", [
             yf.EquityQuery("gte", ["intradayprice", PENNY_PRICE_MAX]),
+            yf.EquityQuery("lte", ["intradayprice", MEDIUM_PRICE_MAX]),
             yf.EquityQuery("lt", ["intradaymarketcap", MONSTER_MARKET_CAP_MIN]),
             yf.EquityQuery("is-in", ["exchange", *US_EXCHANGES]),
         ])
@@ -155,8 +158,12 @@ def bucket_and_validate(candidates: dict[str, list[dict]]) -> dict[str, list[dic
                 real_group = "penny"
             elif market_cap and market_cap >= MONSTER_MARKET_CAP_MIN:
                 real_group = "monster"
-            else:
+            elif price <= MEDIUM_PRICE_MAX:
                 real_group = "standard"
+            else:
+                # Más de 100 USD y sin la capitalización de un monster:
+                # no pertenece a ninguno de los tres grupos del scanner.
+                continue
 
             buckets[real_group][symbol] = quote
 
