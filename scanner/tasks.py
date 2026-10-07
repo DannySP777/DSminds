@@ -47,6 +47,14 @@ def run_dsprofeta_daily_jobs():
     except Exception:
         logger.exception("train_predictors (dsprofeta) falló")
 
+    # Mantenimiento: poda datos viejos y vigila el tope de tamaño de la base
+    # (750 MB) — ver dsprofeta/management/commands/prune_database.py. Va
+    # después del reentreno, que es lo que más espacio genera.
+    try:
+        call_command("prune_database")
+    except Exception:
+        logger.exception("prune_database falló")
+
     # Predicción diaria (1d) por defecto para "Trading con IA" — después de
     # train_predictors, para correr sobre el modelo recién reentrenado del
     # día. Ver dsprofeta/management/commands/run_daily_predictions.py.
@@ -127,6 +135,6 @@ def start_scheduler():
         "Scheduler iniciado: scan_universe (lun-vie 07:00 UTC), "
         "run_scan + fetch_news + fetch_calendar + generate_daily_summary "
         "(lun-vie 07:30 UTC), dsprofeta run_hourly_cycle (cada hora), "
-        "dsprofeta sync_economic_calendar + sync_market_news + train_predictors + run_daily_predictions (diario 06:00 UTC)."
+        "dsprofeta sync_economic_calendar + sync_market_news + train_predictors + prune_database + run_daily_predictions (diario 06:00 UTC)."
     )
     return scheduler
