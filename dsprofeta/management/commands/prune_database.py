@@ -35,15 +35,16 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_MB = 750
 
-# Ventanas de retención en días. None = no se poda esa tabla/frecuencia.
+# Ventanas de retención en días. Las noticias solo importan recientes (se
+# muestran frescas y el modelo solo mira las últimas 6 horas): 1 semana.
 NORMAL = {
     "bars_15m": 90, "bars_1h": 1095, "bars_4h": 1095,
-    "news_items": 90, "headlines": 30, "market_events": 180, "calendar_events": 60,
+    "news_items": 7, "headlines": 7, "market_events": 180, "calendar_events": 60,
     "scan_results": 365, "predictions": 180, "model_runs_keep": 3,
 }
 AGGRESSIVE = {
     "bars_15m": 30, "bars_1h": 365, "bars_4h": 365,
-    "news_items": 30, "headlines": 7, "market_events": 60, "calendar_events": 45,
+    "news_items": 3, "headlines": 3, "market_events": 60, "calendar_events": 45,
     "scan_results": 120, "predictions": 60, "model_runs_keep": 1,
 }
 
