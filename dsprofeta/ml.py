@@ -24,12 +24,25 @@ TIMEFRAME_DELTAS = {
 }
 
 MIN_TRAINING_SAMPLES = 30
+# Cada ModelRun guarda el modelo entero (~250 KB) en la base. Sin poda, el
+# reentreno diario llenó el volumen de 500 MB de Postgres (1.098 modelos =
+# 255 MB) y tumbó el sitio el 2026-10-06. Se conservan el activo y los más
+# recientes (para poder volver atrás); lo demás se borra.
+MODEL_RUNS_TO_KEEP = 3
 
 
 def _dump_model(model):
     buffer = io.BytesIO()
     joblib.dump(model, buffer)
     return buffer.getvalue()
+
+
+def _prune_old_runs(asset, timeframe):
+    keep = list(
+        ModelRun.objects.filter(asset=asset, timeframe=timeframe)
+        .order_by("-is_active", "-id").values_list("id", flat=True)[:MODEL_RUNS_TO_KEEP]
+    )
+    ModelRun.objects.filter(asset=asset, timeframe=timeframe).exclude(id__in=keep).delete()
 
 
 def _load_model(run):
@@ -97,6 +110,7 @@ def train(asset, timeframe, test_size=0.2):
         mae=round(mae, 6), rmse=round(rmse, 6), n_samples=len(X), is_active=True,
         model_blob=_dump_model(model),
     )
+    _prune_old_runs(asset, timeframe)
     logger.info(
         "Entrenado %s (%s) v%s — MAE=%.4f RMSE=%.4f n=%d",
         asset.symbol, timeframe, version, mae, rmse, len(X),
