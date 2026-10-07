@@ -40,8 +40,7 @@ def run_dsprofeta_daily_jobs():
     # hoy (incluye las predicciones ya resueltas del día) — así el modelo
     # va mejorando con el tiempo en vez de quedarse fijo con el primer
     # entrenamiento. Cada corrida queda registrada en ModelRun con su
-    # propio MAE/RMSE (ver dsprofeta/confidence.py) para poder ver la
-    # tendencia.
+    # propio MAE/RMSE para poder ver la tendencia.
     try:
         call_command("train_predictors")
     except Exception:
@@ -55,7 +54,7 @@ def run_dsprofeta_daily_jobs():
     except Exception:
         logger.exception("prune_database falló")
 
-    # Predicción diaria (1d) por defecto para "Trading con IA" — después de
+    # Predicción diaria (1d) por defecto (alimenta Trading Análisis) — después de
     # train_predictors, para correr sobre el modelo recién reentrenado del
     # día. Ver dsprofeta/management/commands/run_daily_predictions.py.
     try:

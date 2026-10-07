@@ -412,10 +412,6 @@ T = {
         "remove_ticker_title": "Quitar del scanner",
         "remove_ticker_success": "Se quitó {symbol} del scanner.",
 
-        # Trading con IA (ex DSprofeta)
-        # Variantes por activo, para que cada ?asset= tenga su propio título/h1/meta
-        # y sea indexable por separado (ver dsprofeta/views.py predictor_home).
-
         # Herramientas — índice
         "tools_index_h1": "Estrategias de trading",
         "tools_index_meta_description": "Estrategias de trading explicadas con ejemplos visuales (day trading, swing, scalping) y calculadoras gratis: interés compuesto, riesgo-beneficio y Fair Value Gap.",
@@ -1289,7 +1285,6 @@ T = {
         "remove_ticker_title": "Remove from scanner",
         "remove_ticker_success": "Removed {symbol} from the scanner.",
 
-        # DSprofeta
 
         # Tools — index
         "tools_index_h1": "Trading Strategies",
